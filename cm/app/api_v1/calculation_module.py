@@ -1,82 +1,82 @@
-
-from osgeo import gdal
-
-from ..helper import generate_output_file_tif, create_zip_shapefiles
-import time
-
+import os
+import sys
+path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.
+                                                       abspath(__file__))))
+from ..helper import generate_output_file_tif
+from ..helper import generate_output_file_shp
+from ..helper import create_zip_shapefiles
+from ..exceptions import ValidationError,EmptyRasterError
 """ Entry point of the calculation module function"""
-
-#TODO: CM provider must "change this code"
-#TODO: CM provider must "not change input_raster_selection,output_raster  1 raster input => 1 raster output"
-#TODO: CM provider can "add all the parameters he needs to run his CM
-#TODO: CM provider can "return as many indicators as he wants"
-def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
-    #TODO the folowing code must be changed by the code of the calculation module
-
-    # generate the output raster file
-    output_raster1 = generate_output_file_tif(output_directory)
+if path not in sys.path:
+    sys.path.append(path)
+import my_calculation_module_directory.CM.CM_TUW32.run_cm as CM32
 
 
-    #retrieve the inputs layes
-    input_raster_selection =  inputs_raster_selection["heat"]
-
-    #retrieve the inputs layes
-    input_vector_selection =  inputs_vector_selection["heating_technologies_eu28"]
-
-
-    #retrieve the inputs all input defined in the signature
-    factor =  int(inputs_parameter_selection["reduction_factor"])
+def create_dataframe(input_dict):
+    temp = '%s' %input_dict
+    temp = temp.replace("\'","\"")
+    df = pd.read_json(temp, orient='records')
+    return df
 
 
-    # TODO this part bellow must be change by the CM provider
-    ds = gdal.Open(input_raster_selection)
-    ds_band = ds.GetRasterBand(1)
+# %%
+# def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
+def calculation(output_directory, inputs_raster_selection,inputs_vector_selection):
+    """ def calculation()"""
+    '''
+    inputs:
+        
 
-    #----------------------------------------------------
-    pixel_values = ds.ReadAsArray()
-    #----------Reduction factor----------------
+    Outputs:
+        
+    '''
+    
+    # ***************************** input parameters**************************
+    # e.g.: sector = inputs_parameter_selection["sector"]
+    
+    
+    # *********** # input rows from CSV DB and create dataframe***************
+    # e.g.: in_df_ENERGY_BASE = create_dataframe(inputs_vector_selection['RESULTS_SHARES_2012'])
+    
+    
+    # ************************ # Input raster files **************************
+    input_raster_NUTS_id =  inputs_raster_selection["heat"]
+    input_raster_GFA_RES =  inputs_raster_selection["heat"]
+    input_raster_ENERGY_RES =  inputs_raster_selection["heat"]
+    input_raster_LAU2_id =  inputs_raster_selection["heat"]
+    input_raster_cp_share_1975 =  inputs_raster_selection["heat"]
+    input_raster_cp_share_1990 =  inputs_raster_selection["heat"]
+    input_raster_cp_share_2000 =  inputs_raster_selection["heat"]
+    input_raster_cp_share_2014 =  inputs_raster_selection["heat"]
+    
+    # ************************ # Output raster files **************************
+    # e.g.: output_raster1 = generate_output_file_tif(output_directory)
 
-    pixel_values_modified = pixel_values/ float(factor)
-    hdm_sum  = pixel_values_modified.sum()
 
-    gtiff_driver = gdal.GetDriverByName('GTiff')
-    #print ()
-    out_ds = gtiff_driver.Create(output_raster1, ds_band.XSize, ds_band.YSize, 1, gdal.GDT_UInt16, ['compress=DEFLATE',
-                                                                                                         'TILED=YES',
-                                                                                                         'TFW=YES',
-                                                                                                         'ZLEVEL=9',
-                                                                                                         'PREDICTOR=1'])
-    out_ds.SetProjection(ds.GetProjection())
-    out_ds.SetGeoTransform(ds.GetGeoTransform())
 
-    ct = gdal.ColorTable()
-    ct.SetColorEntry(0, (0,0,0,255))
-    ct.SetColorEntry(1, (110,220,110,255))
-    out_ds.GetRasterBand(1).SetColorTable(ct)
-
-    out_ds_band = out_ds.GetRasterBand(1)
-    out_ds_band.SetNoDataValue(0)
-    out_ds_band.WriteArray(pixel_values_modified)
-
-    del out_ds
-    # output geneneration of the output
-    graphics = []
-    vector_layers = []
-
-    #TODO to create zip from shapefile use create_zip_shapefiles from the helper before sending result
-    #TODO exemple  output_shpapefile_zipped = create_zip_shapefiles(output_directory, output_shpapefile)
+    total_potential, total_heat_demand, graphics = CM32.main(input_raster_NUTS_id,
+                                                             input_raster_GFA_RES,
+                                                             input_raster_ENERGY_RES,
+                                                             input_raster_LAU2_id,
+                                                             input_raster_cp_share_1975,
+                                                             input_raster_cp_share_1990,
+                                                             input_raster_cp_share_2000,
+                                                             input_raster_cp_share_2014
+                                                             )
+    
+    # %%
+    # here you should also define the symbology for the output raster
     result = dict()
-    result['name'] = 'CM Heat density divider'
-    result['indicator'] = [{"unit": "KWh", "name": "Heat density total divided by  {}".format(factor),"value": str(hdm_sum)}]
+    result['name'] = 'CM District Heating Potential'
+    result['indicator'] = [{"unit": "GWh", "name": "Total heat demand in GWh within the selected zone","value": total_heat_demand},
+                          {"unit": "GWh", "name": "Total district heating potential in GWh within the selected zone","value": total_potential},
+                          {"unit": "%", "name": "Potential share of district heating from total demand in selected zone","value": 100*round(total_potential/total_heat_demand, 4)}
+                           ]
+    # if graphics is not None:
+    if total_potential > 0:
+        output_shp2 = create_zip_shapefiles(output_directory, output_shp2)
+        result["raster_layers"]=[{"name": "district heating coherent areas","path": output_raster1, "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"DH Areas"}]}]
+        result["vector_layers"]=[{"name": "shapefile of coherent areas with their potential","path": output_shp2}]
     result['graphics'] = graphics
-    result['vector_layers'] = vector_layers
-    result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
+        
     return result
-
-
-def colorizeMyOutputRaster(out_ds):
-    ct = gdal.ColorTable()
-    ct.SetColorEntry(0, (0,0,0,255))
-    ct.SetColorEntry(1, (110,220,110,255))
-    out_ds.SetColorTable(ct)
-    return out_ds
