@@ -4,11 +4,15 @@ Created on Feb 3, 2018
 @author: simulant
 '''
 #import time
-
-import CM_intern.common_modules.array2raster as a2r
+import os, sys
+path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.
+                                                       abspath(__file__))))
+if path not in sys.path:
+    sys.path.append(path)
+import CM.common_modules.array2raster as a2r
 DONTEXPORT_temp = False
 DONTEXPORT_existing = False
-import os
+
 
 def export_layer(SaveLayerDict):
     

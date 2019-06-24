@@ -1,11 +1,9 @@
 import os
 import sys
-path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.
-                                                       abspath(__file__))))
+path = os.path.dirname(os.path.abspath(__file__))
 from ..helper import generate_output_file_tif
 from ..helper import generate_output_file_shp
 from ..helper import create_zip_shapefiles
-from ..exceptions import ValidationError,EmptyRasterError
 """ Entry point of the calculation module function"""
 if path not in sys.path:
     sys.path.append(path)
@@ -20,8 +18,8 @@ def create_dataframe(input_dict):
 
 
 # %%
-# def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
-def calculation(output_directory, inputs_raster_selection,inputs_vector_selection):
+#def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
+def calculation(output_directory, inputs_raster_selection):
     """ def calculation()"""
     '''
     inputs:
@@ -40,33 +38,30 @@ def calculation(output_directory, inputs_raster_selection,inputs_vector_selectio
     
     
     # ************************ # Input raster files **************************
-    input_raster_NUTS_id =  inputs_raster_selection["heat"]
-    input_raster_GFA_RES =  inputs_raster_selection["heat"]
-    input_raster_ENERGY_RES =  inputs_raster_selection["heat"]
-    input_raster_LAU2_id =  inputs_raster_selection["heat"]
-    input_raster_cp_share_1975 =  inputs_raster_selection["heat"]
-    input_raster_cp_share_1990 =  inputs_raster_selection["heat"]
-    input_raster_cp_share_2000 =  inputs_raster_selection["heat"]
-    input_raster_cp_share_2014 =  inputs_raster_selection["heat"]
+    input_raster_NUTS_id =  inputs_raster_selection["nuts_id"]
+    input_raster_GFA_RES =  inputs_raster_selection["gfa_res"]
+    input_raster_ENERGY_RES =  inputs_raster_selection["energy_res"]
+    input_raster_LAU2_id =  inputs_raster_selection["lau2_id"]
+    input_raster_cp_share_1975 =  inputs_raster_selection["cp_share_1975"]
+    input_raster_cp_share_1990 =  inputs_raster_selection["cp_share_1990"]
+    input_raster_cp_share_2000 =  inputs_raster_selection["cp_share_2000"]
+    input_raster_cp_share_2014 =  inputs_raster_selection["cp_share_2014"]
     
     # ************************ # Output raster files **************************
     # e.g.: output_raster1 = generate_output_file_tif(output_directory)
 
 
 
-    total_potential, total_heat_demand, graphics = CM32.main(input_raster_NUTS_id,
-                                                             input_raster_GFA_RES,
-                                                             input_raster_ENERGY_RES,
-                                                             input_raster_LAU2_id,
-                                                             input_raster_cp_share_1975,
-                                                             input_raster_cp_share_1990,
-                                                             input_raster_cp_share_2000,
-                                                             input_raster_cp_share_2014
-                                                             )
+    CM32.main(input_raster_NUTS_id, input_raster_GFA_RES,
+              input_raster_ENERGY_RES, input_raster_LAU2_id,
+              input_raster_cp_share_1975, input_raster_cp_share_1990,
+              input_raster_cp_share_2000, input_raster_cp_share_2014
+              )
     
     # %%
     # here you should also define the symbology for the output raster
     result = dict()
+    '''
     result['name'] = 'CM District Heating Potential'
     result['indicator'] = [{"unit": "GWh", "name": "Total heat demand in GWh within the selected zone","value": total_heat_demand},
                           {"unit": "GWh", "name": "Total district heating potential in GWh within the selected zone","value": total_potential},
@@ -78,5 +73,5 @@ def calculation(output_directory, inputs_raster_selection,inputs_vector_selectio
         result["raster_layers"]=[{"name": "district heating coherent areas","path": output_raster1, "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"DH Areas"}]}]
         result["vector_layers"]=[{"name": "shapefile of coherent areas with their potential","path": output_shp2}]
     result['graphics'] = graphics
-        
+    '''
     return result

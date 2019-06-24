@@ -1,17 +1,16 @@
 import os
-import time
 import sys
 import numpy as np
 path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.
                                                        abspath(__file__))))
 if path not in sys.path:
     sys.path.append(path)
-from N3scenario_to_raster import CalcEffectsAtRasterLevel
-from CM_intern.common_modules.readCsvData import READ_CSV_DATA
-import CM_intern.CEDM.modules.Subfunctions as SF
-import CM_intern.common_modules.cliprasterlayer as CRL
-from CM_intern.common_modules.exportLayerDict import export_layer as expLyr
-from my_calculation_module_directory.CM.CM_TUW1.read_raster import raster_array as RA
+from CM.CM_TUW32.N3scenario_to_raster import CalcEffectsAtRasterLevel
+from CM.common_modules.readCsvData import READ_CSV_DATA
+import CM.CEDM.modules.Subfunctions as SF
+import CM.common_modules.cliprasterlayer as CRL
+from CM.common_modules.exportLayerDict import export_layer as expLyr
+from CM.CM_TUW1.read_raster import raster_array as RA
 
 
 def main(input_raster_NUTS_id,
@@ -25,7 +24,7 @@ def main(input_raster_NUTS_id,
 
     data_type = "f4"
     data_type_int = "uint32"
-    local_input_dir = "my_calculation_module_directory/input"
+    local_input_dir = path + "/input_data"
     
     NUTS_id, gt = RA(input_raster_NUTS_id, dType=data_type_int, return_gt=True)
     GFA_RES = RA(input_raster_GFA_RES, dType=data_type)

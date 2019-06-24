@@ -6,9 +6,14 @@ This script has been created in the context of the Hotmaps EU project.
 @Institute: TUW, Austria
 @Contact: mueller@eeg.tuwien.ac.at
 '''
+import os, sys
+path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.
+                                                       abspath(__file__))))
+if path not in sys.path:
+    sys.path.append(path)
 import numpy as np
-from CM_intern.common_modules.exportLayerDict import export_layer as expLyr
-import CM_intern.CEDM.modules.cyf.create_density_map as CDM
+from CM.common_modules.exportLayerDict import export_layer as expLyr
+import CM.CEDM.modules.cyf.create_density_map as CDM
 
 
 def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,

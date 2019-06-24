@@ -20,46 +20,33 @@ PORT = PORT_LOCAL
 #TODO ********************setup this URL depending on which version you are running***************************
 
 TRANFER_PROTOCOLE ='http://'
+'''
 INPUTS_CALCULATION_MODULE = [
-    {'input_name': 'Reduction factor',
-     'input_type': 'input',
-     'input_parameter_name': 'reduction_factor',
-     'input_value': 1,
-     'input_priority': 0,
-     'input_unit': 'none',
-     'input_min': 1,
-     'input_max': 10, 'cm_id': CM_ID  # Do no change this value
-     },
-    {'input_name': 'Blablabla',
-     'input_type': 'range',
-     'input_parameter_name': 'bla',
-     'input_value': 50,
-     'input_priority': 1,
-     'input_unit': '',
-     'input_min': 10,
-     'input_max': 1000,
-     'cm_id': CM_ID  # Do no change this value
-     }
+    
 ]
-
+'''
 
 SIGNATURE = {
 
     "category": "Buildings",
-    "authorized_scale":["NUTS 2","NUTS 0","Hectare"],
+    "authorized_scale":["NUTS 3", "NUTS 2", "NUTS 1","NUTS 0","Hectare"],
     "cm_name": CM_NAME,
     "layers_needed": [
-        "heat_tot_curr_density",
+        "nuts_id",
+        "gfa_res",
+        "energy_res",
+        "lau2_id",
+        "cp_share_1975",
+        "cp_share_1990",
+        "cp_share_2000",
+        "cp_share_2014",
     ],
     "type_layer_needed": [
         "heat",
     ],
-    "vectors_needed": [
-        "heating_technologies_eu28",
 
-    ],
     "cm_url": "Do not add something",
     "cm_description": "this computation module allows to divide the HDM",
     "cm_id": CM_ID,
-    'inputs_calculation_module': INPUTS_CALCULATION_MODULE
+#    'inputs_calculation_module': INPUTS_CALCULATION_MODULE
 }
