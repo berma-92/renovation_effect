@@ -30,7 +30,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                             GFA_RES,
                             geotransform_obj,
                             NUTS_id_size,
-                            csv_data_table):
+                            csv_data_table,
+                            output_raster_energy,
+                            output_csv_result):
     csv_results = np.zeros((np.max(LAU2_id)+1, 100), dtype="f4")
     header = {}
     oNUTS = 40
@@ -237,7 +239,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
             
         #Export IMAGE
         SaveLayerDict = {}
-        fn_out_fp = "./output/Energy_%s.tif" % bt_type
+        fn_out_fp = output_raster_energy
         SaveLayerDict["AA"] =   (fn_out_fp, geotransform_obj
                                             , "f4", energy_future , 0)
         SaveLayerDict = expLyr(SaveLayerDict)
@@ -321,7 +323,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
     csv_results[:,col] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
     
     """     
-    fn_out_csv = "./output/Results_table.csv"
+    fn_out_csv = output_csv_result
     notempty = csv_results[:, 1] > 0.1                   
     header_ = ""
     for k in range(csv_results.shape[1]):

@@ -2,7 +2,7 @@ import os
 import sys
 path = os.path.dirname(os.path.abspath(__file__))
 from ..helper import generate_output_file_tif
-from ..helper import generate_output_file_shp
+from ..helper import generate_output_file_csv
 from ..helper import create_zip_shapefiles
 """ Entry point of the calculation module function"""
 if path not in sys.path:
@@ -48,14 +48,17 @@ def calculation(output_directory, inputs_raster_selection):
     input_raster_cp_share_2014 =  inputs_raster_selection["cp_share_2014"]
     
     # ************************ # Output raster files **************************
-    # e.g.: output_raster1 = generate_output_file_tif(output_directory)
+    output_raster_energy = generate_output_file_tif(output_directory)
 
+    # ************************ # Output CSV files **************************
+    output_csv_result = generate_output_file_csv(output_directory)
 
 
     CM32.main(input_raster_NUTS_id, input_raster_GFA_RES,
               input_raster_ENERGY_RES, input_raster_LAU2_id,
               input_raster_cp_share_1975, input_raster_cp_share_1990,
-              input_raster_cp_share_2000, input_raster_cp_share_2014
+              input_raster_cp_share_2000, input_raster_cp_share_2014,
+              output_raster_energy, output_csv_result
               )
     
     # %%

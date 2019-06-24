@@ -20,7 +20,9 @@ def main(input_raster_NUTS_id,
          input_raster_cp_share_1975,
          input_raster_cp_share_1990,
          input_raster_cp_share_2000,
-         input_raster_cp_share_2014):
+         input_raster_cp_share_2014,
+         output_raster_energy,
+         output_csv_result):
 
     data_type = "f4"
     data_type_int = "uint32"
@@ -63,4 +65,7 @@ def main(input_raster_NUTS_id,
                                     GFA_RES,
                                     gt,
                                     NUTS_id_size,
-                                    csv_data_table)
+                                    csv_data_table,
+                                    output_raster_energy,
+                                    output_csv_result)
+
