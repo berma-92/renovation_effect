@@ -3,7 +3,7 @@ from werkzeug.exceptions import NotFound
 from app import create_app
 import os.path
 from shutil import copyfile
-from .test_client import TestClient
+from cm.tests.test_client import TestClient
 UPLOAD_DIRECTORY = '/var/hotmaps/cm_files_uploaded'
 
 if not os.path.exists(UPLOAD_DIRECTORY):

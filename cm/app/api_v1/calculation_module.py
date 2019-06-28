@@ -1,14 +1,32 @@
 import os
 import sys
-path = os.path.dirname(os.path.abspath(__file__))
-from ..helper import generate_output_file_tif
-from ..helper import generate_output_file_csv
-from ..helper import create_zip_shapefiles
+#import panda as pd
+
+
+#path = os.path.dirname(os.path.abspath(__file__))
+SD = "my_calculation_module_directory"
+path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
+
+
+
+
 """ Entry point of the calculation module function"""
 if path not in sys.path:
     sys.path.append(path)
-import my_calculation_module_directory.CM.CM_TUW32.run_cm as CM32
-
+    
+try:
+    from ..helper import generate_output_file_tif
+    from ..helper import generate_output_file_csv
+    from ..helper import create_zip_shapefiles
+except:
+    pass
+    """
+    from CM.helper_functions.helper import generate_output_file_tif
+    from CM.helper_functions.helper import generate_output_file_csv
+    from CM.helper_functions.helper import create_zip_shapefiles
+    """
+#import CM.CM_TUW32.run_cm as CM32
+import CM.run_cm as CM32
 
 def create_dataframe(input_dict):
     temp = '%s' %input_dict
@@ -29,6 +47,7 @@ def calculation(output_directory, inputs_raster_selection):
         
     '''
     
+    
     # ***************************** input parameters**************************
     # e.g.: sector = inputs_parameter_selection["sector"]
     
@@ -47,20 +66,35 @@ def calculation(output_directory, inputs_raster_selection):
     input_raster_cp_share_2000 =  inputs_raster_selection["cp_share_2000"]
     input_raster_cp_share_2014 =  inputs_raster_selection["cp_share_2014"]
     
-    # ************************ # Output raster files **************************
-    output_raster_energy = generate_output_file_tif(output_directory)
+    try:
+        # ************************ # Output raster files **************************
+        output_raster_energy_res = generate_output_file_tif(output_directory)
+        output_raster_energy_nres = generate_output_file_tif(output_directory)
+        
 
-    # ************************ # Output CSV files **************************
-    output_csv_result = generate_output_file_csv(output_directory)
+        # ************************ # Output CSV files **************************
+        output_csv_result = generate_output_file_csv(output_directory)
+    except:
+        # ************************ # Output raster files **************************
+        
+        output_raster_energy_res = "%s/Energy_RES.tif" % (output_directory)
+        output_raster_energy_nres = "%s/Energy_NRES.tif" % (output_directory)
+
+        # ************************ # Output CSV files **************************
+        output_csv_result = output_directory + "/Results_table.csv"
 
 
     CM32.main(input_raster_NUTS_id, input_raster_GFA_RES,
               input_raster_ENERGY_RES, input_raster_LAU2_id,
               input_raster_cp_share_1975, input_raster_cp_share_1990,
               input_raster_cp_share_2000, input_raster_cp_share_2014,
-              output_raster_energy, output_csv_result
+              output_raster_energy_res,
+              output_raster_energy_nres, 
+              output_csv_result
               )
     
+ 
+         
     # %%
     # here you should also define the symbology for the output raster
     result = dict()
@@ -78,3 +112,61 @@ def calculation(output_directory, inputs_raster_selection):
     result['graphics'] = graphics
     '''
     return result
+
+if __name__ == '__main__':
+        
+        
+        path_ = path.replace("\\", "/").split("/app/")[0]
+        
+        
+        test_dir = '%s/tests/data/' % path_
+        
+        raster_file_dir = '%s/input/' % test_dir
+        
+        raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
+        raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
+        raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
+        raster_file_path4 = raster_file_dir + "/LAU2_id_number.tif"
+        raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
+        raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
+        raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
+        raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
+
+        """
+        # simulate copy from HTAPI to CM
+        save_path1 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
+        save_path2 = UPLOAD_DIRECTORY+"/RESULTS_GFA_RES_BUILD.tif"
+        save_path3 = UPLOAD_DIRECTORY+"/RESULTS_ENERGY_HEATING_RES_2012.tif"
+        save_path4 = UPLOAD_DIRECTORY+"/LAU2_id_number.tif"
+        raster_filesave_path5 = UPLOAD_DIRECTORY+"/GHS_BUILT_1975_100_share.tif"
+        save_path6 = UPLOAD_DIRECTORY+"/GHS_BUILT_1990_100_share.tif"
+        save_path7 = UPLOAD_DIRECTORY+"/GHS_BUILT_2000_100_share.tif"
+        save_path8 = UPLOAD_DIRECTORY+"/GHS_BUILT_2014_100_share.tif"
+        
+        copyfile(raster_file_path1, save_path1)
+        copyfile(raster_file_path2, save_path2)
+        copyfile(raster_file_path3, save_path3)
+        copyfile(raster_file_path4, save_path4)
+        copyfile(raster_file_path5, save_path5)
+        copyfile(raster_file_path6, save_path6)
+        copyfile(raster_file_path7, save_path7)
+        copyfile(raster_file_path8, save_path8)
+        """
+
+        inputs_raster_selection = {}
+        inputs_parameter_selection = {}
+        inputs_vector_selection = {}
+        inputs_raster_selection["nuts_id"] = raster_file_path1
+        inputs_raster_selection["gfa_res"] = raster_file_path2
+        inputs_raster_selection["energy_res"] = raster_file_path3
+        inputs_raster_selection["lau2_id"] = raster_file_path4
+        inputs_raster_selection["cp_share_1975"] = raster_file_path5
+        inputs_raster_selection["cp_share_1990"] = raster_file_path6
+        inputs_raster_selection["cp_share_2000"] = raster_file_path7
+        inputs_raster_selection["cp_share_2014"] = raster_file_path8
+        
+        output_directory = test_dir + "/output"
+        if not os.path.exists(output_directory):
+            os.mkdir(output_directory)
+        calculation(output_directory, inputs_raster_selection)
+        
