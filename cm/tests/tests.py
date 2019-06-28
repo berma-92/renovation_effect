@@ -27,7 +27,12 @@ class TestAPI(unittest.TestCase):
 
 
     def test_compute(self):
-        raster_file_dir = 'tests/data'
+        
+        
+        test_dir = 'tests/data/'
+        
+        raster_file_dir = '%s/input/' % test_dir
+        #raster_file_dir = 'tests/data'
         
         raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
         raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
