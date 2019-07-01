@@ -45,11 +45,12 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , cp_share_1990
                             , cp_share_2014
                             , ENERGY_RES
+                            , ENERGY_NRES
                             , GFA_RES
+                            , GFA_NRES
                             , geotransform_obj, size
                             , csv_data_table
-                            , output_raster_energy_res
-                            , output_raster_energy_nres
+                            , output_raster_files
                             , output_csv_result):
     
     """
@@ -58,6 +59,26 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     del idx
     NUTS_id -= 1
     """
+    
+   
+              
+              
+
+    output_raster_energy_res = output_raster_files["output_raster_energy_res"]
+    output_raster_energy_nres = output_raster_files["output_raster_energy_nres"]
+    output_raster_energy_res_rel = output_raster_files["output_raster_energy_res_rel"] 
+    output_raster_energy_nres_rel = output_raster_files["output_raster_energy_nres_rel"] 
+    output_raster_energy_tot = output_raster_files["output_raster_energy_tot"] 
+    output_raster_energy_tot_rel = output_raster_files["output_raster_energy_tot_rel"] 
+    
+    output_raster_gfa_res = output_raster_files["output_raster_gfa_res"]
+    output_raster_gfa_nres = output_raster_files["output_raster_gfa_nres"]
+    output_raster_gfa_res_rel = output_raster_files["output_raster_gfa_res_rel"] 
+    output_raster_gfa_nres_rel = output_raster_files["output_raster_gfa_nres_rel"] 
+    output_raster_gfa_tot = output_raster_files["output_raster_gfa_tot"] 
+    output_raster_gfa_tot_rel = output_raster_files["output_raster_gfa_tot_rel"] 
+    
+    
     output_path = os.path.dirname(os.path.abspath(output_raster_energy_res))
     if os.path.exists(output_path) == False:
         os.mkdir(output_path)
@@ -65,10 +86,14 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     csv_results = np.zeros((np.max(LAU2_id)+1, 100), dtype="f4")
     header = {}
     oNUTS = 40
-    for i in range(1):
+    energy_tot_future = np.zeros_like(cp_share_1975)
+    energy_tot_curr = np.zeros_like(cp_share_1975)
+    gfa_tot_future = np.zeros_like(cp_share_1975)
+    gfa_tot_curr = np.zeros_like(cp_share_1975)
+    for i in range(2):
         energy_current = np.zeros_like(cp_share_1975)
         energy_future = np.zeros_like(cp_share_1975)
-    
+        
         area_future = np.zeros_like(cp_share_1975)
         area_current = np.zeros_like(cp_share_1975)
     
@@ -76,11 +101,12 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         Share_cp_area_future = np.zeros((NUTS_RESULTS_GFA_FUTURE.shape[0]+1, 4), dtype="f4")
         Share_cp_energy_initial = np.zeros((NUTS_RESULTS_ENERGY_BASE.shape[0]+1, 3), dtype="f4")
         Share_cp_energy_future = np.zeros((NUTS_RESULTS_ENERGY_FUTURE.shape[0]+1, 3), dtype="f4")
-        
+    
         if i == 0:
             o = 0
             bt_type = "Res"
             ENERGY = ENERGY_RES
+            
             del ENERGY_RES
             BGF_intial = GFA_RES
             
@@ -104,16 +130,16 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             
  
             fn_out_fp = output_raster_energy_res 
-        
-        
+            fn_out_fp_rel = output_raster_energy_res_rel
+            fn_out_fp_gfa = output_raster_gfa_res 
+            fn_out_fp_rel_gfa = output_raster_gfa_res_rel
 
         else:
-            continue
-            """
+            
             o = 23
             bt_type = "NRes"
-            BGF_intial = getData(fn_nres_bgf_intial, geotransform_obj, size, "f4")
-            
+            BGF_intial = GFA_NRES
+            ENERGY = ENERGY_NRES
             Share_cp_area_initial = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
             Share_cp_area_initial[1:, 0] = NUTS_RESULTS_GFA_BASE["gfa_nres_1977"]
             Share_cp_area_initial[1:, 1] = NUTS_RESULTS_GFA_BASE["gfa_nres_77_90"]
@@ -136,8 +162,11 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             Share_cp_energy_future[1:, 0] = NUTS_RESULTS_ENERGY_FUTURE["share_nres_1977"]
             Share_cp_energy_future[1:, 1] = NUTS_RESULTS_ENERGY_FUTURE["share_nres_77_90"]
             Share_cp_energy_future[1:, 2] = NUTS_RESULTS_ENERGY_FUTURE["share_nres_90_17"]
-            """
+            
             fn_out_fp = output_raster_energy_nres
+            fn_out_fp_rel = output_raster_energy_nres_rel
+            fn_out_fp_gfa = output_raster_gfa_nres 
+            fn_out_fp_rel_gfa = output_raster_gfa_nres_rel
         
         # Future shares based on current area
         Share_cp_area_future /= (np.ones((4,1),dtype="f4") 
@@ -305,9 +334,36 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         SaveLayerDict = {}
         
         SaveLayerDict["AA"] =   (fn_out_fp, geotransform_obj
-                                            , "f4", energy_future , 0)
+                                            , "f4", energy_future  , 0)
+        SaveLayerDict["AB"] =   (fn_out_fp_rel, geotransform_obj
+                                            , "f4", energy_future / np.maximum(0.00001, energy_current) , 0)
+        
+        SaveLayerDict["AC"] =   (fn_out_fp_gfa, geotransform_obj
+                                            , "f4", area_future  , 0)
+        SaveLayerDict["AD"] =   (fn_out_fp_rel_gfa, geotransform_obj
+                                            , "f4", area_future / np.maximum(0.00001, BGF_intial) , 0)
         SaveLayerDict = expLyr(SaveLayerDict)
+        
+        energy_tot_future += energy_future
+        energy_tot_curr += ENERGY
+        
+        gfa_tot_future += area_future
+        gfa_tot_curr += BGF_intial
     
+    
+    
+    
+    
+    
+        SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
+                                            , "f4", energy_tot_future  , 0)
+        SaveLayerDict["AB"] =   (output_raster_energy_tot_rel, geotransform_obj
+                                            , "f4", energy_tot_future / np.maximum(0.00001, energy_current) , 0)
+        SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
+                                            , "f4", gfa_tot_future  , 0)
+        SaveLayerDict["AD"] =   (output_raster_gfa_tot_rel, geotransform_obj
+                                            , "f4", gfa_tot_future / np.maximum(0.00001, gfa_tot_curr) , 0)
+        SaveLayerDict = expLyr(SaveLayerDict)
 
     header_names = NUTS_RESULTS_ENERGY_FUTURE_abs.dtype.names[0] 
     

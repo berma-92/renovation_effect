@@ -59,7 +59,9 @@ def calculation(output_directory, inputs_raster_selection):
     # ************************ # Input raster files **************************
     input_raster_NUTS_id =  inputs_raster_selection["nuts_id"]
     input_raster_GFA_RES =  inputs_raster_selection["gfa_res"]
+    input_raster_GFA_NRES =  inputs_raster_selection["gfa_nres"]
     input_raster_ENERGY_RES =  inputs_raster_selection["energy_res"]
+    input_raster_ENERGY_NRES =  inputs_raster_selection["energy_nres"]
     input_raster_LAU2_id =  inputs_raster_selection["lau2_id"]
     input_raster_cp_share_1975 =  inputs_raster_selection["cp_share_1975"]
     input_raster_cp_share_1990 =  inputs_raster_selection["cp_share_1990"]
@@ -70,7 +72,17 @@ def calculation(output_directory, inputs_raster_selection):
         # ************************ # Output raster files **************************
         output_raster_energy_res = generate_output_file_tif(output_directory)
         output_raster_energy_nres = generate_output_file_tif(output_directory)
+        output_raster_energy_res_rel = generate_output_file_tif(output_directory)
+        output_raster_energy_nres_rel = generate_output_file_tif(output_directory)
+        output_raster_energy_tot = generate_output_file_tif(output_directory)
+        output_raster_energy_tot_rel = generate_output_file_tif(output_directory)
         
+        output_raster_gfa_res = generate_output_file_tif(output_directory)
+        output_raster_gfa_nres = generate_output_file_tif(output_directory)
+        output_raster_gfa_res_rel = generate_output_file_tif(output_directory)
+        output_raster_gfa_nres_rel = generate_output_file_tif(output_directory)
+        output_raster_gfa_tot = generate_output_file_tif(output_directory)
+        output_raster_gfa_tot_rel = generate_output_file_tif(output_directory)
 
         # ************************ # Output CSV files **************************
         output_csv_result = generate_output_file_csv(output_directory)
@@ -79,17 +91,46 @@ def calculation(output_directory, inputs_raster_selection):
         
         output_raster_energy_res = "%s/Energy_RES.tif" % (output_directory)
         output_raster_energy_nres = "%s/Energy_NRES.tif" % (output_directory)
-
+        output_raster_energy_res_rel = "%s/Energy_RES_rel.tif" % (output_directory)
+        output_raster_energy_nres_rel = "%s/Energy_NRES_rel.tif" % (output_directory)
+        output_raster_energy_tot = "%s/Energy_TOTAL.tif" % (output_directory)
+        output_raster_energy_tot_rel = "%s/Energy_TOTAL_rel.tif" % (output_directory)
+        
+        output_raster_gfa_res = "%s/GFA_RES.tif" % (output_directory)
+        output_raster_gfa_nres = "%s/GFA_NRES.tif" % (output_directory)
+        output_raster_gfa_res_rel = "%s/GFA__RES_rel.tif" % (output_directory)
+        output_raster_gfa_nres_rel = "%s/GFA__NRES_rel.tif" % (output_directory)
+        output_raster_gfa_tot = "%s/GFA__TOTAL.tif" % (output_directory)
+        output_raster_gfa_tot_rel = "%s/GFA__TOTAL_rel.tif" % (output_directory)
+        
         # ************************ # Output CSV files **************************
         output_csv_result = output_directory + "/Results_table.csv"
 
-
-    CM32.main(input_raster_NUTS_id, input_raster_GFA_RES,
-              input_raster_ENERGY_RES, input_raster_LAU2_id,
+    output_raster_files = {}
+    output_raster_files["output_raster_energy_res"] = output_raster_energy_res
+    output_raster_files["output_raster_energy_nres"] = output_raster_energy_nres
+    output_raster_files["output_raster_energy_res_rel"] = output_raster_energy_res_rel
+    output_raster_files["output_raster_energy_nres_rel"] = output_raster_energy_nres_rel
+    output_raster_files["output_raster_energy_tot"] = output_raster_energy_tot
+    output_raster_files["output_raster_energy_tot_rel"] = output_raster_energy_tot_rel
+    
+    output_raster_files["output_raster_gfa_res"] = output_raster_gfa_res
+    output_raster_files["output_raster_gfa_nres"] = output_raster_gfa_nres
+    output_raster_files["output_raster_gfa_res_rel"] = output_raster_gfa_res_rel
+    output_raster_files["output_raster_gfa_nres_rel"] = output_raster_gfa_nres_rel
+    output_raster_files["output_raster_gfa_tot"] = output_raster_gfa_tot
+    output_raster_files["output_raster_gfa_tot_rel"] = output_raster_gfa_tot_rel
+    
+    
+    CM32.main(input_raster_NUTS_id, 
+              input_raster_GFA_RES,
+              input_raster_GFA_NRES,
+              input_raster_ENERGY_RES, 
+              input_raster_ENERGY_NRES,
+              input_raster_LAU2_id,
               input_raster_cp_share_1975, input_raster_cp_share_1990,
               input_raster_cp_share_2000, input_raster_cp_share_2014,
-              output_raster_energy_res,
-              output_raster_energy_nres, 
+              output_raster_files, 
               output_csv_result
               )
     
@@ -126,6 +167,9 @@ if __name__ == '__main__':
         raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
         raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
         raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
+        raster_file_path2b = raster_file_dir + "/RESULTS_GFA_NRES_BUILD.tif"
+        raster_file_path3b = raster_file_dir + "/RESULTS_ENERGY_HEATING_NRES_2012.tif"
+        
         raster_file_path4 = raster_file_dir + "/LAU2_id_number.tif"
         raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
         raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
@@ -159,6 +203,9 @@ if __name__ == '__main__':
         inputs_raster_selection["nuts_id"] = raster_file_path1
         inputs_raster_selection["gfa_res"] = raster_file_path2
         inputs_raster_selection["energy_res"] = raster_file_path3
+        inputs_raster_selection["gfa_nres"] = raster_file_path2b
+        inputs_raster_selection["energy_nres"] = raster_file_path3b
+        
         inputs_raster_selection["lau2_id"] = raster_file_path4
         inputs_raster_selection["cp_share_1975"] = raster_file_path5
         inputs_raster_selection["cp_share_1990"] = raster_file_path6
