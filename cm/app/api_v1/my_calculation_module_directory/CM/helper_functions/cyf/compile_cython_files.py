@@ -313,7 +313,7 @@ class CopyInputFiles():
 
                     elif (os.path.isdir(dirfile) and subdir
                           and (dirfile).find(".svn") == -1
-                          and dirfile.find("/test") == -1 and (dirfile).find(".") == -1
+                          and dirfile.find("/test") == -1 and (dirfile[-70:]).find(".") == -1
                           and (dirfile).find("IPython") == -1 and (dirfile != "tcl")
                           and (dirfile != "mpl-data")) :
 
