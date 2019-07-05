@@ -37,7 +37,7 @@ def create_dataframe(input_dict):
 
 # %%
 #def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
-def calculation(output_directory, inputs_raster_selection):
+def calculation(output_directory, inputs_raster_selection, inputs_parameter_selection):
     """ def calculation()"""
     '''
     inputs:
@@ -122,7 +122,8 @@ def calculation(output_directory, inputs_raster_selection):
     output_raster_files["output_raster_gfa_tot_rel"] = output_raster_gfa_tot_rel
     
     
-    CM32.main(input_raster_NUTS_id, 
+    RESULTS = CM32.main(inputs_parameter_selection,
+              input_raster_NUTS_id, 
               input_raster_GFA_RES,
               input_raster_GFA_NRES,
               input_raster_ENERGY_RES, 
@@ -151,6 +152,20 @@ def calculation(output_directory, inputs_raster_selection):
         result["raster_layers"]=[{"name": "district heating coherent areas","path": output_raster1, "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"DH Areas"}]}]
         result["vector_layers"]=[{"name": "shapefile of coherent areas with their potential","path": output_shp2}]
     result['graphics'] = graphics
+    
+    
+    #TODO to create zip from shapefile use create_zip_shapefiles from the helper before sending result
+    #TODO exemple  output_shpapefile_zipped = create_zip_shapefiles(output_directory, output_shpapefile)
+    result = dict()
+    result['name'] = 'CM Heat density divider'
+    result['indicator'] = [{"unit": "KWh", "name": "Heat density total divided by  {}".format(factor),"value": str(hdm_sum)}]
+    result['graphics'] = graphics
+    result['vector_layers'] = vector_layers
+    result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
+    return result
+
+    
+    
     '''
     return result
 
@@ -212,8 +227,19 @@ if __name__ == '__main__':
         inputs_raster_selection["cp_share_2000"] = raster_file_path7
         inputs_raster_selection["cp_share_2014"] = raster_file_path8
         
+        inputs_parameter_selection['scenario'] = "Scenario 1"
+        inputs_parameter_selection['target_year'] = "2030"
+        inputs_parameter_selection['red_area_77'] = "100"
+        inputs_parameter_selection['red_area_80'] = "100"
+        inputs_parameter_selection['red_area_00'] = "100"
+        inputs_parameter_selection['red_sp_ene_77'] = "100"
+        inputs_parameter_selection['red_sp_ene_80'] = "100"
+        inputs_parameter_selection['red_sp_ene_00'] = "100"
+        
+        
+        
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)
-        calculation(output_directory, inputs_raster_selection)
+        calculation(output_directory, inputs_raster_selection, inputs_parameter_selection)
         

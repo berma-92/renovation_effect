@@ -19,7 +19,8 @@ print(sys.version_info)
 
 
 
-def main(input_raster_NUTS_id,
+def main(inputs_parameter_selection,
+         input_raster_NUTS_id,
          input_raster_GFA_RES,
          input_raster_GFA_NRES,
          input_raster_ENERGY_RES,
@@ -53,18 +54,22 @@ def main(input_raster_NUTS_id,
     NUTS_id_size = NUTS_id.shape
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
 
+    target_year = int(inputs_parameter_selection["target_year"])
+    
+    if not os.path.exists(local_input_dir + "/RESULTS_SHARES_%i.csv" % target_year):
+        target_year = 2030
     
     NUTS_RESULTS_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/RESULTS_SHARES_2012.csv", skip_header=3)[0]
-    NUTS_RESULTS_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/RESULTS_SHARES_2030.csv", skip_header=3)[0]
-    NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/RESULTS_ENERGY_2030.csv", skip_header=3)[0]
+    NUTS_RESULTS_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/RESULTS_SHARES_%i.csv" % target_year, skip_header=3)[0]
+    NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/RESULTS_ENERGY_%i.csv" % target_year, skip_header=3)[0]
     NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/RESULTS_GFA_2012.csv", skip_header=3)[0]
-    NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/RESULTS_GFA_2030.csv", skip_header=3)[0]
+    NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/RESULTS_GFA_%i.csv" % target_year, skip_header=3)[0]
     csv_data_table = READ_CSV_DATA(local_input_dir + "/Communal2_data.csv", skip_header=6)
     
     
     #fn_res_bgf_initial = "%s/RESULTS_GFA_RES_BUILD.csv" % dirname
     
-    _, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
+    RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
                                     NUTS_RESULTS_ENERGY_BASE,
                                     NUTS_RESULTS_ENERGY_FUTURE,
@@ -87,6 +92,9 @@ def main(input_raster_NUTS_id,
     
     
     print("Done")
+    
+    
+    return RESULTS
     
     
     

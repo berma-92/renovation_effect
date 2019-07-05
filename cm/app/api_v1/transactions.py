@@ -133,7 +133,7 @@ def compute():
     inputs_raster_selection = helper.validateJSON(data["inputs_raster_selection"])
 
 
-    #inputs_parameter_selection = helper.validateJSON(data["inputs_parameter_selection"])
+    inputs_parameter_selection = helper.validateJSON(data["inputs_parameter_selection"])
 
 
 
@@ -143,7 +143,7 @@ def compute():
 
     output_directory = UPLOAD_DIRECTORY
     # call the calculation module function
-    result = calculation_module.calculation(output_directory, inputs_raster_selection)
+    result = calculation_module.calculation(output_directory, inputs_raster_selection, inputs_parameter_selection)
 
     response = {
         'result': result

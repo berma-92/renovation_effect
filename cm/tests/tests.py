@@ -69,6 +69,18 @@ class TestAPI(unittest.TestCase):
         inputs_raster_selection = {}
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
+        
+        inputs_parameter_selection['scenario'] = "Scenario 1"
+        inputs_parameter_selection['target_year'] = "2030"
+        inputs_parameter_selection['red_area_77'] = "100"
+        inputs_parameter_selection['red_area_80'] = "100"
+        inputs_parameter_selection['red_area_00'] = "100"
+        inputs_parameter_selection['red_sp_ene_77'] = "100"
+        inputs_parameter_selection['red_sp_ene_80'] = "100"
+        inputs_parameter_selection['red_sp_ene_00'] = "100"
+        
+        
+        
         inputs_raster_selection["nuts_id"] = save_path1
         inputs_raster_selection["gfa_res"] = save_path2
         inputs_raster_selection["energy_res"] = save_path3
@@ -84,7 +96,7 @@ class TestAPI(unittest.TestCase):
 
         # register the calculation module a
         payload = {"inputs_raster_selection": inputs_raster_selection,
-                   #"inputs_parameter_selection": inputs_parameter_selection,
+                   "inputs_parameter_selection": inputs_parameter_selection,
                    #"inputs_vector_selection": inputs_vector_selection
                    }
 

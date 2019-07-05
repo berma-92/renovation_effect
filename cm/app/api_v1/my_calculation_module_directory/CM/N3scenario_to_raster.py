@@ -456,7 +456,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     np.savetxt(fn_out_csv, csv_results[notempty, :], delimiter = ",", header = header_, comments="")
     
     print("Done")
-    return 1, 2
+    RESULTS_DICT = {}
+    return RESULTS_DICT, 2
     #return(energy_res, energy_nres)
             
             
