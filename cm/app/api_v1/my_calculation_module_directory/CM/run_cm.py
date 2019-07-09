@@ -69,6 +69,12 @@ def main(inputs_parameter_selection,
     
     #fn_res_bgf_initial = "%s/RESULTS_GFA_RES_BUILD.csv" % dirname
     
+
+    adoption_bgf = [float(inputs_parameter_selection['red_area_77']), float(inputs_parameter_selection['red_area_80']), float(inputs_parameter_selection['red_area_00'])]
+    adoption_sp_ene = [float(inputs_parameter_selection['red_sp_ene_77']), float(inputs_parameter_selection['red_sp_ene_80']), float(inputs_parameter_selection['red_sp_ene_00'])]
+    
+    inputs_parameters = {"adoption_bgf": adoption_bgf,
+                         "adoption_sp_ene": adoption_sp_ene}
     RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
                                     NUTS_RESULTS_ENERGY_BASE,
@@ -87,13 +93,14 @@ def main(inputs_parameter_selection,
                                     NUTS_id_size,
                                     csv_data_table,
                                     output_raster_files,
-                                    output_csv_result)
+                                    output_csv_result,
+                                    inputs_parameters)
     
     
     
     print("Done")
     
-    RESULTS["target_year"] = RESULTS
+    RESULTS["target_year"] = target_year
     return RESULTS
     
     

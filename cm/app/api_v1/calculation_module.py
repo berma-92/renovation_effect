@@ -145,19 +145,72 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result = dict()
     
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
-    result['indicator'] = [{"unit": "%", "name": "Share Area Constr. Period\n before 1975","value": RESULTS["share_gfa_75"]},
-                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["share_gfa_80"]},
-                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["share_gfa_00"]},
-                           {"unit": "%", "name": "Share Energy Constr. Period\n before 1975","value": RESULTS["share_ene_75"]},
-                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["share_ene_80"]},
-                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["share_ene_00"]},
-                          {"unit": "%", "name": "Reduction Area compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_gfa_75"]},
-                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["red_gfa_80"]},
-                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["red_gfa_00"]},
-                          {"unit": "%", "name": "Reduction specific Energy compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_ene_75"]},
-                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["red_ene_80"]},
-                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["red_ene_00"]}
-                           ]
+    target_yr = RESULTS["target_year"]
+    
+    if (RESULTS["gfa_75_cur"] + RESULTS["gfa_80_cur"] + RESULTS["gfa_00_cur"]) < 5000:
+        unit_area = "tds. m2"
+        converter_area = 1./10**3
+    else:
+        unit_area = "Mio. m2"
+        converter_area = 1./10**6
+    if (RESULTS["ene_75_cur"] + RESULTS["ene_80_cur"] + RESULTS["ene_00_cur"]) < 50 * 10**3:
+        unit_energy = "MWh"
+        converter_ene = 1.
+    elif (RESULTS["ene_75_cur"] + RESULTS["ene_80_cur"] + RESULTS["ene_00_cur"]) > 10* 10**6:
+        unit_energy = "TWh"
+        converter_ene = 1./10**6
+    else:
+        unit_energy = "GWh"
+        converter_ene = 1./10**3
+        
+    
+    result['indicator'] = [{"unit": unit_area, "name": "Current Heated Area","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+                          {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
+                          {"unit": unit_energy, "name": "Current Energy Consumption","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
+                          {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
+                          {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
+                          {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]}
+                            ]
+
+    
+    result['indicator'].extend([{"unit": unit_area, "name": "\n\nCurrent data (2014)\nEstimated Area Constr. Period\n    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
+                          {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_cur"] * converter_area)},
+                          {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_cur"] * converter_area)},
+                          {"unit": unit_area, "name": "    after 2014","value": "%4.2f" % (RESULTS["gfa_new_cur"] * converter_area)},
+                          
+                          {"unit": unit_area, "name": "\n\nScenario data (%s)\nEstimated Area Constr. Period\n    until 1975" % target_yr,"value": "%4.2f" % (RESULTS["gfa_75_fut"] * converter_area)},
+                          {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_fut"] * converter_area)},
+                          {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_fut"] * converter_area)},
+                          {"unit": unit_area, "name": "    after 2014","value": "%4.2f" % (RESULTS["gfa_new_fut"] * converter_area)},
+                        
+                        
+                          {"unit": unit_energy, "name": "\n\nCurrent data (2014)\nEstimated Energy Constr. Period\n    until 1975","value": "%4.2f" % (RESULTS["ene_75_cur"] * converter_ene)},
+                          {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_cur"] * converter_ene)},
+                          {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_cur"] * converter_ene)},
+                          {"unit": unit_energy, "name": "    after 2014","value": "%4.2f" % (RESULTS["ene_new_cur"] * converter_ene)},
+                          
+                          {"unit": unit_energy, "name": "\n\nScenario data (%s)\nEstimated Energy Constr. Period\n    until 1975" % target_yr,"value": "%4.2f" % (RESULTS["ene_75_fut"] * converter_ene)},
+                          {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_fut"] * converter_ene)},
+                          {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_fut"] * converter_ene)},
+                          {"unit": unit_energy, "name": "    after 2014","value": "%4.2f" % (RESULTS["ene_new_fut"] * converter_ene)},
+                        
+    
+                        
+                        {"unit": "kWh/m2", "name": "\n\nCurrent data (2014)\nEstimated specific Energy Consumption, Constr. Period\n    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_cur"]},
+                          {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_cur"]},
+                          {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_cur"]},
+                          
+                        {"unit": "kWh/m2", "name": "\n\nScenario data (%s)\nEstimated specific Energy Consumption, Constr. Period\n    until 1975"% target_yr,"value": "%4.0f" % RESULTS["spec_ene_75_fut"]},
+                          {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_fut"]},
+                          {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_fut"]},
+                           ])
+    if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
+        result['indicator'].append({"unit": "kWh/m2", "name": "    after 2014","value": "%4.2f" % RESULTS["spec_ene_new_fut"]})
+        
+    
+    
+    """
+    """
     
     """
     # if graphics is not None:
@@ -178,6 +231,17 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
     """
     
+    
+    with open("%s/indicators.csv" % (output_directory), "w") as fn:
+        string_ = "%s\n" %(result['name'])
+        fn.write(string_)
+        print(string_)
+            
+        for ele in range(len(result['indicator'])):
+            r = result['indicator'][ele]
+            string_ = "%s : %s %s" %(r['name'], str(r['value']), r["unit"])
+            fn.write(string_)
+            print(string_)
     
     return result
 

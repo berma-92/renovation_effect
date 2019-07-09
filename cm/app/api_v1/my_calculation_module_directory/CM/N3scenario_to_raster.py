@@ -21,7 +21,7 @@ from CM.helper_functions.exportLayerDict import export_layer as expLyr
 import CM.helper_functions.cyf.create_density_map as CDM
 import CM.helper_functions.cliprasterlayer as CRL
 
-
+export__ = False
 def getData(fn, geotransform_obj, size, data_type):
     
     
@@ -51,7 +51,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , geotransform_obj, size
                             , csv_data_table
                             , output_raster_files
-                            , output_csv_result):
+                            , output_csv_result
+                            , add_inputs_parameters):
     
     """
     idx = NUTS_id < 1
@@ -62,7 +63,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
    
               
-              
+
+    adoption_bgf = add_inputs_parameters["adoption_bgf"]
+    adoption_sp_ene = add_inputs_parameters["adoption_sp_ene"]
+
 
     output_raster_energy_res = output_raster_files["output_raster_energy_res"]
     output_raster_energy_nres = output_raster_files["output_raster_energy_nres"]
@@ -83,13 +87,22 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     if os.path.exists(output_path) == False:
         os.mkdir(output_path)
     
-    csv_results = np.zeros((np.max(LAU2_id)+1, 100), dtype="f4")
+    csv_results = np.zeros((np.max(LAU2_id)+1, 160), dtype="f4")
     header = {}
     oNUTS = 40
     energy_tot_future = np.zeros_like(cp_share_1975)
     energy_tot_curr = np.zeros_like(cp_share_1975)
     gfa_tot_future = np.zeros_like(cp_share_1975)
     gfa_tot_curr = np.zeros_like(cp_share_1975)
+    
+    RESULTS = {}
+    _gfa_cur__ = 0
+    _gfa_fut__ = 0
+    _ene_cur__ = 0
+    _ene_fut__ = 0
+    
+    AREA_PER_CP = np.zeros((2,4), dtype="f4") 
+    ENERGY_PER_CP = np.zeros((2,4), dtype="f4")
     for i in range(2):
         energy_current = np.zeros_like(cp_share_1975)
         energy_future = np.zeros_like(cp_share_1975)
@@ -97,12 +110,13 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         area_future = np.zeros_like(cp_share_1975)
         area_current = np.zeros_like(cp_share_1975)
     
-        Share_cp_area_initial = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
-        Share_cp_area_future = np.zeros((NUTS_RESULTS_GFA_FUTURE.shape[0]+1, 4), dtype="f4")
+        CP_area_initial_nuts = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
+        CP_area_future_nuts = np.zeros((NUTS_RESULTS_GFA_FUTURE.shape[0]+1, 4), dtype="f4")
         Share_cp_energy_initial = np.zeros((NUTS_RESULTS_ENERGY_BASE.shape[0]+1, 3), dtype="f4")
         Share_cp_energy_future = np.zeros((NUTS_RESULTS_ENERGY_FUTURE.shape[0]+1, 3), dtype="f4")
     
         if i == 0:
+            print("Calc RES")
             o = 0
             bt_type = "Res"
             ENERGY = ENERGY_RES
@@ -110,15 +124,15 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             del ENERGY_RES
             BGF_intial = GFA_RES
             
-            Share_cp_area_initial[1:, 0] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_1977"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_1977"])
-            Share_cp_area_initial[1:, 1] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_77_90"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_77_90"])
-            Share_cp_area_initial[1:, 2] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_90_17"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_90_17"])
-            Share_cp_area_initial[1:, 3] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_2017__"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_2017__"])
+            CP_area_initial_nuts[1:, 0] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_1977"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_1977"])
+            CP_area_initial_nuts[1:, 1] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_77_90"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_77_90"])
+            CP_area_initial_nuts[1:, 2] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_90_17"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_90_17"])
+            CP_area_initial_nuts[1:, 3] = (NUTS_RESULTS_GFA_BASE["gfa_sfh_2017__"] + NUTS_RESULTS_GFA_BASE["gfa_mfh_2017__"])
             
-            Share_cp_area_future[1:, 0] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_1977"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_1977"])
-            Share_cp_area_future[1:, 1] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_77_90"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_77_90"])
-            Share_cp_area_future[1:, 2] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_90_17"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_90_17"])
-            Share_cp_area_future[1:, 3] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_2017__"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_2017__"])
+            CP_area_future_nuts[1:, 0] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_1977"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_1977"])
+            CP_area_future_nuts[1:, 1] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_77_90"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_77_90"])
+            CP_area_future_nuts[1:, 2] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_90_17"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_90_17"])
+            CP_area_future_nuts[1:, 3] = (NUTS_RESULTS_GFA_FUTURE["gfa_sfh_2017__"] + NUTS_RESULTS_GFA_FUTURE["gfa_mfh_2017__"])
             
             Share_cp_energy_initial[1:, 0] = 0.5 * (NUTS_RESULTS_ENERGY_BASE["share_sfh_1977"] + NUTS_RESULTS_ENERGY_BASE["share_mfh_1977"])
             Share_cp_energy_initial[1:, 1] = 0.5 * (NUTS_RESULTS_ENERGY_BASE["share_sfh_77_90"] + NUTS_RESULTS_ENERGY_BASE["share_mfh_77_90"])
@@ -135,23 +149,23 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             fn_out_fp_rel_gfa = output_raster_gfa_res_rel
 
         else:
-            
-            o = 23
+            print("Calc nRES")
+            o = 80
             bt_type = "NRes"
             BGF_intial = GFA_NRES
             ENERGY = ENERGY_NRES
-            Share_cp_area_initial = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
-            Share_cp_area_initial[1:, 0] = NUTS_RESULTS_GFA_BASE["gfa_nres_1977"]
-            Share_cp_area_initial[1:, 1] = NUTS_RESULTS_GFA_BASE["gfa_nres_77_90"]
-            Share_cp_area_initial[1:, 2] = NUTS_RESULTS_GFA_BASE["gfa_nres_90_17"]
-            Share_cp_area_initial[1:, 3] = NUTS_RESULTS_GFA_BASE["gfa_nres_2017__"]
+            CP_area_initial_nuts = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
+            CP_area_initial_nuts[1:, 0] = NUTS_RESULTS_GFA_BASE["gfa_nres_1977"]
+            CP_area_initial_nuts[1:, 1] = NUTS_RESULTS_GFA_BASE["gfa_nres_77_90"]
+            CP_area_initial_nuts[1:, 2] = NUTS_RESULTS_GFA_BASE["gfa_nres_90_17"]
+            CP_area_initial_nuts[1:, 3] = NUTS_RESULTS_GFA_BASE["gfa_nres_2017__"]
             
 
             
-            Share_cp_area_future[1:, 0] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_1977"]
-            Share_cp_area_future[1:, 1] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_77_90"]
-            Share_cp_area_future[1:, 2] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_90_17"]
-            Share_cp_area_future[1:, 3] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_2017__"]
+            CP_area_future_nuts[1:, 0] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_1977"]
+            CP_area_future_nuts[1:, 1] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_77_90"]
+            CP_area_future_nuts[1:, 2] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_90_17"]
+            CP_area_future_nuts[1:, 3] = NUTS_RESULTS_GFA_FUTURE["gfa_nres_2017__"]
             
             
             Share_cp_energy_initial[1:, 0] = NUTS_RESULTS_ENERGY_BASE["share_nres_1977"]
@@ -169,11 +183,11 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             fn_out_fp_rel_gfa = output_raster_gfa_nres_rel
         
         # Future shares based on current area
-        Share_cp_area_future /= (np.ones((4,1),dtype="f4") 
-                                 * np.maximum(0.1, np.sum(Share_cp_area_initial, axis=1))).T
+        CP_area_future_nuts /= (np.ones((4,1),dtype="f4") 
+                                 * np.maximum(0.1, np.sum(CP_area_initial_nuts, axis=1))).T
                                  
-        Share_cp_area_initial /= (np.ones((4,1),dtype="f4") 
-                                 * np.maximum(0.1, np.sum(Share_cp_area_initial, axis=1))).T
+        CP_area_initial_nuts /= (np.ones((4,1),dtype="f4") 
+                                 * np.maximum(0.1, np.sum(CP_area_initial_nuts, axis=1))).T
                                     
         oL = o 
         oN = o + oNUTS
@@ -221,6 +235,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         # CLuster construction periods: Until 1977; 1978 - 1990; 1991 - 2011
         # Run through construction periods
         for i_cp_ in range(3):
+            print("Calc constr. period {}".format(i_cp_+1))
             if i_cp_ == 0:
                 cp_share = cp_share_1975
             elif i_cp_ == 1:
@@ -232,6 +247,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(AREA, NUTS_id) 
             area_current += AREA
+            AREA_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            
             
             col = 4+i_cp_
             header[col+oL] = "Initial BGF LAU %s CP idx %i" % (bt_type, i_cp_ + 1)
@@ -240,19 +257,25 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID, 1] 
             
 
-            SHARE_NUTS3_area_intial = Share_cp_area_initial[:, i_cp_][NUTS_id]
+            SHARE_NUTS3_area_intial = CP_area_initial_nuts[:, i_cp_][NUTS_id]
             ratio_px_vs_NUTS = cp_share / (0.0001 + SHARE_NUTS3_area_intial)
+            #ratio_px_vs_NUTS[:,:] = 1
             del SHARE_NUTS3_area_intial
             
             
             # RES FUTURE AREA
             AREA = AREA.copy()
-            AREA *= (Share_cp_area_future[:, i_cp_] / np.maximum(0.00001, Share_cp_area_initial[:, i_cp_]))[NUTS_id]     
+            f_bgf = (CP_area_future_nuts[:, i_cp_] / np.maximum(0.00001, CP_area_initial_nuts[:, i_cp_]))[NUTS_id]
+            
+            adopt_factor_bgf = (1 - np.minimum(np.maximum(0, adoption_bgf[i_cp_]/100 * (1-f_bgf)), 1)) / np.maximum(0.0001, f_bgf)
+            AREA *= f_bgf * adopt_factor_bgf
             
             # Now it is the future demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(AREA, NUTS_id) 
             area_future += AREA
+            AREA_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            
             del AREA
             col = 8+i_cp_
             header[col+oL] = "Future BGF LAU %s CP idx %i" % (bt_type, i_cp_ + 1)
@@ -266,33 +289,48 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             
             SHARE_NUTS3_energy = ENERGY.copy()
             SHARE_NUTS3_energy *= ratio_px_vs_NUTS
-            SHARE_NUTS3_energy *= Share_cp_energy_initial[:, i_cp_][NUTS_id]
+            f_ene_cur = Share_cp_energy_initial[:, i_cp_][NUTS_id]
+            SHARE_NUTS3_energy *= f_ene_cur
+            
             # At this stage it is the current demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, NUTS_id) 
             energy_current += SHARE_NUTS3_energy
+            ENERGY_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
             del SHARE_NUTS3_energy
             
             
             col = 12+i_cp_
-            header[col+oL] = "Current Demand LAU RESB CP idx %i" % (i_cp_ + 1)
+            header[col+oL] = "Current Demand LAU %s CP idx %i" % (bt_type, i_cp_ + 1)
             csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]   
-            header[col+oN] = "Current Demand NUTS RESB CP idx %i" % (i_cp_ + 1) 
+            header[col+oN] = "Current Demand NUTS %s CP idx %i" % (bt_type, i_cp_ + 1) 
             csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID, 1]
             
             # RES FUTURE DEMAND
             SHARE_NUTS3_energy = ENERGY.copy()
-            SHARE_NUTS3_energy *= ratio_px_vs_NUTS
-            SHARE_NUTS3_energy *= Share_cp_energy_future[:, i_cp_][NUTS_id]      
+            SHARE_NUTS3_energy *= ratio_px_vs_NUTS 
+            f_ene_fut = Share_cp_energy_future[:, i_cp_][NUTS_id]
+            spec_savings = np.round(1 - (f_ene_fut / np.maximum(0.0001, f_ene_cur * f_bgf)),3)
+            adopt_factor_sp_ene = 1 - np.minimum(np.maximum(0, adoption_sp_ene[i_cp_]/100 * spec_savings), 1)
+            
+            SHARE_NUTS3_energy *= f_ene_fut
+            
+            #Integrate adoption factor bgf
+            SHARE_NUTS3_energy *= adopt_factor_bgf
+            #Integrate adoption factor ene
+            SHARE_NUTS3_energy *= adopt_factor_sp_ene
+            
             # Now it is the future demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, NUTS_id) 
             energy_future += SHARE_NUTS3_energy
+            ENERGY_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            
             del SHARE_NUTS3_energy
             col = 20+i_cp_
-            header[col+oL] = "Future Demand LAU RESB CP idx %i" % (i_cp_ + 1)
+            header[col+oL] = "Future Demand LAU %s CP idx %i" % (bt_type, i_cp_ + 1)
             csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]   
-            header[col+oN] = "Future Demand NUTS RESB CP idx %i" % (i_cp_ + 1) 
+            header[col+oN] = "Future Demand NUTS %s CP idx %i" % (bt_type, i_cp_ + 1) 
             csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID, 1]
             
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_future, LAU2_id)
@@ -302,6 +340,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
         header[col+oN] = "Future Demand NUTS %s"% bt_type
         csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
+        _ene_fut__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_current, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(energy_current, NUTS_id)
@@ -310,7 +350,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
         header[col+oN] = "CURRENT Demand NUTS %s"% bt_type
         csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
-        
+        _ene_cur__ += np.sum(TABLE_RESULTS_LAU[:,1])
         
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_future, LAU2_id)
@@ -320,6 +360,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
         header[col+oN] = "Future AREA NUTS %s"% bt_type
         csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
+        _gfa_fut__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_current, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(area_current, NUTS_id)
@@ -328,7 +370,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
         header[col+oN] = "CURRENT AREA NUTS %s"% bt_type
         csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
-        
+        _gfa_cur__ += np.sum(TABLE_RESULTS_LAU[:,1])
             
         #Export IMAGE
         SaveLayerDict = {}
@@ -342,7 +384,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                                             , "f4", area_future  , 0)
         SaveLayerDict["AD"] =   (fn_out_fp_rel_gfa, geotransform_obj
                                             , "f4", area_future / np.maximum(0.00001, BGF_intial) , 0)
-        SaveLayerDict = expLyr(SaveLayerDict)
+        if export__ == True:
+            SaveLayerDict = expLyr(SaveLayerDict)
         
         energy_tot_future += energy_future
         energy_tot_curr += ENERGY
@@ -363,7 +406,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                                             , "f4", gfa_tot_future  , 0)
         SaveLayerDict["AD"] =   (output_raster_gfa_tot_rel, geotransform_obj
                                             , "f4", gfa_tot_future / np.maximum(0.00001, gfa_tot_curr) , 0)
-        SaveLayerDict = expLyr(SaveLayerDict)
+        if export__ == True:
+            SaveLayerDict = expLyr(SaveLayerDict)
 
     header_names = NUTS_RESULTS_ENERGY_FUTURE_abs.dtype.names[0] 
     
@@ -378,8 +422,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     area_existing_buildings = (NUTS_RESULTS_GFA_BASE['gfa_total_2017'])
     
     
-    
-
     
     
     """
@@ -432,18 +474,17 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     col += 1
     header[col+oN] = "INITIAL Demand NUTS RES"
     csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
-    """
+    #"""
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
     col += 1 
-    header[col] = "INITIAL Demand LAU nRES"
-    csv_results[:,col] = TABLE_RESULTS_LAU[:,1]
+    header[col+oL] = "INITIAL Demand LAU nRES"
+    csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
     col += 1
-    header[col] = "INITIAL Demand NUTS nRES"
-    csv_results[:,col] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
+    header[col+oN] = "INITIAL Demand NUTS nRES"
+    csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
     
-    """     
-    
+    #"""     
     
     
     fn_out_csv = "%s" % output_csv_result
@@ -453,23 +494,49 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         if k in header.keys():
             header_ += header[k] 
         header_ += ","
-    np.savetxt(fn_out_csv, csv_results[notempty, :], delimiter = ",", header = header_, comments="")
+    try:
+        np.savetxt(fn_out_csv, csv_results[notempty, :], delimiter = ",", header = header_, comments="")
+    except:
+        pass
     
     print("Done")
-    RESULTS = {}
     
-    RESULTS["share_gfa_75"] = 1
-    RESULTS["share_gfa_80"] = 2
-    RESULTS["share_gfa_00"] = 3
-    RESULTS["share_ene_75"] = 1.5
-    RESULTS["share_ene_80"] = 2.5
-    RESULTS["share_ene_00"] = 3.5
-    RESULTS["red_gfa_75"] = 10
-    RESULTS["red_gfa_80"] = 20
-    RESULTS["red_gfa_00"] = 30
-    RESULTS["red_ene_75"] = 40
-    RESULTS["red_ene_80"] = 50
-    RESULTS["red_ene_00"] = 60
+    RESULTS["gfa_cur"] = _gfa_cur__
+    RESULTS["gfa_fut"] = _gfa_fut__
+    RESULTS["ene_cur"] = _ene_cur__
+    RESULTS["ene_fut"] = _ene_fut__
+    RESULTS["spe_ene_cur"] = _ene_cur__ / _gfa_cur__ * 1000
+    RESULTS["spe_ene_fut"] = _ene_fut__ / _gfa_fut__ * 1000
+    
+    
+    RESULTS["gfa_75_fut"] = AREA_PER_CP[1,0]
+    RESULTS["gfa_80_fut"] = AREA_PER_CP[1,1]
+    RESULTS["gfa_00_fut"] = AREA_PER_CP[1,2]
+    RESULTS["gfa_new_fut"] = AREA_PER_CP[1,3]
+    
+    RESULTS["ene_75_fut"] = ENERGY_PER_CP[1,0]
+    RESULTS["ene_80_fut"] = ENERGY_PER_CP[1,1]
+    RESULTS["ene_00_fut"] = ENERGY_PER_CP[1,2]
+    RESULTS["ene_new_fut"] = ENERGY_PER_CP[1,3]
+    
+    RESULTS["gfa_75_cur"] = AREA_PER_CP[0,0]
+    RESULTS["gfa_80_cur"] = AREA_PER_CP[0,1]
+    RESULTS["gfa_00_cur"] = AREA_PER_CP[0,2]
+    RESULTS["gfa_new_cur"] = AREA_PER_CP[0,3]
+    
+    RESULTS["ene_75_cur"] = ENERGY_PER_CP[0,0]
+    RESULTS["ene_80_cur"] = ENERGY_PER_CP[0,1]
+    RESULTS["ene_00_cur"] = ENERGY_PER_CP[0,2]
+    RESULTS["ene_new_cur"] = ENERGY_PER_CP[0,3]
+    
+    RESULTS["spec_ene_75_fut"] = RESULTS["ene_75_fut"] / RESULTS["gfa_75_fut"] * 1000
+    RESULTS["spec_ene_80_fut"] = RESULTS["ene_80_fut"] / RESULTS["gfa_80_fut"] * 1000
+    RESULTS["spec_ene_00_fut"] = RESULTS["ene_00_fut"] / RESULTS["gfa_00_fut"] * 1000
+    RESULTS["spec_ene_new_fut"] = RESULTS["ene_new_fut"] / np.maximum(0.00001, RESULTS["gfa_new_fut"]) * 1000
+    
+    RESULTS["spec_ene_75_cur"] = RESULTS["ene_75_cur"] / RESULTS["gfa_75_cur"] * 1000
+    RESULTS["spec_ene_80_cur"] = RESULTS["ene_80_cur"] / RESULTS["gfa_80_cur"] * 1000
+    RESULTS["spec_ene_00_cur"] = RESULTS["ene_00_cur"] / RESULTS["gfa_00_cur"] * 1000
 
     
                           
