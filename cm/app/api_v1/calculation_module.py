@@ -144,7 +144,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     # here you should also define the symbology for the output raster
     result = dict()
     
-    result['name'] = CM_NAME
+    result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     result['indicator'] = [{"unit": "%", "name": "Share Area Constr. Period\n before 1975","value": RESULTS["share_gfa_75"]},
                           {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["share_gfa_80"]},
                           {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["share_gfa_00"]},
@@ -154,7 +154,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                           {"unit": "%", "name": "Reduction Area compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_gfa_75"]},
                           {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["red_gfa_80"]},
                           {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["red_gfa_00"]},
-                          {"unit": "%", "name": "Reduction Energy compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_ene_75"]},
+                          {"unit": "%", "name": "Reduction specific Energy compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_ene_75"]},
                           {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["red_ene_80"]},
                           {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["red_ene_00"]}
                            ]

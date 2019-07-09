@@ -93,7 +93,7 @@ def main(inputs_parameter_selection,
     
     print("Done")
     
-    
+    RESULTS["target_year"] = RESULTS
     return RESULTS
     
     
