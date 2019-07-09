@@ -1,5 +1,6 @@
 import os
 import sys
+import numpy as np
 #import panda as pd
 
 
@@ -30,6 +31,7 @@ except:
     """
 #import CM.CM_TUW32.run_cm as CM32
 import CM.run_cm as CM32
+
 
 def create_dataframe(input_dict):
     temp = '%s' %input_dict
@@ -207,7 +209,34 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
         result['indicator'].append({"unit": "kWh/m2", "name": "    after 2014","value": "%4.2f" % RESULTS["spec_ene_new_fut"]})
         
-    
+    num_bars = 5
+    graphics  = [
+            {
+                    "type": "bar",
+                    "xLabel": "Test",
+                    "yLabel": "Test",
+                    "data": {
+                            "labels": [str(x) for x in range(1, num_bars+1)],
+                            "datasets": [{
+                                    "label": "Test1",
+                                    "backgroundColor": ["#3e95cd"]*num_bars,
+                                    "data": list(np.random.rand(num_bars))
+                                    }]
+                    }
+            },{
+                    "type": "bar",
+                    "xLabel": "Test",
+                    "yLabel": "Test",
+                    "data": {
+                            "labels": [str(x) for x in range(1, num_bars+1)],
+                            "datasets": [{
+                                    "label": "Test2",
+                                    "backgroundColor": ["#3e95cd"]*num_bars,
+                                    "data": list(np.random.rand(num_bars))
+                                    }]
+                    }
+            }]
+    result['graphics'] = graphics
     
     """
     """
@@ -223,10 +252,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     #TODO to create zip from shapefile use create_zip_shapefiles from the helper before sending result
     #TODO exemple  output_shpapefile_zipped = create_zip_shapefiles(output_directory, output_shpapefile)
-    result = dict()
-    result['name'] = 'CM Heat density divider'
-    result['indicator'] = [{"unit": "KWh", "name": "Heat density total divided by  {}".format(factor),"value": str(hdm_sum)}]
-    result['graphics'] = graphics
+    
+    
     result['vector_layers'] = vector_layers
     result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
     """
@@ -240,7 +267,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         for ele in range(len(result['indicator'])):
             r = result['indicator'][ele]
             string_ = "%s : %s %s" %(r['name'], str(r['value']), r["unit"])
-            fn.write(string_)
+            fn.write("%s\n"%string_)
             print(string_)
     
     return result
