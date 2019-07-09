@@ -456,8 +456,25 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     np.savetxt(fn_out_csv, csv_results[notempty, :], delimiter = ",", header = header_, comments="")
     
     print("Done")
-    RESULTS_DICT = {}
-    return RESULTS_DICT, 2
+    RESULTS = {}
+    
+    RESULTS["share_gfa_75"] = 1
+    RESULTS["share_gfa_80"] = 2
+    RESULTS["share_gfa_00"] = 3
+    RESULTS["share_ene_75"] = 1.5
+    RESULTS["share_ene_80"] = 2.5
+    RESULTS["share_ene_00"] = 3.5
+    RESULTS["red_gfa_75"] = 10
+    RESULTS["red_gfa_80"] = 20
+    RESULTS["red_gfa_00"] = 30
+    RESULTS["red_ene_75"] = 40
+    RESULTS["red_ene_80"] = 50
+    RESULTS["red_ene_00"] = 60
+
+    
+                          
+                          
+    return RESULTS, 2
     #return(energy_res, energy_nres)
             
             

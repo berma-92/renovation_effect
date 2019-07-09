@@ -18,7 +18,10 @@ try:
     from ..helper import generate_output_file_tif
     from ..helper import generate_output_file_csv
     from ..helper import create_zip_shapefiles
+    from ..constant import CM_NAME
+    from ..exceptions import ValidationError,EmptyRasterError
 except:
+    CM_NAME = 'CM Effect of renovation'
     pass
     """
     from CM.helper_functions.helper import generate_output_file_tif
@@ -140,12 +143,23 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     # %%
     # here you should also define the symbology for the output raster
     result = dict()
-    '''
-    result['name'] = 'CM District Heating Potential'
-    result['indicator'] = [{"unit": "GWh", "name": "Total heat demand in GWh within the selected zone","value": total_heat_demand},
-                          {"unit": "GWh", "name": "Total district heating potential in GWh within the selected zone","value": total_potential},
-                          {"unit": "%", "name": "Potential share of district heating from total demand in selected zone","value": 100*round(total_potential/total_heat_demand, 4)}
+    
+    result['name'] = CM_NAME
+    result['indicator'] = [{"unit": "%", "name": "Share Area Constr. Period\n before 1975","value": RESULTS["share_gfa_75"]},
+                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["share_gfa_80"]},
+                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["share_gfa_00"]},
+                           {"unit": "%", "name": "Share Energy Constr. Period\n before 1975","value": RESULTS["share_ene_75"]},
+                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["share_ene_80"]},
+                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["share_ene_00"]},
+                          {"unit": "%", "name": "Reduction Area compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_gfa_75"]},
+                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["red_gfa_80"]},
+                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["red_gfa_00"]},
+                          {"unit": "%", "name": "Reduction Energy compared to 2014, Constr. Period\n before 1975","value": RESULTS["red_ene_75"]},
+                          {"unit": "%", "name": "Share Area Constr. 1976-1990","value": RESULTS["red_ene_80"]},
+                          {"unit": "%", "name": "Share Area Constr. 1990-2014","value": RESULTS["red_ene_00"]}
                            ]
+    
+    """
     # if graphics is not None:
     if total_potential > 0:
         output_shp2 = create_zip_shapefiles(output_directory, output_shp2)
@@ -162,11 +176,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['graphics'] = graphics
     result['vector_layers'] = vector_layers
     result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
-    return result
-
+    """
     
     
-    '''
     return result
 
 if __name__ == '__main__':
