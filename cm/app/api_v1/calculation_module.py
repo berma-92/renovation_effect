@@ -9,36 +9,23 @@ SD = "my_calculation_module_directory"
 path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
 
 
-
+verbose = True
 
 """ Entry point of the calculation module function"""
 if path not in sys.path:
     sys.path.append(path)
     
-try:
-    from ..helper import generate_output_file_tif
-    from ..helper import generate_output_file_csv
-    from ..helper import create_zip_shapefiles
-    from ..constant import CM_NAME
-    from ..exceptions import ValidationError,EmptyRasterError
-except:
-    CM_NAME = 'CM Effect of renovation'
-    pass
-    """
-    from CM.helper_functions.helper import generate_output_file_tif
-    from CM.helper_functions.helper import generate_output_file_csv
-    from CM.helper_functions.helper import create_zip_shapefiles
-    """
-#import CM.CM_TUW32.run_cm as CM32
+# try:
+from ..helper import generate_output_file_tif
+from ..helper import generate_output_file_csv
+from ..helper import create_zip_shapefiles
+from ..constant import CM_NAME
+#from ..exceptions import ValidationError, EmptyRasterError
+
+#except:
+#    CM_NAME = 'CM Effect of renovation'
+#    pass
 import CM.run_cm as CM32
-
-
-def create_dataframe(input_dict):
-    temp = '%s' %input_dict
-    temp = temp.replace("\'","\"")
-    df = pd.read_json(temp, orient='records')
-    return df
-
 
 # %%
 #def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
@@ -62,18 +49,18 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     
     # ************************ # Input raster files **************************
-    input_raster_NUTS_id =  inputs_raster_selection["nuts_id"]
-    input_raster_GFA_RES =  inputs_raster_selection["gfa_res"]
-    input_raster_GFA_NRES =  inputs_raster_selection["gfa_nres"]
-    input_raster_ENERGY_RES =  inputs_raster_selection["energy_res"]
-    input_raster_ENERGY_NRES =  inputs_raster_selection["energy_nres"]
-    input_raster_LAU2_id =  inputs_raster_selection["lau2_id"]
+    input_raster_NUTS_id =  inputs_raster_selection["nuts_id_number"]
+    input_raster_LAU2_id =  inputs_raster_selection["lau2_id_number"]
+    input_raster_GFA_RES =  inputs_raster_selection["gfa_res_curr_density_tif"]
+    input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density_tif"]
+    input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density_tif"]
+    input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density_tif"]
     input_raster_cp_share_1975 =  inputs_raster_selection["cp_share_1975"]
     input_raster_cp_share_1990 =  inputs_raster_selection["cp_share_1990"]
     input_raster_cp_share_2000 =  inputs_raster_selection["cp_share_2000"]
     input_raster_cp_share_2014 =  inputs_raster_selection["cp_share_2014"]
     
-    try:
+    if verbose:
         # ************************ # Output raster files **************************
         output_raster_energy_res = generate_output_file_tif(output_directory)
         output_raster_energy_nres = generate_output_file_tif(output_directory)
@@ -91,7 +78,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
 
         # ************************ # Output CSV files **************************
         output_csv_result = generate_output_file_csv(output_directory)
-    except:
+    else:
         # ************************ # Output raster files **************************
         
         output_raster_energy_res = "%s/Energy_RES.tif" % (output_directory)
@@ -239,9 +226,6 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['graphics'] = graphics
     
     """
-    """
-    
-    """
     # if graphics is not None:
     if total_potential > 0:
         output_shp2 = create_zip_shapefiles(output_directory, output_shp2)
@@ -258,20 +242,21 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
     """
     
-    
-    with open("%s/indicators.csv" % (output_directory), "w") as fn:
-        string_ = "%s\n" %(result['name'])
-        fn.write(string_)
-        print(string_)
-            
-        for ele in range(len(result['indicator'])):
-            r = result['indicator'][ele]
-            string_ = "%s : %s %s" %(r['name'], str(r['value']), r["unit"])
-            fn.write("%s\n"%string_)
+    if not verbose:
+        with open("%s/indicators.csv" % (output_directory), "w") as fn:
+            string_ = "%s\n" %(result['name'])
+            fn.write(string_)
             print(string_)
-    
+                
+            for ele in range(len(result['indicator'])):
+                r = result['indicator'][ele]
+                string_ = "%s : %s %s" %(r['name'], str(r['value']), r["unit"])
+                fn.write("%s\n"%string_)
+                print(string_)
+
     return result
 
+'''
 if __name__ == '__main__':
         
         
@@ -345,4 +330,4 @@ if __name__ == '__main__':
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)
         calculation(output_directory, inputs_raster_selection, inputs_parameter_selection)
-        
+ '''
