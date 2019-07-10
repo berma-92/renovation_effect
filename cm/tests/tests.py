@@ -81,13 +81,13 @@ class TestAPI(unittest.TestCase):
         
         
         
-        inputs_raster_selection["nuts_id"] = save_path1
-        inputs_raster_selection["gfa_res"] = save_path2
-        inputs_raster_selection["energy_res"] = save_path3
-        inputs_raster_selection["gfa_nres"] = raster_file_path2b
-        inputs_raster_selection["energy_nres"] = raster_file_path3b
+        inputs_raster_selection["nuts_id_number"] = save_path1
+        inputs_raster_selection["gfa_res_curr_density_tif"] = save_path2
+        inputs_raster_selection["heat_res_curr_density_tif"] = save_path3
+        inputs_raster_selection["gfa_nonres_curr_density_tif"] = raster_file_path2b
+        inputs_raster_selection["heat_nonres_curr_density_tif"] = raster_file_path3b
         
-        inputs_raster_selection["lau2_id"] = save_path4
+        inputs_raster_selection["lau2_id_number"] = save_path4
         inputs_raster_selection["cp_share_1975"] = save_path5
         inputs_raster_selection["cp_share_1990"] = save_path6
         inputs_raster_selection["cp_share_2000"] = save_path7
