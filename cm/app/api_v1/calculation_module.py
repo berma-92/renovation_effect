@@ -9,27 +9,26 @@ SD = "my_calculation_module_directory"
 path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
 
 
-verbose = True
+verbose = False
 
 """ Entry point of the calculation module function"""
 if path not in sys.path:
     sys.path.append(path)
-    
-# try:
-from ..helper import generate_output_file_tif
-from ..helper import generate_output_file_csv
-from ..helper import create_zip_shapefiles
-from ..constant import CM_NAME
+"""
+try:
+    from ..helper import generate_output_file_tif
+    from ..helper import generate_output_file_csv
+    from ..helper import create_zip_shapefiles
+    from ..constant import CM_NAME
 #from ..exceptions import ValidationError, EmptyRasterError
-
-#except:
-#    CM_NAME = 'CM Effect of renovation'
+"""
+CM_NAME = 'CM Effect of renovation'
 #    pass
 import CM.run_cm as CM32
 
 # %%
 #def calculation(output_directory, inputs_raster_selection,inputs_vector_selection, inputs_parameter_selection):
-def calculation(output_directory, inputs_raster_selection, inputs_parameter_selection):
+def calculation(output_directory, inputs_raster_selection, inputs_parameter_selection, direct_call_calc_mdoule=False):
     """ def calculation()"""
     '''
     inputs:
@@ -38,7 +37,13 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     Outputs:
         
     '''
-    
+    if direct_call_calc_mdoule==False:
+        from ..helper import generate_output_file_tif
+        from ..helper import generate_output_file_csv
+        from ..helper import create_zip_shapefiles
+        from ..constant import CM_NAME
+    else:
+        CM_NAME = 'CM Effect of renovation'
     
     # ***************************** input parameters**************************
     # e.g.: sector = inputs_parameter_selection["sector"]
@@ -60,7 +65,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_cp_share_2000 =  inputs_raster_selection["cp_share_2000"]
     input_raster_cp_share_2014 =  inputs_raster_selection["cp_share_2014"]
     
-    if verbose:
+    if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
         output_raster_energy_res = generate_output_file_tif(output_directory)
         output_raster_energy_nres = generate_output_file_tif(output_directory)
@@ -242,7 +247,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
     """
     
-    if not verbose:
+    if direct_call_calc_mdoule == True:
         with open("%s/indicators.csv" % (output_directory), "w") as fn:
             string_ = "%s\n" %(result['name'])
             fn.write(string_)
@@ -256,7 +261,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
 
     return result
 
-'''
+
 if __name__ == '__main__':
         
         
@@ -303,13 +308,13 @@ if __name__ == '__main__':
         inputs_raster_selection = {}
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
-        inputs_raster_selection["nuts_id"] = raster_file_path1
-        inputs_raster_selection["gfa_res"] = raster_file_path2
-        inputs_raster_selection["energy_res"] = raster_file_path3
-        inputs_raster_selection["gfa_nres"] = raster_file_path2b
-        inputs_raster_selection["energy_nres"] = raster_file_path3b
+        inputs_raster_selection["nuts_id_number"] = raster_file_path1
+        inputs_raster_selection["gfa_res_curr_density_tif"] = raster_file_path2
+        inputs_raster_selection["heat_res_curr_density_tif"] = raster_file_path3
+        inputs_raster_selection["gfa_nonres_curr_density_tif"] = raster_file_path2b
+        inputs_raster_selection["heat_nonres_curr_density_tif"] = raster_file_path3b
         
-        inputs_raster_selection["lau2_id"] = raster_file_path4
+        inputs_raster_selection["lau2_id_number"] = raster_file_path4
         inputs_raster_selection["cp_share_1975"] = raster_file_path5
         inputs_raster_selection["cp_share_1990"] = raster_file_path6
         inputs_raster_selection["cp_share_2000"] = raster_file_path7
@@ -325,9 +330,9 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         
         
-        
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)
-        calculation(output_directory, inputs_raster_selection, inputs_parameter_selection)
- '''
+        calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+                    direct_call_calc_mdoule=True)
+
