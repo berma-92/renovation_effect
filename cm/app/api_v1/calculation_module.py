@@ -140,7 +140,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     target_yr = RESULTS["target_year"]
-    
+    base_yr = 2014
     if (RESULTS["gfa_75_cur"] + RESULTS["gfa_80_cur"] + RESULTS["gfa_00_cur"]) < 5000:
         unit_area = "tds. m2"
         converter_area = 1./10**3
@@ -200,38 +200,49 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                            ])
     if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
         result['indicator'].append({"unit": "kWh/m2", "name": "    after 2014","value": "%4.2f" % RESULTS["spec_ene_new_fut"]})
-        
-    num_bars = 5
+    
+    num_bars = 8   
     graphics  = [
             {
                     "type": "bar",
-                    "xLabel": "Test",
-                    "yLabel": "Test",
+                    "xLabel": "Buildings per Construction Period",
+                    "yLabel": "Heated Gross Floor Area [%s]" % unit_area,
                     "data": {
-                            "labels": [str(x) for x in range(1, num_bars+1)],
+                            "labels": [ "until 1975 in %i" % base_yr, "until 1975 in %i" % target_yr,
+                                       "1976-1990 in %i" % base_yr, "1976-1990 in %i" % target_yr,
+                                       "1990-2014 in %i" % base_yr, "1990-2014 in %i" % target_yr,
+                                       " after 2014 in %i" % base_yr, "after 2014 in %i" % target_yr,],
                             "datasets": [{
                                     "label": "Test1",
                                     "backgroundColor": ["#3e95cd"]*num_bars,
-                                    "data": list(np.random.rand(num_bars))
+                                    "data": [RESULTS["gfa_75_cur"] * converter_area, RESULTS["gfa_75_fut"] * converter_area,
+                                             RESULTS["gfa_80_cur"] * converter_area, RESULTS["gfa_80_fut"] * converter_area,
+                                             RESULTS["gfa_00_cur"] * converter_area, RESULTS["gfa_00_fut"] * converter_area,
+                                             RESULTS["gfa_new_cur"] * converter_area, RESULTS["gfa_new_fut"] * converter_area]
                                     }]
                     }
             },{
                     "type": "bar",
-                    "xLabel": "Test",
-                    "yLabel": "Test",
+                    "xLabel": "Buildings per Construction Period",
+                    "yLabel": "Energy Consumption for Heating [%s/yr]" % unit_energy,
                     "data": {
-                            "labels": [str(x) for x in range(1, num_bars+1)],
+                            "labels": [ "until 1975 in %i" % base_yr, "until 1975 in %i" % target_yr,
+                                       "1976-1990 in %i" % base_yr, "1976-1990 in %i" % target_yr,
+                                       "1990-2014 in %i" % base_yr, "1990-2014 in %i" % target_yr,
+                                       " after 2014 in %i" % base_yr, "after 2014 in %i" % target_yr,],
                             "datasets": [{
-                                    "label": "Test2",
+                                    "label": "Test1",
                                     "backgroundColor": ["#3e95cd"]*num_bars,
-                                    "data": list(np.random.rand(num_bars))
+                                    "data": [RESULTS["gfa_75_cur"] * converter_ene, RESULTS["gfa_75_fut"] * converter_ene,
+                                             RESULTS["gfa_80_cur"] * converter_ene, RESULTS["gfa_80_fut"] * converter_ene,
+                                             RESULTS["gfa_00_cur"] * converter_ene, RESULTS["gfa_00_fut"] * converter_ene,
+                                             RESULTS["gfa_new_cur"] * converter_ene, RESULTS["gfa_new_fut"] * converter_ene]
                                     }]
                     }
             }]
     result['graphics'] = graphics
     
     """
-    # if graphics is not None:
     if total_potential > 0:
         output_shp2 = create_zip_shapefiles(output_directory, output_shp2)
         result["raster_layers"]=[{"name": "district heating coherent areas","path": output_raster1, "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"DH Areas"}]}]
