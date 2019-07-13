@@ -1,7 +1,8 @@
 import os
 import sys
-import numpy as np
-#import panda as pd
+
+import glob
+
 
 
 #path = os.path.dirname(os.path.abspath(__file__))
@@ -340,7 +341,24 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         
-        
+        fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
+        fl.sort()
+        print(len(fl))
+        available_scenarios = {}
+        for ele in fl:
+            ele = ele.replace("\\","/").replace("//","/")
+            ele = (ele.split("/")[-1]).split("_RESULTS_ENERGY_")
+            scen = ele[0]
+            yr = ele[1][:-4]
+            print(scen)
+            if scen not in available_scenarios.keys():
+                available_scenarios[scen] = []
+            available_scenarios[scen].append(yr)
+            #print(ele)
+            
+        inputs_parameter_selection['scenario'] = "cheetah_reference_hsagent"
+        inputs_parameter_selection['target_year'] = "2030"
+            
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)

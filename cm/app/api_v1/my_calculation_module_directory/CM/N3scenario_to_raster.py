@@ -10,12 +10,8 @@ This script has been created in the context of the Hotmaps EU project.
 import numpy as np
 import time
 import os, sys
-#SD = "my_calculation_module_directory"
-#path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
 
 
-
-TARGET_RESOLUTION = 100
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
 import CM.helper_functions.cyf.create_density_map as CDM
@@ -412,9 +408,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     header_names = NUTS_RESULTS_ENERGY_FUTURE_abs.dtype.names[0] 
     
     
-    demand_new_build = (NUTS_RESULTS_ENERGY_FUTURE_abs['gfa_sfh_2017__']
-                           + NUTS_RESULTS_ENERGY_FUTURE_abs['gfa_mfh_2017__']
-                           + NUTS_RESULTS_ENERGY_FUTURE_abs['gfa_nres_2017__'] + 0.001)
+    demand_new_build = (NUTS_RESULTS_ENERGY_FUTURE_abs['ene_sfh_2017__']
+                           + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_mfh_2017__']
+                           + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_nres_2017__'] + 0.001)
     
     area_new_buildings = (NUTS_RESULTS_GFA_FUTURE['gfa_sfh_2017__']
                            + NUTS_RESULTS_GFA_FUTURE['gfa_mfh_2017__']

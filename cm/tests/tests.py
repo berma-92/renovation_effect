@@ -6,6 +6,7 @@ from shutil import copyfile
 from .test_client import TestClient
 UPLOAD_DIRECTORY = '/var/hotmaps/cm_files_uploaded'
 
+
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
     os.chmod(UPLOAD_DIRECTORY, 0o777)
@@ -70,8 +71,8 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
         
-        inputs_parameter_selection['scenario'] = "Scenario 1"
-        inputs_parameter_selection['target_year'] = "2030"
+        inputs_parameter_selection['scenario'] = "cheetah_reference_hsagent"
+        inputs_parameter_selection['target_year'] = "2032"
         inputs_parameter_selection['red_area_77'] = "100"
         inputs_parameter_selection['red_area_80'] = "100"
         inputs_parameter_selection['red_area_00'] = "100"

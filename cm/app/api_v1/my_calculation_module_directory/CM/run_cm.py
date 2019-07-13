@@ -1,6 +1,7 @@
 import time
 
 import os, sys
+import glob
 SD = "my_calculation_module_directory"
 path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
 
@@ -55,25 +56,40 @@ def main(inputs_parameter_selection,
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
 
     target_year = int(inputs_parameter_selection["target_year"])
+    scenario_name = inputs_parameter_selection['scenario']
+    #Check if target year is available for scenario
+    yr_list = []
     
-    if not os.path.exists(local_input_dir + "/RESULTS_SHARES_%i.csv" % target_year):
-        target_year = 2030
+    fl = glob.glob(local_input_dir + "/%s_RESULTS_SHARES_ENE_*.csv" % (scenario_name))
+    fl.sort()
+    for ele in fl:
+        ele = ele.replace("\\","/").replace("//","/")
+        ele = (ele.split("/")[-1]).split("_RESULTS_SHARES_ENE_")
+        yr = ele[1][:-4]
+        yr_list.append(yr)
+    yr_list.sort()
+    for i in yr_list:
+        if int(i) >= 2012:
+            initial_yr = i
+            break
+    if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
+        target_year = yr_list[min(3, len(yr_list))]
+        print("Choosen Target year:{}".format(target_year))
     
-    NUTS_RESULTS_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/RESULTS_SHARES_2012.csv", skip_header=3)[0]
-    NUTS_RESULTS_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/RESULTS_SHARES_%i.csv" % target_year, skip_header=3)[0]
-    NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/RESULTS_ENERGY_%i.csv" % target_year, skip_header=3)[0]
-    NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/RESULTS_GFA_2012.csv", skip_header=3)[0]
-    NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/RESULTS_GFA_%i.csv" % target_year, skip_header=3)[0]
+    NUTS_RESULTS_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
+    NUTS_RESULTS_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
+    NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_ENERGY_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
+    NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
+    NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     csv_data_table = READ_CSV_DATA(local_input_dir + "/Communal2_data.csv", skip_header=6)
     
     
     #fn_res_bgf_initial = "%s/RESULTS_GFA_RES_BUILD.csv" % dirname
-    
 
     adoption_bgf = [float(inputs_parameter_selection['red_area_77']), float(inputs_parameter_selection['red_area_80']), float(inputs_parameter_selection['red_area_00'])]
     adoption_sp_ene = [float(inputs_parameter_selection['red_sp_ene_77']), float(inputs_parameter_selection['red_sp_ene_80']), float(inputs_parameter_selection['red_sp_ene_00'])]
     
-    inputs_parameters = {"adoption_bgf": adoption_bgf,
+    inputs_parameters = {"scenario_name": scenario_name, "adoption_bgf": adoption_bgf,
                          "adoption_sp_ene": adoption_sp_ene}
     RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
@@ -100,7 +116,7 @@ def main(inputs_parameter_selection,
     
     print("Done")
     
-    RESULTS["target_year"] = target_year
+    RESULTS["target_year"] = int(target_year)
     return RESULTS
     
     
