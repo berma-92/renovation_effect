@@ -35,6 +35,7 @@ class TestAPI(unittest.TestCase):
         raster_file_dir = '%s/input/' % test_dir
         #raster_file_dir = 'tests/data'
         
+        raster_file_path0 = raster_file_dir + "/Country_cut_id_number.tif"
         raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
         raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
         raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
@@ -47,7 +48,8 @@ class TestAPI(unittest.TestCase):
         raster_file_path3b = raster_file_dir + "/RESULTS_ENERGY_HEATING_NRES_2012.tif"
 
         # simulate copy from HTAPI to CM
-        save_path1 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
+        save_path0 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
+        save_path1 = UPLOAD_DIRECTORY+"/Country_cut_id_number.tif"
         save_path2 = UPLOAD_DIRECTORY+"/RESULTS_GFA_RES_BUILD.tif"
         save_path3 = UPLOAD_DIRECTORY+"/RESULTS_ENERGY_HEATING_RES_2012.tif"
         
@@ -57,6 +59,7 @@ class TestAPI(unittest.TestCase):
         save_path7 = UPLOAD_DIRECTORY+"/GHS_BUILT_2000_100_share.tif"
         save_path8 = UPLOAD_DIRECTORY+"/GHS_BUILT_2014_100_share.tif"
         
+        copyfile(raster_file_path0, save_path0)
         copyfile(raster_file_path1, save_path1)
         copyfile(raster_file_path2, save_path2)
         copyfile(raster_file_path3, save_path3)
@@ -81,7 +84,7 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         
         
-        
+        inputs_raster_selection["country_id_number"] = save_path0
         inputs_raster_selection["nuts_id_number"] = save_path1
         inputs_raster_selection["gfa_res_curr_density_tif"] = save_path2
         inputs_raster_selection["heat_res_curr_density_tif"] = save_path3

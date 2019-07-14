@@ -35,6 +35,11 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , NUTS_RESULTS_ENERGY_BASE
                             , NUTS_RESULTS_ENERGY_FUTURE
                             , NUTS_RESULTS_ENERGY_FUTURE_abs
+                            , NUTS_RESULTS_SHARE_GFA_RENOV_BASE
+                            , NUTS_RESULTS_SHARE_GFA_RENOV_FUTURE
+                            , NUTS_RESULTS_SHARE_ENE_RENOV_BASE
+                            , NUTS_RESULTS_SHARE_ENE_RENOV_FUTURE
+                            , COUNTRY_id
                             , NUTS_id
                             , LAU2_id
                             , cp_share_1975
@@ -189,6 +194,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         oN = o + oNUTS
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id) 
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id) 
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(BGF_intial, COUNTRY_id) 
         
         """ """                  
         # Get NUTS ID per LAU Region: 2 different versions
@@ -242,6 +248,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             AREA = cp_share * BGF_intial
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(AREA, NUTS_id) 
+            TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(AREA, COUNTRY_id) 
             area_current += AREA
             AREA_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
             
@@ -269,6 +276,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             # Now it is the future demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(AREA, NUTS_id) 
+            TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(AREA, COUNTRY_id) 
             area_future += AREA
             AREA_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
             
@@ -291,6 +299,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             # At this stage it is the current demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, NUTS_id) 
+            TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, COUNTRY_id) 
             energy_current += SHARE_NUTS3_energy
             ENERGY_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
             del SHARE_NUTS3_energy
@@ -319,6 +328,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             # Now it is the future demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, LAU2_id) 
             TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, NUTS_id) 
+            TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, COUNTRY_id) 
             energy_future += SHARE_NUTS3_energy
             ENERGY_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
             
@@ -331,6 +341,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_future, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(energy_future, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(energy_future, COUNTRY_id) 
         col = 24 
         header[col+oL] = "Future Demand LAU %s" % bt_type
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -341,6 +352,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_current, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(energy_current, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(energy_current, COUNTRY_id) 
         col = 25 
         header[col+oL] = "CURRENT Demand LAU %s" % bt_type
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -351,6 +363,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_future, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(area_future, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(area_future, COUNTRY_id)
         col = 26 
         header[col+oL] = "Future AREA LAU %s" % bt_type
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -361,6 +374,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_current, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(area_current, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(area_current, COUNTRY_id)
         col = 27 
         header[col+oL] = "CURRENT AREA LAU %s" % bt_type
         csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -427,6 +441,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     BGF_intial *= AREA_NEW_BUILD_per_existing_area[NUTS_id]
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)
+    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(BGF_intial, COUNTRY_id)
     col += 1 
     header[col+oL] = "BGF LAU NewBuild"
     csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -441,6 +456,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     BGF_intial *= DEMAND_NEW_BUILD_per_existing_area[NUTS_id]
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)
+    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(BGF_intial, COUNTRY_id)
     col += 1 
     header[col+oL] = "Future Demand LAU NEW_build"
     csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -452,6 +468,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)
+    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(BGF_intial, COUNTRY_id)
     col += 1 
     header[col+oL] = "Future Demand LAU NEW_build"
     csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -464,6 +481,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
+    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(ENERGY, COUNTRY_id)
     col += 1 
     header[col+oL] = "INITIAL Demand LAU RES"
     csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
@@ -473,6 +491,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     #"""
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
+    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(ENERGY, COUNTRY_id)
     col += 1 
     header[col+oL] = "INITIAL Demand LAU nRES"
     csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]

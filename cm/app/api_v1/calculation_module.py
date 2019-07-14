@@ -55,6 +55,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     
     # ************************ # Input raster files **************************
+    input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
     input_raster_NUTS_id =  inputs_raster_selection["nuts_id_number"]
     input_raster_LAU2_id =  inputs_raster_selection["lau2_id_number"]
     input_raster_GFA_RES =  inputs_raster_selection["gfa_res_curr_density_tif"]
@@ -121,6 +122,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     
     RESULTS = CM32.main(inputs_parameter_selection,
+              input_raster_COUNTRY_id,
               input_raster_NUTS_id, 
               input_raster_GFA_RES,
               input_raster_GFA_NRES,
@@ -284,6 +286,7 @@ if __name__ == '__main__':
         
         raster_file_dir = '%s/input/' % test_dir
         
+        raster_file_path0 = raster_file_dir + "/Country_cut_id_number.tif"
         raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
         raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
         raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
@@ -320,6 +323,7 @@ if __name__ == '__main__':
         inputs_raster_selection = {}
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
+        inputs_raster_selection["country_id_number"] = raster_file_path0
         inputs_raster_selection["nuts_id_number"] = raster_file_path1
         inputs_raster_selection["gfa_res_curr_density_tif"] = raster_file_path2
         inputs_raster_selection["heat_res_curr_density_tif"] = raster_file_path3

@@ -21,6 +21,7 @@ print(sys.version_info)
 
 
 def main(inputs_parameter_selection,
+         input_raster_Country_id, 
          input_raster_NUTS_id,
          input_raster_GFA_RES,
          input_raster_GFA_NRES,
@@ -41,6 +42,7 @@ def main(inputs_parameter_selection,
     data_type_int = "uint32"
     local_input_dir = path + "/input_data"
     
+    Country_id = RA(input_raster_Country_id, dType=data_type_int)
     NUTS_id, gt = RA(input_raster_NUTS_id, dType=data_type_int, return_gt=True)
     GFA_RES = RA(input_raster_GFA_RES, dType=data_type)
     GFA_NRES = RA(input_raster_GFA_NRES, dType=data_type)
@@ -73,7 +75,7 @@ def main(inputs_parameter_selection,
             initial_yr = i
             break
     if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
-        target_year = yr_list[min(3, len(yr_list))]
+        target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
     
     NUTS_RESULTS_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
@@ -81,6 +83,11 @@ def main(inputs_parameter_selection,
     NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_ENERGY_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
     NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
+    
+    NUTS_RESULTS_SHARE_GFA_RENOV_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
+    NUTS_RESULTS_SHARE_GFA_RENOV_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
+    NUTS_RESULTS_SHARE_ENE_RENOV_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_ENE_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
+    NUTS_RESULTS_SHARE_ENE_RENOV_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     csv_data_table = READ_CSV_DATA(local_input_dir + "/Communal2_data.csv", skip_header=6)
     
     
@@ -96,6 +103,11 @@ def main(inputs_parameter_selection,
                                     NUTS_RESULTS_ENERGY_BASE,
                                     NUTS_RESULTS_ENERGY_FUTURE,
                                     NUTS_RESULTS_ENERGY_FUTURE_abs,
+                                    NUTS_RESULTS_SHARE_GFA_RENOV_BASE, 
+                                    NUTS_RESULTS_SHARE_GFA_RENOV_FUTURE,
+                                    NUTS_RESULTS_SHARE_ENE_RENOV_BASE,
+                                    NUTS_RESULTS_SHARE_ENE_RENOV_FUTURE,
+                                    Country_id,
                                     NUTS_id,
                                     LAU2_id,
                                     cp_share_1975,
@@ -133,7 +145,7 @@ if __name__ == "__main__":
     fn_heat_res_curr = "%s/%sheat_res_curr_density.tif" % (dir_, subdir)
     
     fn_LAU2_id_number = "%s/%sLAU2_id_number.tif" % (dir_, subdir)
-    
+    fn_Country_id_number = "%s/%sCountry_id_number.tif" % (dir_, subdir)
     fn_GHS_BUILT_1975_100_share = "%s/%sGHS_BUILT_1975_100_share.tif" % (dir_, subdir)
     fn_GHS_BUILT_1990_100_share = "%s/%sGHS_BUILT_1990_100_share.tif" % (dir_, subdir)
     fn_GHS_BUILT_2000_100_share = "%s/%sGHS_BUILT_2000_100_share.tif" % (dir_, subdir)
@@ -141,6 +153,7 @@ if __name__ == "__main__":
 
 
     main(fn_reference_tif
+         , fn_Country_id_number
          , fn_NUTS3_id_number
          , fn_gfa_res_curr
          , fn_heat_res_curr
