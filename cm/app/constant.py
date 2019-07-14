@@ -125,6 +125,7 @@ SIGNATURE = {
     "authorized_scale":["NUTS 3", "NUTS 2", "NUTS 1","NUTS 0"],
     "cm_name": CM_NAME,
     "layers_needed": [
+        "country_id_number",
         "nuts_id_number",
         "lau2_id_number",
         "gfa_res_curr_density_tif",
