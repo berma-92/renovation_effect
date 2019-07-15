@@ -34,7 +34,6 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     '''
     inputs:
         
-
     Outputs:
         
     '''
@@ -368,4 +367,3 @@ if __name__ == '__main__':
             os.mkdir(output_directory)
         calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                     direct_call_calc_mdoule=True)
-
