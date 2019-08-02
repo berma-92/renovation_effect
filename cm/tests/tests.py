@@ -92,10 +92,10 @@ class TestAPI(unittest.TestCase):
         inputs_raster_selection["heat_nonres_curr_density_tif"] = raster_file_path3b
         
         inputs_raster_selection["lau2_id_number"] = save_path4
-        inputs_raster_selection["cp_share_1975"] = save_path5
-        inputs_raster_selection["cp_share_1990"] = save_path6
-        inputs_raster_selection["cp_share_2000"] = save_path7
-        inputs_raster_selection["cp_share_2014"] = save_path8
+        inputs_raster_selection["ghs_built_1975_100_share"] = save_path5
+        inputs_raster_selection["ghs_built_1990_100_share"] = save_path6
+        inputs_raster_selection["ghs_built_2000_100_share"] = save_path7
+        inputs_raster_selection["ghs_built_2014_100_share"] = save_path8
         
 
         # register the calculation module a
