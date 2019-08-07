@@ -139,7 +139,17 @@ SIGNATURE = {
         "ghs_built_2014_100_share",
     ],
     "type_layer_needed": [
+        "country_id_number",
+        "nuts_id_number",
+        "lau2_id_number",
+        "gross_floor_area",
+        "gross_floor_area",
         "heat",
+        "heat",
+        "ghs_built_1975_100_share",
+        "ghs_built_1990_100_share",
+        "ghs_built_2000_100_share",
+        "ghs_built_2014_100_share"
     ],
     "vectors_needed": [
         "heating_technologies_eu28",
