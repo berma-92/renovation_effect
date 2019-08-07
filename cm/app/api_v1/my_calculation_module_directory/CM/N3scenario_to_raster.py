@@ -11,7 +11,8 @@ import numpy as np
 import time
 import os, sys
 
-
+import pyximport
+pyximport.install()
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
 import CM.helper_functions.cyf.create_density_map as CDM
@@ -560,4 +561,3 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     #return(energy_res, energy_nres)
             
             
-    
