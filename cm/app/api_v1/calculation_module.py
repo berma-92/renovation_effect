@@ -9,7 +9,7 @@ import glob
 SD = "my_calculation_module_directory"
 path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
 
-
+# for local run
 verbose = False
 
 """ Entry point of the calculation module function"""
