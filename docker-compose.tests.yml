@@ -2,7 +2,7 @@
 version: '3.2'
 
 services:
-  base_calculation_module:
+  renovation_effect:
     build:
       context: ./cm
       dockerfile: Dockerfile
