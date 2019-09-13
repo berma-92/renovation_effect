@@ -43,6 +43,7 @@ for ele in fl:
     available_scenarios[scen].append(str(yr))
     available_years.append(str(yr))
 
+
 scenario_list= list(available_scenarios.keys())
 year_list = list(set(available_years))
 INPUTS_CALCULATION_MODULE = [
