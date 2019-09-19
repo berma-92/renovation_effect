@@ -126,6 +126,7 @@ SIGNATURE = {
     "category": "Buildings",
     "authorized_scale":["NUTS 3", "NUTS 2", "NUTS 1","NUTS 0"],
     "cm_name": CM_NAME,
+    "description_link": "https://github.com/HotMaps/hotmaps_wiki/wiki/en-CM-Demand-projection",
     "layers_needed": [
         "country_id_number",
         "nuts_id_number",
