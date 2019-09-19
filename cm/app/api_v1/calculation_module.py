@@ -172,23 +172,23 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['indicator'].extend([{"unit": unit_area, "name": "\n\nCurrent data (2014)\nEstimated Area Constr. Period\n    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
                           {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_cur"] * converter_area)},
                           {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_cur"] * converter_area)},
-                          {"unit": unit_area, "name": "    after 2014","value": "%4.2f" % (RESULTS["gfa_new_cur"] * converter_area)},
+                          {"unit": unit_area, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["gfa_new_cur"] * converter_area)},
                           
                           {"unit": unit_area, "name": "\n\nScenario data (%s)\nEstimated Area Constr. Period\n    until 1975" % target_yr,"value": "%4.2f" % (RESULTS["gfa_75_fut"] * converter_area)},
                           {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_fut"] * converter_area)},
                           {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_fut"] * converter_area)},
-                          {"unit": unit_area, "name": "    after 2014","value": "%4.2f" % (RESULTS["gfa_new_fut"] * converter_area)},
+                          {"unit": unit_area, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["gfa_new_fut"] * converter_area)},
                         
                         
                           {"unit": unit_energy, "name": "\n\nCurrent data (2014)\nEstimated Energy Constr. Period\n    until 1975","value": "%4.2f" % (RESULTS["ene_75_cur"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_cur"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_cur"] * converter_ene)},
-                          {"unit": unit_energy, "name": "    after 2014","value": "%4.2f" % (RESULTS["ene_new_cur"] * converter_ene)},
+                          {"unit": unit_energy, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["ene_new_cur"] * converter_ene)},
                           
                           {"unit": unit_energy, "name": "\n\nScenario data (%s)\nEstimated Energy Constr. Period\n    until 1975" % target_yr,"value": "%4.2f" % (RESULTS["ene_75_fut"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_fut"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_fut"] * converter_ene)},
-                          {"unit": unit_energy, "name": "    after 2014","value": "%4.2f" % (RESULTS["ene_new_fut"] * converter_ene)},
+                          {"unit": unit_energy, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["ene_new_fut"] * converter_ene)},
                         
     
                         
@@ -201,7 +201,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                           {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_fut"]},
                            ])
     if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
-        result['indicator'].append({"unit": "kWh/m2", "name": "    after 2014","value": "%4.2f" % RESULTS["spec_ene_new_fut"]})
+        result['indicator'].append({"unit": "kWh/m2", "name": "     2015-%s"%target_yr,"value": "%4.0f" % RESULTS["spec_ene_new_fut"]})
     
     num_bars = 8   
     graphics  = [
@@ -283,7 +283,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     return result
 
 
-'''
+
 if __name__ == '__main__':
         
         
@@ -333,16 +333,16 @@ if __name__ == '__main__':
         inputs_vector_selection = {}
         inputs_raster_selection["country_id_number"] = raster_file_path0
         inputs_raster_selection["nuts_id_number"] = raster_file_path1
-        inputs_raster_selection["gfa_res_curr_density_tif"] = raster_file_path2
-        inputs_raster_selection["heat_res_curr_density_tif"] = raster_file_path3
-        inputs_raster_selection["gfa_nonres_curr_density_tif"] = raster_file_path2b
-        inputs_raster_selection["heat_nonres_curr_density_tif"] = raster_file_path3b
+        inputs_raster_selection["gfa_res_curr_density"] = raster_file_path2
+        inputs_raster_selection["heat_res_curr_density"] = raster_file_path3
+        inputs_raster_selection["gfa_nonres_curr_density"] = raster_file_path2b
+        inputs_raster_selection["heat_nonres_curr_density"] = raster_file_path3b
         
         inputs_raster_selection["lau2_id_number"] = raster_file_path4
-        inputs_raster_selection["cp_share_1975"] = raster_file_path5
-        inputs_raster_selection["cp_share_1990"] = raster_file_path6
-        inputs_raster_selection["cp_share_2000"] = raster_file_path7
-        inputs_raster_selection["cp_share_2014"] = raster_file_path8
+        inputs_raster_selection["ghs_built_1975_100_share"] = raster_file_path5
+        inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
+        inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
+        inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
         
         inputs_parameter_selection['scenario'] = "Scenario 1"
         inputs_parameter_selection['target_year'] = "2030"
@@ -376,4 +376,4 @@ if __name__ == '__main__':
             os.mkdir(output_directory)
         calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                     direct_call_calc_mdoule=True)
-'''
+#'''
