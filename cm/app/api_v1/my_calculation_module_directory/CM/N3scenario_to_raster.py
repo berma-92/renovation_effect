@@ -554,6 +554,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     print("Done")
     
+    _gfa_fut__ += AREA_PER_CP[1,3]
+    _ene_fut__ += ENERGY_PER_CP[1,3]
+    
     RESULTS["gfa_cur"] = _gfa_cur__
     RESULTS["gfa_fut"] = _gfa_fut__
     RESULTS["ene_cur"] = _ene_cur__

@@ -18,7 +18,7 @@ from CM.helper_functions.read_raster import raster_array as RA
 print(sys.version_info)
 
 
-
+MAX_SIZE = 100
 
 def main(inputs_parameter_selection,
          input_raster_Country_id, 
@@ -41,8 +41,17 @@ def main(inputs_parameter_selection,
     data_type = "f4"
     data_type_int = "uint32"
     local_input_dir = path + "/input_data"
+    target_year = int(inputs_parameter_selection["target_year"])
+    scenario_name = inputs_parameter_selection['scenario']
+    
     
     Country_id = RA(input_raster_Country_id, dType=data_type_int)
+    if Country_id.size > (MAX_SIZE * 10**6):
+        RESULTS = {}
+        RESULTS["ERROR"] = "Selected region is to large, please reduce the select area!"
+        RESULTS["target_year"] = int(target_year)
+        return RESULTS
+    
     NUTS_id, gt = RA(input_raster_NUTS_id, dType=data_type_int, return_gt=True)
     GFA_RES = RA(input_raster_GFA_RES, dType=data_type)
     GFA_NRES = RA(input_raster_GFA_NRES, dType=data_type)
@@ -57,8 +66,7 @@ def main(inputs_parameter_selection,
     NUTS_id_size = NUTS_id.shape
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
 
-    target_year = int(inputs_parameter_selection["target_year"])
-    scenario_name = inputs_parameter_selection['scenario']
+    
     #Check if target year is available for scenario
     yr_list = []
     
