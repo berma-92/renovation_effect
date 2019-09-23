@@ -164,46 +164,38 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         converter_ene = 1./10**3
         
     
-    result['indicator'] = [{"unit": unit_area, "name": "Current Heated Area","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+    result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
                           {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
-                          {"unit": unit_energy, "name": "Current Energy Consumption","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
+                          {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
                           {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                           {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
                           {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
                             ]
-
     
-    result['indicator'].extend([{"unit": " ", "name": "Estimated Area per Constr. Period (2014)","value": " "},
+    result['indicator'].extend([{"unit": " ", "name": "Estimated Area per Constr. Period in 2014","value": " "},
                           {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
                           {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_cur"] * converter_area)},
                           {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_cur"] * converter_area)},
-                          
-                          {"unit": " ", "name": "Estimated Area per Constr. Period (%s)"% target_yr,"value": " "},
+                          {"unit": " ", "name": "Estimated Area per Constr. Period in %s"% target_yr,"value": " "},
                           {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_fut"] * converter_area)},
                           {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_fut"] * converter_area)},
                           {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_fut"] * converter_area)},
                           {"unit": unit_area, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["gfa_new_fut"] * converter_area)},
-                        
-                        
-                          {"unit": " ", "name": "Estimated Energy per Constr. Period (2014)","value": " "},
+                          {"unit": " ", "name": "Estimated Energy per Constr. Period in 2014","value": " "},
                           {"unit": unit_energy, "name": "    until 1975","value": "%4.2f" % (RESULTS["ene_75_cur"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_cur"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_cur"] * converter_ene)},
                           
-                          {"unit": " ", "name": "Estimated Energy per Constr. Period (%s)" % target_yr,"value": " "},
+                          {"unit": " ", "name": "Estimated Energy per Constr. Period in %s" % target_yr,"value": " "},
                           {"unit": unit_energy, "name": "    until 1975","value": "%4.2f" % (RESULTS["ene_75_fut"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_fut"] * converter_ene)},
                           {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_fut"] * converter_ene)},
                           {"unit": unit_energy, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["ene_new_fut"] * converter_ene)},
-                        
-    
-                        
-                        {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period (2014)","value": " "},
+                          {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period in 2014","value": " "},
                           {"unit": "kWh/m2", "name": "    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_cur"]},
                           {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_cur"]},
                           {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_cur"]},
-                          
-                        {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period (%s)"% target_yr,"value": " "},
+                          {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period in %s"% target_yr,"value": " "},
                           {"unit": "kWh/m2", "name": "    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_fut"]},
                           {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_fut"]},
                           {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_fut"]},
