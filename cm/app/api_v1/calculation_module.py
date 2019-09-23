@@ -169,7 +169,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                           {"unit": unit_energy, "name": "Current Energy Consumption","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
                           {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                           {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
-                          {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]}
+                          {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
                             ]
 
     
