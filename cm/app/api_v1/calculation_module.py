@@ -172,6 +172,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                           {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
                         {"unit": "-", "name": "Estimated Area per Constr. Period in 2014","value": "1"},]
     
+    
     result['indicator'].extend([
                           {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
                           {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_cur"] * converter_area)},
