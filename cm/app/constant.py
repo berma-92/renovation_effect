@@ -117,6 +117,14 @@ INPUTS_CALCULATION_MODULE = [
      'input_min': 50,
      'input_max': 200,
      'cm_id': CM_ID
+     },
+    {'input_name': 'Method to add newly constructed buildings to map',
+     'input_type': 'select',
+     'input_parameter_name': 'new_constructions',
+     'input_value': ["No new buildings","Replace only demolished buildings","Add all new buildings"],
+     'input_unit': 'none',
+     'input_min': 'none',
+     'input_max': 'none', 'cm_id': CM_ID
      }
 ]
 
@@ -139,6 +147,7 @@ SIGNATURE = {
         "ghs_built_1990_100_share",
         "ghs_built_2000_100_share",
         "ghs_built_2014_100_share",
+        "RESULTS_BUILDING_FOOTPRINT",
     ],
     "type_layer_needed": [
         "country_id_number",
@@ -151,7 +160,8 @@ SIGNATURE = {
         "ghs_built_1975_100_share",
         "ghs_built_1990_100_share",
         "ghs_built_2000_100_share",
-        "ghs_built_2014_100_share"
+        "ghs_built_2014_100_share",
+        "RESULTS_BUILDING_FOOTPRINT"
     ],
     "cm_url": "Do not add something",
     "cm_description": "this computation module calcuates the impact of renovation and building demolishment on future hdm ",

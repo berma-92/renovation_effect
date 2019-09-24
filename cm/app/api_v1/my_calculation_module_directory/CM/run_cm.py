@@ -32,6 +32,7 @@ def main(inputs_parameter_selection,
          input_raster_cp_share_1990,
          input_raster_cp_share_2000,
          input_raster_cp_share_2014,
+         BUILDING_FOOTPRINT,
          output_raster_files,
          output_csv_result):
     
@@ -103,9 +104,10 @@ def main(inputs_parameter_selection,
 
     adoption_bgf = [float(inputs_parameter_selection['red_area_77']), float(inputs_parameter_selection['red_area_80']), float(inputs_parameter_selection['red_area_00'])]
     adoption_sp_ene = [float(inputs_parameter_selection['red_sp_ene_77']), float(inputs_parameter_selection['red_sp_ene_80']), float(inputs_parameter_selection['red_sp_ene_00'])]
-    
+    new_buildings_distribution_method = inputs_parameter_selection['new_constructions']
     inputs_parameters = {"scenario_name": scenario_name, "adoption_bgf": adoption_bgf,
-                         "adoption_sp_ene": adoption_sp_ene}
+                         "adoption_sp_ene": adoption_sp_ene,
+                         "new_constructions": new_buildings_distribution_method}
     RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
                                     NUTS_RESULTS_ENERGY_BASE,
@@ -121,6 +123,7 @@ def main(inputs_parameter_selection,
                                     cp_share_1975,
                                     cp_share_1990,
                                     cp_share_2000_and_2014,
+                                    BUILDING_FOOTPRINT,
                                     ENERGY_RES,
                                     ENERGY_NRES, 
                                     GFA_RES,

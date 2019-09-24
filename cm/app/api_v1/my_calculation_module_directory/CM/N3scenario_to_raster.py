@@ -46,6 +46,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , cp_share_1975
                             , cp_share_1990
                             , cp_share_2014
+                            , BUILDING_FOOTPRINT
                             , ENERGY_RES
                             , ENERGY_NRES
                             , GFA_RES
@@ -93,9 +94,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     header = {}
     oNUTS = 26
     oCOUNTRY = 26
-    energy_tot_future = np.zeros_like(cp_share_1975)
+    energy_tot_future_existB = np.zeros_like(cp_share_1975)
     energy_tot_curr = np.zeros_like(cp_share_1975)
-    gfa_tot_future = np.zeros_like(cp_share_1975)
+    gfa_tot_future_existB = np.zeros_like(cp_share_1975)
     gfa_tot_curr = np.zeros_like(cp_share_1975)
     
     RESULTS = {}
@@ -427,20 +428,20 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         if export__ == True:
             SaveLayerDict = expLyr(SaveLayerDict)
         
-        energy_tot_future += energy_future
+        energy_tot_future_existB += energy_future
         energy_tot_curr += ENERGY
         
-        gfa_tot_future += area_future
+        gfa_tot_future_existB += area_future
         gfa_tot_curr += BGF_intial
     
         SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
-                                            , "f4", energy_tot_future  , 0)
+                                            , "f4", energy_tot_future_existB  , 0)
         SaveLayerDict["AB"] =   (output_raster_energy_tot_rel, geotransform_obj
-                                            , "f4", energy_tot_future / np.maximum(0.00001, energy_current) , 0)
+                                            , "f4", energy_tot_future_existB / np.maximum(0.00001, energy_current) , 0)
         SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
-                                            , "f4", gfa_tot_future  , 0)
+                                            , "f4", gfa_tot_future_existB  , 0)
         SaveLayerDict["AD"] =   (output_raster_gfa_tot_rel, geotransform_obj
-                                            , "f4", gfa_tot_future / np.maximum(0.00001, gfa_tot_curr) , 0)
+                                            , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr) , 0)
         if export__ == True:
             SaveLayerDict = expLyr(SaveLayerDict)
 
@@ -464,7 +465,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         BGF New buildings
     """
     AREA_NEW_BUILD_per_existing_area = np.minimum(1, (area_total_buildings_target / (0.000001+area_existing_buildings)))
-    AREA_NEW = gfa_tot_curr * (1 + AREA_NEW_BUILD_per_existing_area[NUTS_id]) - gfa_tot_future
+    AREA_NEW = gfa_tot_curr * (1 + AREA_NEW_BUILD_per_existing_area[NUTS_id]) - gfa_tot_future_existB
     
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA_NEW, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(AREA_NEW, NUTS_id)
@@ -499,6 +500,36 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1]) / 1000
 
+    ########################
+    #
+    # Calculate distribution of new buildings
+    #
+    ########################
+    new_construction_methode = add_inputs_parameters["new_constructions"].lower().strip()
+    if new_construction_methode.startswith("no"):
+        future_gfa_map = gfa_tot_future_existB
+        future_ene_map = energy_tot_future_existB
+        share_of_new_constructions_shown_in_map = 0
+    elif new_construction_methode.startswith("replace"):
+        future_gfa_map = np.minimum(gfa_tot_future_existB + AREA_NEW, gfa_tot_curr) 
+        share_new_build =  (future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW) # calculate for each cell: share of distributed new area vs total new AREA
+        print(np.max(share_new_build))
+        print(np.min(share_new_build))
+        future_ene_map = energy_tot_future_existB + share_new_build * DEMAND_NEW 
+        share_of_new_constructions_shown_in_map = np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW)
+    elif new_construction_methode.startswith("add"):
+        #Not implemented yet
+        future_gfa_map = np.minimum(gfa_tot_future_existB + AREA_NEW, gfa_tot_curr) 
+        share_new_build =  (future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW) # calculate for each cell: share of distributed new area vs total new AREA
+        print(np.max(share_new_build))
+        print(np.min(share_new_build))
+        future_ene_map = energy_tot_future_existB + share_new_build * DEMAND_NEW 
+        share_of_new_constructions_shown_in_map = np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW)
+    else:
+        future_gfa_map = gfa_tot_future_existB
+        future_ene_map = energy_tot_future_existB
+        share_of_new_constructions_shown_in_map = 0
+    
     """
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)

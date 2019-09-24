@@ -46,6 +46,7 @@ class TestAPI(unittest.TestCase):
         raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
         raster_file_path2b = raster_file_dir + "/RESULTS_GFA_NRES_BUILD.tif"
         raster_file_path3b = raster_file_dir + "/RESULTS_ENERGY_HEATING_NRES_2012.tif"
+        raster_file_path9 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
 
         # simulate copy from HTAPI to CM
         save_path0 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
@@ -58,6 +59,7 @@ class TestAPI(unittest.TestCase):
         save_path6 = UPLOAD_DIRECTORY+"/GHS_BUILT_1990_100_share.tif"
         save_path7 = UPLOAD_DIRECTORY+"/GHS_BUILT_2000_100_share.tif"
         save_path8 = UPLOAD_DIRECTORY+"/GHS_BUILT_2014_100_share.tif"
+        save_path9 = UPLOAD_DIRECTORY+"/RESULTS_GFA_RES_BUILD.tif"
         
         copyfile(raster_file_path0, save_path0)
         copyfile(raster_file_path1, save_path1)
@@ -68,6 +70,7 @@ class TestAPI(unittest.TestCase):
         copyfile(raster_file_path6, save_path6)
         copyfile(raster_file_path7, save_path7)
         copyfile(raster_file_path8, save_path8)
+        copyfile(raster_file_path9, save_path9)
 
 
         inputs_raster_selection = {}
@@ -82,6 +85,7 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection['red_sp_ene_77'] = "100"
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
+        inputs_parameter_selection['new_constructions'] = "No new buildings"
         
         
         inputs_raster_selection["country_id_number"] = save_path0
@@ -96,6 +100,7 @@ class TestAPI(unittest.TestCase):
         inputs_raster_selection["ghs_built_1990_100_share"] = save_path6
         inputs_raster_selection["ghs_built_2000_100_share"] = save_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = save_path8
+        inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = save_path9
         
 
         # register the calculation module a

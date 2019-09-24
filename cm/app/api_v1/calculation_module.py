@@ -65,6 +65,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
+    BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     
     if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
@@ -130,6 +131,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
               input_raster_LAU2_id,
               input_raster_cp_share_1975, input_raster_cp_share_1990,
               input_raster_cp_share_2000, input_raster_cp_share_2014,
+              BUILDING_FOOTPRINT,
               output_raster_files, 
               output_csv_result
               )
@@ -307,6 +309,7 @@ if __name__ == '__main__':
         raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
         raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
         raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
+        raster_file_path9 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif" 
 
         """
         # simulate copy from HTAPI to CM
@@ -344,6 +347,7 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
+        inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
         
         inputs_parameter_selection['scenario'] = "Scenario 1"
         inputs_parameter_selection['target_year'] = "2030"
@@ -353,6 +357,8 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_77'] = "100"
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
+        inputs_parameter_selection['new_constructions'] = "No new buildings"
+        
         
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
         fl.sort()
