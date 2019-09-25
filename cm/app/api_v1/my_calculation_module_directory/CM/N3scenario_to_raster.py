@@ -10,7 +10,7 @@ This script has been created in the context of the Hotmaps EU project.
 import numpy as np
 import time
 import os, sys
-
+from scipy import ndimage
 import pyximport
 pyximport.install()
 
@@ -18,7 +18,7 @@ from CM.helper_functions.exportLayerDict import export_layer as expLyr
 import CM.helper_functions.cyf.create_density_map as CDM
 import CM.helper_functions.cliprasterlayer as CRL
 
-export__ = False
+export__debug = False
 def getData(fn, geotransform_obj, size, data_type):
     
     
@@ -69,7 +69,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
 
     adoption_bgf = add_inputs_parameters["adoption_bgf"]
     adoption_sp_ene = add_inputs_parameters["adoption_sp_ene"]
-
+    base_year = add_inputs_parameters["base_year"]
+    target_year = add_inputs_parameters["target_year"]
 
     output_raster_energy_res = output_raster_files["output_raster_energy_res"]
     output_raster_energy_nres = output_raster_files["output_raster_energy_nres"]
@@ -416,16 +417,16 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         #Export IMAGE
         SaveLayerDict = {}
         
-        SaveLayerDict["AA"] =   (fn_out_fp, geotransform_obj
+        if export__debug == True:
+            SaveLayerDict["AA"] =   (fn_out_fp, geotransform_obj
                                             , "f4", energy_future  , 0)
-        SaveLayerDict["AB"] =   (fn_out_fp_rel, geotransform_obj
-                                            , "f4", energy_future / np.maximum(0.00001, energy_current) , 0)
-        
-        SaveLayerDict["AC"] =   (fn_out_fp_gfa, geotransform_obj
-                                            , "f4", area_future  , 0)
-        SaveLayerDict["AD"] =   (fn_out_fp_rel_gfa, geotransform_obj
-                                            , "f4", area_future / np.maximum(0.00001, BGF_intial) , 0)
-        if export__ == True:
+            SaveLayerDict["AB"] =   (fn_out_fp_rel, geotransform_obj
+                                                , "f4", energy_future / np.maximum(0.00001, energy_current) , 0)
+            
+            SaveLayerDict["AC"] =   (fn_out_fp_gfa, geotransform_obj
+                                                , "f4", area_future  , 0)
+            SaveLayerDict["AD"] =   (fn_out_fp_rel_gfa, geotransform_obj
+                                                , "f4", area_future / np.maximum(0.00001, BGF_intial) , 0)
             SaveLayerDict = expLyr(SaveLayerDict)
         
         energy_tot_future_existB += energy_future
@@ -433,16 +434,15 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         gfa_tot_future_existB += area_future
         gfa_tot_curr += BGF_intial
-    
-        SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
-                                            , "f4", energy_tot_future_existB  , 0)
-        SaveLayerDict["AB"] =   (output_raster_energy_tot_rel, geotransform_obj
-                                            , "f4", energy_tot_future_existB / np.maximum(0.00001, energy_current) , 0)
-        SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
-                                            , "f4", gfa_tot_future_existB  , 0)
-        SaveLayerDict["AD"] =   (output_raster_gfa_tot_rel, geotransform_obj
-                                            , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr) , 0)
-        if export__ == True:
+        if export__debug == True:
+            SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
+                                                , "f4", energy_tot_future_existB  , 0)
+            SaveLayerDict["AB"] =   (output_raster_energy_tot_rel, geotransform_obj
+                                                , "f4", energy_tot_future_existB / np.maximum(0.00001, energy_current) , 0)
+            SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
+                                                , "f4", gfa_tot_future_existB  , 0)
+            SaveLayerDict["AD"] =   (output_raster_gfa_tot_rel, geotransform_obj
+                                                , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr) , 0)
             SaveLayerDict = expLyr(SaveLayerDict)
 
     header_names = NUTS_RESULTS_ENERGY_FUTURE_abs.dtype.names[0] 
@@ -484,8 +484,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     """
         Energy New buildings
     """
-    DEMAND_NEW_BUILD_per_existing_area = (demand_new_build / area_new_buildings)
-    DEMAND_NEW = AREA_NEW * DEMAND_NEW_BUILD_per_existing_area[NUTS_id]
+    DEMAND_NEW_BUILD_per_area = (demand_new_build / area_new_buildings)
+    DEMAND_NEW = AREA_NEW * DEMAND_NEW_BUILD_per_area[NUTS_id]
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(DEMAND_NEW, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(DEMAND_NEW, NUTS_id)
     TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(DEMAND_NEW, COUNTRY_id)
@@ -516,20 +516,52 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         print(np.max(share_new_build))
         print(np.min(share_new_build))
         future_ene_map = energy_tot_future_existB + share_new_build * DEMAND_NEW 
-        share_of_new_constructions_shown_in_map = np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW)
+        share_of_new_constructions_shown_in_map = np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, np.sum(AREA_NEW))
     elif new_construction_methode.startswith("add"):
-        #Not implemented yet
+        #Not fully implemented yet
         future_gfa_map = np.minimum(gfa_tot_future_existB + AREA_NEW, gfa_tot_curr) 
         share_new_build =  (future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW) # calculate for each cell: share of distributed new area vs total new AREA
         print(np.max(share_new_build))
         print(np.min(share_new_build))
         future_ene_map = energy_tot_future_existB + share_new_build * DEMAND_NEW 
-        share_of_new_constructions_shown_in_map = np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW)
+        share_of_new_constructions_shown_in_map = np.maximum(0, np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, np.sum(AREA_NEW)))
+        
+        max_add_floor_by_increase_floors = 0.15 * gfa_tot_curr
+        if (target_year - base_year) <= 20:
+            size_ = 3
+        else:
+            size_ = 5
+        calculated_average_of_neigbhors = ndimage.generic_filter(BUILDING_FOOTPRINT, np.nanmean, size=size_, mode='constant', cval=np.NaN)
+        max_add_floor_new_areas = (gfa_tot_curr / np.maximum(0.00001, BUILDING_FOOTPRINT) * 
+                                    np.minimum(calculated_average_of_neigbhors * ((target_year - base_year)/80), np.maximum(0.6 - BUILDING_FOOTPRINT / 10000,0)))
+        
+        upper_limit_additional_area = max_add_floor_by_increase_floors + max_add_floor_new_areas
+        
+        missing_new_build_area = share_of_new_constructions_shown_in_map * np.sum(AREA_NEW)
+        
+        exloitation_rate_of_limit = np.sum(missing_new_build_area) / np.sum(upper_limit_additional_area)
+        
+        add_new_gfa = exloitation_rate_of_limit * upper_limit_additional_area
+        future_gfa_map += add_new_gfa
+        
+        ene_new_buildings = (future_gfa_map - gfa_tot_future_existB) * DEMAND_NEW_BUILD_per_area[NUTS_id]
+        
+        future_ene_map = energy_tot_future_existB + ene_new_buildings
+        
     else:
         future_gfa_map = gfa_tot_future_existB
         future_ene_map = energy_tot_future_existB
         share_of_new_constructions_shown_in_map = 0
     
+    
+    SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
+                                            , "f4", future_ene_map  , 0)
+    SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
+                                        , "f4", future_gfa_map  , 0)
+    SaveLayerDict = expLyr(SaveLayerDict)
+            
+            
+            
     """
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)

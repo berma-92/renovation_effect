@@ -18,8 +18,8 @@ from CM.helper_functions.read_raster import raster_array as RA
 print(sys.version_info)
 
 
-MAX_SIZE = 100
-
+MAX_SIZE = 30 * 10**6
+BASE_YEAR = 2014
 def main(inputs_parameter_selection,
          input_raster_Country_id, 
          input_raster_NUTS_id,
@@ -47,9 +47,10 @@ def main(inputs_parameter_selection,
     
     
     Country_id = RA(input_raster_Country_id, dType=data_type_int)
-    if Country_id.size > (MAX_SIZE * 10**6):
+    if Country_id.size > (MAX_SIZE):
         RESULTS = {}
         RESULTS["ERROR"] = "Selected region is to large, please reduce the select area!"
+        RESULTS["size"] =  Country_id.size / (MAX_SIZE)
         RESULTS["target_year"] = int(target_year)
         return RESULTS
     
@@ -80,7 +81,7 @@ def main(inputs_parameter_selection,
         yr_list.append(yr)
     yr_list.sort()
     for i in yr_list:
-        if int(i) >= 2012:
+        if int(i) >= BASE_YEAR:
             initial_yr = i
             break
     if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
@@ -107,7 +108,8 @@ def main(inputs_parameter_selection,
     new_buildings_distribution_method = inputs_parameter_selection['new_constructions']
     inputs_parameters = {"scenario_name": scenario_name, "adoption_bgf": adoption_bgf,
                          "adoption_sp_ene": adoption_sp_ene,
-                         "new_constructions": new_buildings_distribution_method}
+                         "new_constructions": new_buildings_distribution_method,
+                         "base_year": BASE_YEAR,"target_year": int(target_year)}
     RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
                                     NUTS_RESULTS_ENERGY_BASE,
