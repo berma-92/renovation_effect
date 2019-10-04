@@ -45,7 +45,7 @@ for ele in fl:
 
 
 scenario_list= list(available_scenarios.keys())
-year_list = list(set(available_years))
+year_list = sorted(list(set(available_years)))
 INPUTS_CALCULATION_MODULE = [
 
     {'input_name': 'Select scenario',
