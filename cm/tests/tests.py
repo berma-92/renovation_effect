@@ -77,8 +77,8 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
         
-        inputs_parameter_selection['scenario'] = "cheetah_reference_hsagent"
-        inputs_parameter_selection['target_year'] = "2032"
+        inputs_parameter_selection['scenario'] = "cheetah_reference_hsagent_lambda_4"
+        inputs_parameter_selection['target_year'] = "2040"
         inputs_parameter_selection['red_area_77'] = "100"
         inputs_parameter_selection['red_area_80'] = "100"
         inputs_parameter_selection['red_area_00'] = "100"
