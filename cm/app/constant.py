@@ -37,11 +37,16 @@ for ele in fl:
     ele = (ele.split("/")[-1]).split("_RESULTS_ENERGY_")
     scen = ele[0]
     yr = ele[1][:-4]
-    print(scen)
-    if scen not in available_scenarios.keys():
-        available_scenarios[scen] = []
-    available_scenarios[scen].append(str(yr))
-    available_years.append(str(yr))
+    try:
+        yr = int(yr)
+        if yr >= 2015:
+            print(scen)
+            if scen not in available_scenarios.keys():
+                available_scenarios[scen] = []
+            available_scenarios[scen].append(str(yr))
+            available_years.append(str(yr))
+    except:
+        pass
 
 
 scenario_list= list(available_scenarios.keys())
