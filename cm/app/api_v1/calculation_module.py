@@ -239,10 +239,10 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                 "datasets": [{
                                         "label": "Energy Consumption for Heating and Domestic Hot Water Preparation %i versus %i" %(base_yr, target_yr),
                                         "backgroundColor": ["#b03a2e", "#f1948a", "#6c3483", "#bb8fce", "#2874a6", " #85c1e9 ", "#239b56", "#82e0aa"],
-                                        "data": [RESULTS["gfa_75_cur"] * converter_ene, RESULTS["gfa_75_fut"] * converter_ene,
-                                                 RESULTS["gfa_80_cur"] * converter_ene, RESULTS["gfa_80_fut"] * converter_ene,
-                                                 RESULTS["gfa_00_cur"] * converter_ene, RESULTS["gfa_00_fut"] * converter_ene,
-                                                 RESULTS["gfa_new_cur"] * converter_ene, RESULTS["gfa_new_fut"] * converter_ene]
+                                        "data": [RESULTS["ene_75_cur"] * converter_ene, RESULTS["ene_75_fut"] * converter_ene,
+                                                 RESULTS["ene_80_cur"] * converter_ene, RESULTS["ene_80_fut"] * converter_ene,
+                                                 RESULTS["ene_00_cur"] * converter_ene, RESULTS["ene_00_fut"] * converter_ene,
+                                                 RESULTS["ene_new_cur"] * converter_ene, RESULTS["ene_new_fut"] * converter_ene]
                                         }]
                         }
                 }]
