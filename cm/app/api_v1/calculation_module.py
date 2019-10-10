@@ -153,7 +153,6 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     # %%
     # here you should also define the symbology for the output raster
     
-    
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     if "Done" not in RESULTS.keys() or RESULTS['Done'] == False:
         result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured. We sincerely apologize." ,"value": "0"}]
