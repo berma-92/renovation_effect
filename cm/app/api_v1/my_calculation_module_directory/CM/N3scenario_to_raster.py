@@ -28,34 +28,6 @@ def getData(fn, geotransform_obj, size, data_type):
         
     return ARR
 
-                            
-"""
-def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
-                            , NUTS_RESULTS_GFA_FUTURE
-                            , NUTS_RESULTS_ENERGY_BASE
-                            , NUTS_RESULTS_ENERGY_FUTURE
-                            , NUTS_RESULTS_ENERGY_FUTURE_abs
-                            , NUTS_RESULTS_SHARE_GFA_RENOV_BASE
-                            , NUTS_RESULTS_SHARE_GFA_RENOV_FUTURE
-                            , NUTS_RESULTS_SHARE_ENE_RENOV_BASE
-                            , NUTS_RESULTS_SHARE_ENE_RENOV_FUTURE
-                            , COUNTRY_id
-                            , NUTS_id
-                            , LAU2_id
-                            , cp_share_1975
-                            , cp_share_1990
-                            , cp_share_2014
-                            , BUILDING_FOOTPRINT
-                            , ENERGY_RES
-                            , ENERGY_NRES
-                            , GFA_RES
-                            , GFA_NRES
-                            , geotransform_obj, size
-                            , csv_data_table
-                            , output_raster_files
-                            , output_csv_result
-                            , add_inputs_parameters):
-"""    
 
 def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , NUTS_RESULTS_GFA_FUTURE
@@ -78,14 +50,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , output_raster_files
                             , output_csv_result
                             , add_inputs_parameters):
-    
-    """
-    idx = NUTS_id < 1
-    NUTS_id[idx] = 1
-    del idx
-    NUTS_id -= 1
-    """
-    
+
    
     RESULTS = {}
     RESULTS["Done"] = False

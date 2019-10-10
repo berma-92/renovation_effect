@@ -75,11 +75,11 @@ def main(inputs_parameter_selection,
     #Check if target year is available for scenario
     yr_list = []
     
-    fl = glob.glob(local_input_dir + "/%s_RESULTS_SHARES_ENE_*.csv" % (scenario_name))
+    fl = glob.glob(local_input_dir + "/%s_RESULTS_ENERGY_*.csv" % (scenario_name))
     fl.sort()
     for ele in fl:
         ele = ele.replace("\\","/").replace("//","/")
-        ele = (ele.split("/")[-1]).split("_RESULTS_SHARES_ENE_")
+        ele = (ele.split("/")[-1]).split("_RESULTS_ENERGY_")
         yr = ele[1][:-4]
         yr_list.append(yr)
     yr_list.sort()
@@ -91,18 +91,13 @@ def main(inputs_parameter_selection,
         target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
     
-    NUTS_RESULTS_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
-    NUTS_RESULTS_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
+    NUTS_RESULTS_SHARES_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
+    NUTS_RESULTS_SHARES_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_ENERGY_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
     NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     
-    """
-    NUTS_RESULTS_SHARE_GFA_RENOV_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
-    NUTS_RESULTS_SHARE_GFA_RENOV_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
-    NUTS_RESULTS_SHARE_ENE_RENOV_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_ENE_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
-    NUTS_RESULTS_SHARE_ENE_RENOV_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_RENOVATED_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
-    """
+    
     csv_data_table = READ_CSV_DATA(local_input_dir + "/Communal2_data.csv", skip_header=6)
     
     
@@ -115,38 +110,11 @@ def main(inputs_parameter_selection,
                          "adoption_sp_ene": adoption_sp_ene,
                          "new_constructions": new_buildings_distribution_method,
                          "base_year": BASE_YEAR,"target_year": int(target_year)}
-    """
+    
     RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
-                                    NUTS_RESULTS_ENERGY_BASE,
-                                    NUTS_RESULTS_ENERGY_FUTURE,
-                                    NUTS_RESULTS_ENERGY_FUTURE_abs,
-                                    NUTS_RESULTS_SHARE_GFA_RENOV_BASE, 
-                                    NUTS_RESULTS_SHARE_GFA_RENOV_FUTURE,
-                                    NUTS_RESULTS_SHARE_ENE_RENOV_BASE,
-                                    NUTS_RESULTS_SHARE_ENE_RENOV_FUTURE,
-                                    Country_id,
-                                    NUTS_id,
-                                    LAU2_id,
-                                    cp_share_1975,
-                                    cp_share_1990,
-                                    cp_share_2000_and_2014,
-                                    BUILDING_FOOTPRINT,
-                                    ENERGY_RES,
-                                    ENERGY_NRES, 
-                                    GFA_RES,
-                                    GFA_NRES,
-                                    gt,
-                                    NUTS_id_size,
-                                    csv_data_table,
-                                    output_raster_files,
-                                    output_csv_result,
-                                    inputs_parameters)
-    """
-    RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
-                                    NUTS_RESULTS_GFA_FUTURE,
-                                    NUTS_RESULTS_ENERGY_BASE,
-                                    NUTS_RESULTS_ENERGY_FUTURE,
+                                    NUTS_RESULTS_SHARES_ENERGY_BASE,
+                                    NUTS_RESULTS_SHARES_ENERGY_FUTURE,
                                     NUTS_RESULTS_ENERGY_FUTURE_abs,
                                     Country_id,
                                     NUTS_id,
