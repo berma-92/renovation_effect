@@ -527,7 +527,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             calculated_average_of_neigbhors = np.maximum(calculated_average_of_neigbhors / 9, BUILDING_FOOTPRINT)
             #print(2)
             max_add_floor_new_areas = (gfa_tot_curr_initial_year / np.maximum(0.00001, BUILDING_FOOTPRINT) * 
-                                        np.minimum(calculated_average_of_neigbhors * ((target_year - base_year)/80), np.maximum(0.6*4 - BUILDING_FOOTPRINT / 10000,0)))
+                                        np.minimum(calculated_average_of_neigbhors * ((target_year - base_year)/80), np.maximum(0.6 - BUILDING_FOOTPRINT / 10000,0)))
             upper_limit_additional_area = max_add_floor_by_increase_floors + max_add_floor_new_areas
             
             missing_new_build_area = (1 - share_of_new_constructions_shown_in_map) * np.sum(AREA_NEW)
