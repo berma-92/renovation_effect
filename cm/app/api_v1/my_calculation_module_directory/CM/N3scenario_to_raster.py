@@ -99,7 +99,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     AREA_PER_CP = np.zeros((2,4), dtype="f4") 
     ENERGY_PER_CP = np.zeros((2,4), dtype="f4")
-    return RESULTS
+    #return RESULTS
     for i in range(2):
         energy_current = np.zeros_like(cp_share_1975)
         energy_future = np.zeros_like(cp_share_1975)
@@ -440,7 +440,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                                                 , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr_initial_year) , 0)
             SaveLayerDict = expLyr(SaveLayerDict)
 
-
+    return RESULTS
     demand_new_build = (NUTS_RESULTS_ENERGY_FUTURE_abs['ene_sfh_2017__']
                            + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_mfh_2017__']
                            + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_nres_2017__'] + 0.001)
