@@ -92,9 +92,9 @@ def main(inputs_parameter_selection,
         yr_list.append(yr)
     yr_list.sort()
     
-    RESULTS["Done"] = True
-    return RESULTS
-    
+   
+    #RESULTS["Done"] = True
+    #return RESULTS
     for i in yr_list:
         if int(i) > BASE_YEAR:
             initial_yr = i
@@ -103,7 +103,8 @@ def main(inputs_parameter_selection,
         target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
     
-    
+    RESULTS["Done"] = True
+    return RESULTS
     NUTS_RESULTS_SHARES_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
     NUTS_RESULTS_SHARES_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     NUTS_RESULTS_ENERGY_FUTURE_abs = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_ENERGY_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
