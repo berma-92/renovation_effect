@@ -345,7 +345,6 @@ if __name__ == '__main__':
         copyfile(raster_file_path7, save_path7)
         copyfile(raster_file_path8, save_path8)
         """
-
         inputs_raster_selection = {}
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
