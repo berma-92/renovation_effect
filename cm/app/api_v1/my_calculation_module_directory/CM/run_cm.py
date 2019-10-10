@@ -52,6 +52,7 @@ def main(inputs_parameter_selection,
         RESULTS["ERROR"] = "Selected region is to large, please reduce the select area!"
         RESULTS["size"] =  Country_id.size / (MAX_SIZE)
         RESULTS["target_year"] = int(target_year)
+        RESULTS["Done"] = True
         return RESULTS
     
     NUTS_id, gt = RA(input_raster_NUTS_id, dType=data_type_int, return_gt=True)
