@@ -55,6 +55,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     RESULTS = {}
     RESULTS["Done"] = False
 
+
+    return RESULTS
+
+
     adoption_bgf = add_inputs_parameters["adoption_bgf"]
     adoption_sp_ene = add_inputs_parameters["adoption_sp_ene"]
     base_year = add_inputs_parameters["base_year"]
