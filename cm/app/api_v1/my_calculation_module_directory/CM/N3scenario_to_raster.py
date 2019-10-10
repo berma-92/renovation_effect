@@ -51,7 +51,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , output_csv_result
                             , add_inputs_parameters):
 
-   
+    return {}
     RESULTS = {}
     RESULTS["Done"] = False
 

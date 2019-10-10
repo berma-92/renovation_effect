@@ -127,7 +127,7 @@ def main(inputs_parameter_selection,
                          "base_year": BASE_YEAR,"target_year": int(target_year)}
     #RESULTS["Done"] = True
     #return RESULTS
-    RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
+    RESULTS = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
                                     NUTS_RESULTS_SHARES_ENERGY_BASE,
                                     NUTS_RESULTS_SHARES_ENERGY_FUTURE,
