@@ -125,8 +125,8 @@ def main(inputs_parameter_selection,
                          "adoption_sp_ene": adoption_sp_ene,
                          "new_constructions": new_buildings_distribution_method,
                          "base_year": BASE_YEAR,"target_year": int(target_year)}
-    RESULTS["Done"] = True
-    return RESULTS
+    #RESULTS["Done"] = True
+    #return RESULTS
     RESULTS, _ = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
                                     NUTS_RESULTS_GFA_FUTURE,
                                     NUTS_RESULTS_SHARES_ENERGY_BASE,
@@ -151,7 +151,8 @@ def main(inputs_parameter_selection,
                                     inputs_parameters)
     
     
-    
+    RESULTS["Done"] = True
+    return RESULTS
     print("Done")
     
     RESULTS["target_year"] = int(target_year)
