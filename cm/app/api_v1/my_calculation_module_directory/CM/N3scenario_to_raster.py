@@ -658,7 +658,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
                           
     RESULTS["Done"] = True
-    return RESULTS, 2
+    return RESULTS
     #return(energy_res, energy_nres)
             
             
