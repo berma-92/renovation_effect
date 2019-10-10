@@ -553,7 +553,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         future_ene_map = energy_tot_future_existB
         share_of_new_constructions_shown_in_map = 0
     
-    return RESULTS
+    #return RESULTS
     SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
                                             , "f4", future_ene_map  , 0)
     SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
