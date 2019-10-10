@@ -39,7 +39,7 @@ for ele in fl:
     yr = ele[1][:-4]
     try:
         yr = int(yr)
-        if yr >= 2015:
+        if yr > 2015:
             print(scen)
             if scen not in available_scenarios.keys():
                 available_scenarios[scen] = []
