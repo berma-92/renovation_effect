@@ -73,8 +73,7 @@ def main(inputs_parameter_selection,
     except:
         BUILDING_FOOTPRINT = (GFA_RES + GFA_NRES) / 4.
 
-    RESULTS["Done"] = True
-    return RESULTS
+    
 
     NUTS_id_size = NUTS_id.shape
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
@@ -92,6 +91,10 @@ def main(inputs_parameter_selection,
         yr = ele[1][:-4]
         yr_list.append(yr)
     yr_list.sort()
+    
+    RESULTS["Done"] = True
+    return RESULTS
+    
     for i in yr_list:
         if int(i) > BASE_YEAR:
             initial_yr = i
@@ -99,6 +102,7 @@ def main(inputs_parameter_selection,
     if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
         target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
+    
     
     NUTS_RESULTS_SHARES_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
     NUTS_RESULTS_SHARES_ENERGY_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
