@@ -138,7 +138,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                   output_raster_files, 
                   output_csv_result
                   )
-        result['indicator'] = [{"unit": " ", "name": "CM main ok" ,"value": "0"}]
+        result['indicator'] = [{"unit": " ", "name": "CM main ok 7" ,"value": "0"}]
         return(result)
     except Exception as e:
         RESULTS = {}
