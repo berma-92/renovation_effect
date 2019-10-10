@@ -38,8 +38,7 @@ def main(inputs_parameter_selection,
          output_csv_result):
     
     st = time.time()
-    #end_year = 2030
-    #start_year = 2012
+
     data_type = "f4"
     data_type_int = "uint32"
     local_input_dir = path + "/input_data"
