@@ -9,6 +9,7 @@ from datetime import datetime
 
 
 
+
 #path = os.path.dirname(os.path.abspath(__file__))
 SD = "my_calculation_module_directory"
 path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
@@ -121,22 +122,30 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     now = datetime.now() # current date and time
     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
     
-    
-    RESULTS = CM32.main(inputs_parameter_selection,
-              input_raster_COUNTRY_id,
-              input_raster_NUTS_id, 
-              input_raster_GFA_RES,
-              input_raster_GFA_NRES,
-              input_raster_ENERGY_RES, 
-              input_raster_ENERGY_NRES,
-              input_raster_LAU2_id,
-              input_raster_cp_share_1975, input_raster_cp_share_1990,
-              input_raster_cp_share_2000, input_raster_cp_share_2014,
-              BUILDING_FOOTPRINT,
-              output_raster_files, 
-              output_csv_result
-              )
-    
+    try:
+        
+        RESULTS = CM32.main(inputs_parameter_selection,
+                  input_raster_COUNTRY_id,
+                  input_raster_NUTS_id, 
+                  input_raster_GFA_RES,
+                  input_raster_GFA_NRES,
+                  input_raster_ENERGY_RES, 
+                  input_raster_ENERGY_NRES,
+                  input_raster_LAU2_id,
+                  input_raster_cp_share_1975, input_raster_cp_share_1990,
+                  input_raster_cp_share_2000, input_raster_cp_share_2014,
+                  BUILDING_FOOTPRINT,
+                  output_raster_files, 
+                  output_csv_result
+                  )
+        
+    except Exception as e:
+        RESULTS = {}
+        RESULTS["Done"] = False
+        RESULTS["ERROR"] = str(e)
+        
+    if "target_year" not in RESULTS.keys():
+        RESULTS["target_year"] = 0
  
          
     # %%
@@ -146,146 +155,135 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     if "Done" not in RESULTS.keys() or RESULTS['Done'] == False:
         result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured. We sincerely apologize." ,"value": "0"}]
+        result['indicator'].append({"unit": " ", "name": "Error message: %s" %RESULTS["ERROR"] ,"value": "0"})
+        
     elif "ERROR" in RESULTS.keys():
         result['indicator'] = [{"unit": "%", "name": "ERROR: %s - Max. allowed area exceeded by factor of " % RESULTS["ERROR"],"value": "%4.0f" % (RESULTS["size"] * 100)}]
     else:
-    
-        target_yr = RESULTS["target_year"]
-        base_yr = 2014
-        if (RESULTS["gfa_75_cur"] + RESULTS["gfa_80_cur"] + RESULTS["gfa_00_cur"]) < 5000:
-            unit_area = "tds. m2"
-            converter_area = 1./10**3
-        else:
-            unit_area = "Mio. m2"
-            converter_area = 1./10**6
-        if (RESULTS["ene_75_cur"] + RESULTS["ene_80_cur"] + RESULTS["ene_00_cur"]) < 50 * 10**3:
-            unit_energy = "MWh"
-            converter_ene = 1.
-        elif (RESULTS["ene_75_cur"] + RESULTS["ene_80_cur"] + RESULTS["ene_00_cur"]) > 10* 10**6:
-            unit_energy = "TWh"
-            converter_ene = 1./10**6
-        else:
-            unit_energy = "GWh"
-            converter_ene = 1./10**3
+        try:
+            target_yr = RESULTS["target_year"]
+            base_yr = 2014
+            if (RESULTS["gfa_75_cur"] + RESULTS["gfa_80_cur"] + RESULTS["gfa_00_cur"]) < 5000:
+                unit_area = "tds. m2"
+                converter_area = 1./10**3
+            else:
+                unit_area = "Mio. m2"
+                converter_area = 1./10**6
+            if (RESULTS["ene_75_cur"] + RESULTS["ene_80_cur"] + RESULTS["ene_00_cur"]) < 50 * 10**3:
+                unit_energy = "MWh"
+                converter_ene = 1.
+            elif (RESULTS["ene_75_cur"] + RESULTS["ene_80_cur"] + RESULTS["ene_00_cur"]) > 10* 10**6:
+                unit_energy = "TWh"
+                converter_ene = 1./10**6
+            else:
+                unit_energy = "GWh"
+                converter_ene = 1./10**3
+                
             
-        
-        result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
-                              {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
-                              {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
-                              {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
-                              {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
-                              {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
+            result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
+                                  {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
+                                  {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
+                                  {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
+                                  {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
+                                ]
+            
+            
+            result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
+                                  {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
+                                  {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_cur"] * converter_area)},
+                                  {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_cur"] * converter_area)},
+                                  {"unit": "", "name": "Estimated Area per Constr. Period in","value": "%s"% target_yr},
+                                  {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_fut"] * converter_area)},
+                                  {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_fut"] * converter_area)},
+                                  {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_fut"] * converter_area)},
+                                  {"unit": unit_area, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["gfa_new_fut"] * converter_area)},
+                                  {"unit": "", "name": "Estimated Energy per Constr. Period in","value": "2014"},
+                                  {"unit": unit_energy, "name": "    until 1975","value": "%4.2f" % (RESULTS["ene_75_cur"] * converter_ene)},
+                                  {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_cur"] * converter_ene)},
+                                  {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_cur"] * converter_ene)},
+                                  {"unit": "", "name": "Estimated Energy per Constr. Period in","value": "%s"% target_yr},
+                                  {"unit": unit_energy, "name": "    until 1975","value": "%4.2f" % (RESULTS["ene_75_fut"] * converter_ene)},
+                                  {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_fut"] * converter_ene)},
+                                  {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_fut"] * converter_ene)},
+                                  {"unit": unit_energy, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["ene_new_fut"] * converter_ene)},
+                                  {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period in","value": "2014"},
+                                  {"unit": "kWh/m2", "name": "    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_cur"]},
+                                  {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_cur"]},
+                                  {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_cur"]},
+                                  {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period in","value": "%s"% target_yr},
+                                  {"unit": "kWh/m2", "name": "    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_fut"]},
+                                  {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_fut"]},
+                                  {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_fut"]},
+                                   ])
+            
+            if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
+                result['indicator'].append({"unit": "kWh/m2", "name": "     2015-%s"%target_yr,"value": "%4.0f" % RESULTS["spec_ene_new_fut"]})
+            
+            result['indicator'].append({"unit": "%", "name": "Share of newly constructed buildings shown in map in %i"%target_yr,"value": "%4.1f" % RESULTS["share_of_new_constructions_shown_in_map"]})
+            
+            graphics  = [
+                    {
+                            "type": "bar",
+                            "xLabel": "Buildings per Construction Period",
+                            "yLabel": "Heated Gross Floor Area [%s]" % unit_area,
+                            "data": {
+                                    "labels": [ "until 1975 in %i" % base_yr, "until 1975 in %i" % target_yr,
+                                               "1976-1990 in %i" % base_yr, "1976-1990 in %i" % target_yr,
+                                               "1990-2014 in %i" % base_yr, "1990-2014 in %i" % target_yr,
+                                               " after 2014 in %i" % base_yr, "after 2014 in %i" % target_yr,],
+                                    "datasets": [{
+                                            "label": "Heated Gross Floor Area %i versus %i" %(base_yr, target_yr),
+                                            "backgroundColor": ["#b03a2e", "#f1948a", "#6c3483", "#bb8fce", "#2874a6", " #85c1e9 ", "#239b56", "#82e0aa"],
+                                            "data": [RESULTS["gfa_75_cur"] * converter_area, RESULTS["gfa_75_fut"] * converter_area,
+                                                     RESULTS["gfa_80_cur"] * converter_area, RESULTS["gfa_80_fut"] * converter_area,
+                                                     RESULTS["gfa_00_cur"] * converter_area, RESULTS["gfa_00_fut"] * converter_area,
+                                                     RESULTS["gfa_new_cur"] * converter_area, RESULTS["gfa_new_fut"] * converter_area]
+                                            }]
+                            }
+                    },{
+                            "type": "bar",
+                            "xLabel": "Buildings per Construction Period",
+                            "yLabel": "Energy Consumption for Heating [%s/yr]" % unit_energy,
+                            "data": {
+                                    "labels": [ "until 1975 in %i" % base_yr, "until 1975 in %i" % target_yr,
+                                               "1976-1990 in %i" % base_yr, "1976-1990 in %i" % target_yr,
+                                               "1990-2014 in %i" % base_yr, "1990-2014 in %i" % target_yr,
+                                               " after 2014 in %i" % base_yr, "after 2014 in %i" % target_yr,],
+                                    "datasets": [{
+                                            "label": "Energy Consumption for Heating and Domestic Hot Water Preparation %i versus %i" %(base_yr, target_yr),
+                                            "backgroundColor": ["#b03a2e", "#f1948a", "#6c3483", "#bb8fce", "#2874a6", " #85c1e9 ", "#239b56", "#82e0aa"],
+                                            "data": [RESULTS["ene_75_cur"] * converter_ene, RESULTS["ene_75_fut"] * converter_ene,
+                                                     RESULTS["ene_80_cur"] * converter_ene, RESULTS["ene_80_fut"] * converter_ene,
+                                                     RESULTS["ene_00_cur"] * converter_ene, RESULTS["ene_00_fut"] * converter_ene,
+                                                     RESULTS["ene_new_cur"] * converter_ene, RESULTS["ene_new_fut"] * converter_ene]
+                                            }]
+                            }
+                    }]
+            result['graphics'] = graphics
+            
+            new_construction_methode = inputs_parameter_selection["new_constructions"].lower().strip()
+            if new_construction_methode.startswith("no"):
+                mnb = "no"
+            elif new_construction_methode.startswith("replace"):
+                mnb = "replace only"
+            elif new_construction_methode.startswith("add"):
+                mnb = "all"
+            else: 
+                mnb =""
+                
+            result["raster_layers"] =[
+                                {"name": "Energy Consumption (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_energy_tot"], "type": "heat"}
+                            ,   {"name": "Heated gross floor area (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_gfa_tot"], "type": "gross_floor_area"}
                             ]
-        
-        
-        result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
-                              {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
-                              {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_cur"] * converter_area)},
-                              {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_cur"] * converter_area)},
-                              {"unit": "", "name": "Estimated Area per Constr. Period in","value": "%s"% target_yr},
-                              {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_fut"] * converter_area)},
-                              {"unit": unit_area, "name": "     1976-1990","value": "%4.2f" % (RESULTS["gfa_80_fut"] * converter_area)},
-                              {"unit": unit_area, "name": "     1990-2014","value": "%4.2f" % (RESULTS["gfa_00_fut"] * converter_area)},
-                              {"unit": unit_area, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["gfa_new_fut"] * converter_area)},
-                              {"unit": "", "name": "Estimated Energy per Constr. Period in","value": "2014"},
-                              {"unit": unit_energy, "name": "    until 1975","value": "%4.2f" % (RESULTS["ene_75_cur"] * converter_ene)},
-                              {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_cur"] * converter_ene)},
-                              {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_cur"] * converter_ene)},
-                              {"unit": "", "name": "Estimated Energy per Constr. Period in","value": "%s"% target_yr},
-                              {"unit": unit_energy, "name": "    until 1975","value": "%4.2f" % (RESULTS["ene_75_fut"] * converter_ene)},
-                              {"unit": unit_energy, "name": "     1976-1990","value": "%4.2f" % (RESULTS["ene_80_fut"] * converter_ene)},
-                              {"unit": unit_energy, "name": "     1990-2014","value": "%4.2f" % (RESULTS["ene_00_fut"] * converter_ene)},
-                              {"unit": unit_energy, "name": "     2015-%s"%target_yr,"value": "%4.2f" % (RESULTS["ene_new_fut"] * converter_ene)},
-                              {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period in","value": "2014"},
-                              {"unit": "kWh/m2", "name": "    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_cur"]},
-                              {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_cur"]},
-                              {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_cur"]},
-                              {"unit": "", "name": "Estimated specific Energy Consumption per Constr. Period in","value": "%s"% target_yr},
-                              {"unit": "kWh/m2", "name": "    until 1975","value": "%4.0f" % RESULTS["spec_ene_75_fut"]},
-                              {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_fut"]},
-                              {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_fut"]},
-                               ])
-        
-        if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
-            result['indicator'].append({"unit": "kWh/m2", "name": "     2015-%s"%target_yr,"value": "%4.0f" % RESULTS["spec_ene_new_fut"]})
-        
-        result['indicator'].append({"unit": "%", "name": "Share of newly constructed buildings shown in map in %i"%target_yr,"value": "%4.1f" % RESULTS["share_of_new_constructions_shown_in_map"]})
-        
-        graphics  = [
-                {
-                        "type": "bar",
-                        "xLabel": "Buildings per Construction Period",
-                        "yLabel": "Heated Gross Floor Area [%s]" % unit_area,
-                        "data": {
-                                "labels": [ "until 1975 in %i" % base_yr, "until 1975 in %i" % target_yr,
-                                           "1976-1990 in %i" % base_yr, "1976-1990 in %i" % target_yr,
-                                           "1990-2014 in %i" % base_yr, "1990-2014 in %i" % target_yr,
-                                           " after 2014 in %i" % base_yr, "after 2014 in %i" % target_yr,],
-                                "datasets": [{
-                                        "label": "Heated Gross Floor Area %i versus %i" %(base_yr, target_yr),
-                                        "backgroundColor": ["#b03a2e", "#f1948a", "#6c3483", "#bb8fce", "#2874a6", " #85c1e9 ", "#239b56", "#82e0aa"],
-                                        "data": [RESULTS["gfa_75_cur"] * converter_area, RESULTS["gfa_75_fut"] * converter_area,
-                                                 RESULTS["gfa_80_cur"] * converter_area, RESULTS["gfa_80_fut"] * converter_area,
-                                                 RESULTS["gfa_00_cur"] * converter_area, RESULTS["gfa_00_fut"] * converter_area,
-                                                 RESULTS["gfa_new_cur"] * converter_area, RESULTS["gfa_new_fut"] * converter_area]
-                                        }]
-                        }
-                },{
-                        "type": "bar",
-                        "xLabel": "Buildings per Construction Period",
-                        "yLabel": "Energy Consumption for Heating [%s/yr]" % unit_energy,
-                        "data": {
-                                "labels": [ "until 1975 in %i" % base_yr, "until 1975 in %i" % target_yr,
-                                           "1976-1990 in %i" % base_yr, "1976-1990 in %i" % target_yr,
-                                           "1990-2014 in %i" % base_yr, "1990-2014 in %i" % target_yr,
-                                           " after 2014 in %i" % base_yr, "after 2014 in %i" % target_yr,],
-                                "datasets": [{
-                                        "label": "Energy Consumption for Heating and Domestic Hot Water Preparation %i versus %i" %(base_yr, target_yr),
-                                        "backgroundColor": ["#b03a2e", "#f1948a", "#6c3483", "#bb8fce", "#2874a6", " #85c1e9 ", "#239b56", "#82e0aa"],
-                                        "data": [RESULTS["ene_75_cur"] * converter_ene, RESULTS["ene_75_fut"] * converter_ene,
-                                                 RESULTS["ene_80_cur"] * converter_ene, RESULTS["ene_80_fut"] * converter_ene,
-                                                 RESULTS["ene_00_cur"] * converter_ene, RESULTS["ene_00_fut"] * converter_ene,
-                                                 RESULTS["ene_new_cur"] * converter_ene, RESULTS["ene_new_fut"] * converter_ene]
-                                        }]
-                        }
-                }]
-        result['graphics'] = graphics
-        
-        new_construction_methode = inputs_parameter_selection["new_constructions"].lower().strip()
-        if new_construction_methode.startswith("no"):
-            mnb = "no"
-        elif new_construction_methode.startswith("replace"):
-            mnb = "replace only"
-        elif new_construction_methode.startswith("add"):
-            mnb = "all"
-        else: mnb =""
-            
-            
-            
-        result["raster_layers"] =[
-                            {"name": "Energy Consumption (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_energy_tot"], "type": "heat"}
-                        ,   {"name": "Heated gross floor area (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_gfa_tot"], "type": "gross_floor_area"}
-                        ]
-                        # ,   {"name": "Energy Consumption in %i compared to 2014" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Energy Consumption of (excl. buildings constructed after 2014) in %i"% target_yr}]}
-                        # ,   {"name": "Heated gross floor area in %i" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Heated gross floor area (excl. buildings constructed after 2014) in %i"% target_yr}]}
-                        #    ]
+                            # ,   {"name": "Energy Consumption in %i compared to 2014" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Energy Consumption of (excl. buildings constructed after 2014) in %i"% target_yr}]}
+                            # ,   {"name": "Heated gross floor area in %i" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Heated gross floor area (excl. buildings constructed after 2014) in %i"% target_yr}]}
+                            #    ]
 
+        except Exception as e:
+            result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured in the results handling. We sincerely apologize." ,"value": "0"}]
+            result['indicator'].append({"unit": " ", "name": "Error message: %s" %str(e) ,"value": "0"})
     
-        """
-        if total_potential > 0:
-            output_shp2 = create_zip_shapefiles(output_directory, output_shp2)
-            result["raster_layers"]=[{"name": "district heating coherent areas","path": output_raster1, "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"DH Areas"}]}]
-            result["vector_layers"]=[{"name": "shapefile of coherent areas with their potential","path": output_shp2}]
-        result['graphics'] = graphics
-        
-        
-        #TODO to create zip from shapefile use create_zip_shapefiles from the helper before sending result
-        #TODO exemple  output_shpapefile_zipped = create_zip_shapefiles(output_directory, output_shpapefile)
-        
-        
-        result['vector_layers'] = vector_layers
-        result['raster_layers'] = [{"name": "layers of heat_densiy {}".format(factor),"path": output_raster1} ]
-        """
     
     if direct_call_calc_mdoule == True:
         with open("%s/indicators.csv" % (output_directory), "w") as fn:
