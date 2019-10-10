@@ -99,6 +99,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     AREA_PER_CP = np.zeros((2,4), dtype="f4") 
     ENERGY_PER_CP = np.zeros((2,4), dtype="f4")
+    return RESULTS
     for i in range(2):
         energy_current = np.zeros_like(cp_share_1975)
         energy_future = np.zeros_like(cp_share_1975)
