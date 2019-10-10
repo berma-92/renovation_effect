@@ -440,7 +440,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                                                 , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr_initial_year) , 0)
             SaveLayerDict = expLyr(SaveLayerDict)
 
-    return RESULTS
+    #return RESULTS
     demand_new_build = (NUTS_RESULTS_ENERGY_FUTURE_abs['ene_sfh_2017__']
                            + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_mfh_2017__']
                            + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_nres_2017__'] + 0.001)
@@ -493,7 +493,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
     
     ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1]) / 1000
-
+    return RESULTS
     ########################
     #
     # Calculate distribution of new buildings
