@@ -36,8 +36,6 @@ def main(inputs_parameter_selection,
          input_raster_BUILDING_FOOTPRINT,
          output_raster_files,
          output_csv_result):
-    
-    st = time.time()
 
     data_type = "f4"
     data_type_int = "uint32"
@@ -54,6 +52,12 @@ def main(inputs_parameter_selection,
         RESULTS["target_year"] = int(target_year)
         RESULTS["Done"] = True
         return RESULTS
+    
+    
+    RESULTS = {}
+    RESULTS["Done"] = True
+    return RESULTS
+    
     
     NUTS_id, gt = RA(input_raster_NUTS_id, dType=data_type_int, return_gt=True)
     GFA_RES = RA(input_raster_GFA_RES, dType=data_type)
