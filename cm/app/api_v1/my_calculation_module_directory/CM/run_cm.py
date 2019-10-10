@@ -73,12 +73,14 @@ def main(inputs_parameter_selection,
     except:
         BUILDING_FOOTPRINT = (GFA_RES + GFA_NRES) / 4.
 
+    RESULTS["Done"] = True
+    return RESULTS
 
     NUTS_id_size = NUTS_id.shape
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
     cp_share_2000_and_2014 = np.minimum(cp_share_2000_and_2014, 1 - cp_share_1990 - cp_share_1975)
 
-    
+
     #Check if target year is available for scenario
     yr_list = []
     
