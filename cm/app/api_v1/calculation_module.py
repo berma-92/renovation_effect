@@ -42,9 +42,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         from ..constant import CM_NAME
     else:
         CM_NAME = 'CM Effect of renovation'
-    result = {}
-    result['indicator'] = [{"unit": "%", "name": "Test." ,"value": "0"}]
-    return result
+    
     # ***************************** input parameters**************************
     # e.g.: sector = inputs_parameter_selection["sector"]
     
