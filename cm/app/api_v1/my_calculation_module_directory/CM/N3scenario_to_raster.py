@@ -51,12 +51,11 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , output_csv_result
                             , add_inputs_parameters):
 
-    return {}
     RESULTS = {}
     RESULTS["Done"] = False
 
 
-    return RESULTS
+    
 
 
     adoption_bgf = add_inputs_parameters["adoption_bgf"]
@@ -77,7 +76,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     output_raster_gfa_nres_rel = output_raster_files["output_raster_gfa_nres_rel"] 
     output_raster_gfa_tot = output_raster_files["output_raster_gfa_tot"] 
     output_raster_gfa_tot_rel = output_raster_files["output_raster_gfa_tot_rel"] 
-    
+    return RESULTS
     
     output_path = os.path.dirname(os.path.abspath(output_raster_energy_res))
     if os.path.exists(output_path) == False:
