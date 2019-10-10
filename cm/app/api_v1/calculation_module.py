@@ -121,7 +121,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     now = datetime.now() # current date and time
     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
-    
+    result = dict()
     try:
         
         RESULTS = CM32.main(inputs_parameter_selection,
@@ -138,19 +138,21 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                   output_raster_files, 
                   output_csv_result
                   )
-        
+        result['indicator'] = [{"unit": " ", "name": "loop 1" ,"value": "0"}]
+        return(result)
     except Exception as e:
         RESULTS = {}
         RESULTS["Done"] = False
         RESULTS["ERROR"] = str(e)
-        
+        result['indicator'] = [{"unit": " ", "name": "loop error" ,"value": "0"}]
+        return(result)
     if "target_year" not in RESULTS.keys():
         RESULTS["target_year"] = 0
  
          
     # %%
     # here you should also define the symbology for the output raster
-    result = dict()
+    
     
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     if "Done" not in RESULTS.keys() or RESULTS['Done'] == False:
