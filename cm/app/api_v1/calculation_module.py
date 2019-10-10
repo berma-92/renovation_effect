@@ -42,7 +42,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         from ..constant import CM_NAME
     else:
         CM_NAME = 'CM Effect of renovation'
-    
+    result = {}
+    result['indicator'] = [{"unit": "%", "name": "Test." ,"value": "0"}]
+    return result
     # ***************************** input parameters**************************
     # e.g.: sector = inputs_parameter_selection["sector"]
     
@@ -273,8 +275,10 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 mnb =""
                 
             result["raster_layers"] =[
-                                {"name": "Energy Consumption (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_energy_tot"], "type": "heat"}
-                            ,   {"name": "Heated gross floor area (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_gfa_tot"], "type": "gross_floor_area"}
+                                {"name": "Energy Consumption (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),
+                                        "path": output_raster_files["output_raster_energy_tot"], "type": "heat"}
+                            ,   {"name": "Heated gross floor area (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),
+                                        "path": output_raster_files["output_raster_gfa_tot"], "type": "gross_floor_area"}
                             ]
                             # ,   {"name": "Energy Consumption in %i compared to 2014" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Energy Consumption of (excl. buildings constructed after 2014) in %i"% target_yr}]}
                             # ,   {"name": "Heated gross floor area in %i" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Heated gross floor area (excl. buildings constructed after 2014) in %i"% target_yr}]}
