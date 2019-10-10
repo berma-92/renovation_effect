@@ -500,6 +500,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     #
     ########################
     new_construction_methode = add_inputs_parameters["new_constructions"].lower().strip()
+    return RESULTS
     if new_construction_methode.startswith("no"):
         future_gfa_map = gfa_tot_future_existB
         future_ene_map = energy_tot_future_existB
