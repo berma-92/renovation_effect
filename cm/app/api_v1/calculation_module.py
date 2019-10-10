@@ -4,6 +4,10 @@ import sys
 import glob
 
 
+from datetime import datetime
+
+
+
 
 #path = os.path.dirname(os.path.abspath(__file__))
 SD = "my_calculation_module_directory"
@@ -15,14 +19,7 @@ verbose = False
 """ Entry point of the calculation module function"""
 if path not in sys.path:
     sys.path.append(path)
-"""
-try:
-    from ..helper import generate_output_file_tif
-    from ..helper import generate_output_file_csv
-    from ..helper import create_zip_shapefiles
-    from ..constant import CM_NAME
-#from ..exceptions import ValidationError, EmptyRasterError
-"""
+
 CM_NAME = 'CM Effect of renovation'
 #    pass
 import CM.run_cm as CM32
@@ -120,6 +117,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     output_raster_files["output_raster_gfa_nres_rel"] = output_raster_gfa_nres_rel
     output_raster_files["output_raster_gfa_tot"] = output_raster_gfa_tot
     output_raster_files["output_raster_gfa_tot_rel"] = output_raster_gfa_tot_rel
+    
+    now = datetime.now() # current date and time
+    date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
     
     
     RESULTS = CM32.main(inputs_parameter_selection,
@@ -250,9 +250,21 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                         }
                 }]
         result['graphics'] = graphics
+        
+        new_construction_methode = inputs_parameter_selection["new_constructions"].lower().strip()
+        if new_construction_methode.startswith("no"):
+            mnb = "no"
+        elif new_construction_methode.startswith("replace"):
+            mnb = "replace only"
+        elif new_construction_methode.startswith("add"):
+            mnb = "all"
+        else: mnb =""
+            
+            
+            
         result["raster_layers"] =[
-                            {"name": "Energy Consumption (excluding buildings constr. after 2014) in %i" % target_yr,"path": output_raster_files["output_raster_energy_tot"], "type": "heat"}
-                        ,   {"name": "Heated gross floor area (excluding buildings constr. after 2014) in %i" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "gross_floor_area"}
+                            {"name": "Energy Consumption (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_energy_tot"], "type": "heat"}
+                        ,   {"name": "Heated gross floor area (Buildings constr. after 2014: %s) in %i (%s)" % (mnb, target_yr, date_time),"path": output_raster_files["output_raster_gfa_tot"], "type": "gross_floor_area"}
                         ]
                         # ,   {"name": "Energy Consumption in %i compared to 2014" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Energy Consumption of (excl. buildings constructed after 2014) in %i"% target_yr}]}
                         # ,   {"name": "Heated gross floor area in %i" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Heated gross floor area (excl. buildings constructed after 2014) in %i"% target_yr}]}
