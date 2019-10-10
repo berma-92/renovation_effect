@@ -10,7 +10,6 @@ This script has been created in the context of the Hotmaps EU project.
 import numpy as np
 import time
 import os, sys
-from scipy import ndimage
 import pyximport
 pyximport.install()
 
@@ -30,7 +29,7 @@ def getData(fn, geotransform_obj, size, data_type):
     return ARR
 
                             
-                            
+"""
 def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , NUTS_RESULTS_GFA_FUTURE
                             , NUTS_RESULTS_ENERGY_BASE
@@ -56,6 +55,29 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , output_raster_files
                             , output_csv_result
                             , add_inputs_parameters):
+"""    
+
+def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
+                            , NUTS_RESULTS_GFA_FUTURE
+                            , NUTS_RESULTS_ENERGY_BASE
+                            , NUTS_RESULTS_ENERGY_FUTURE
+                            , NUTS_RESULTS_ENERGY_FUTURE_abs
+                            , COUNTRY_id
+                            , NUTS_id
+                            , LAU2_id
+                            , cp_share_1975
+                            , cp_share_1990
+                            , cp_share_2014
+                            , BUILDING_FOOTPRINT
+                            , ENERGY_RES
+                            , ENERGY_NRES
+                            , GFA_RES
+                            , GFA_NRES
+                            , geotransform_obj, size
+                            , csv_data_table
+                            , output_raster_files
+                            , output_csv_result
+                            , add_inputs_parameters):
     
     """
     idx = NUTS_id < 1
@@ -65,7 +87,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     """
     
    
-              
+    RESULTS = {}
+    RESULTS["Done"] = False
 
     adoption_bgf = add_inputs_parameters["adoption_bgf"]
     adoption_sp_ene = add_inputs_parameters["adoption_sp_ene"]
@@ -98,9 +121,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     energy_tot_future_existB = np.zeros_like(cp_share_1975)
     energy_tot_curr = np.zeros_like(cp_share_1975)
     gfa_tot_future_existB = np.zeros_like(cp_share_1975)
-    gfa_tot_curr = np.zeros_like(cp_share_1975)
+    gfa_tot_curr_initial_year = np.zeros_like(cp_share_1975)
     
-    RESULTS = {}
+    
     _gfa_cur__ = 0
     _gfa_fut__ = 0
     _ene_cur__ = 0
@@ -432,8 +455,11 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         energy_tot_future_existB += energy_future
         energy_tot_curr += ENERGY
         
+        if (area_future > BGF_intial).any():
+            print("CHECK AREA FUTURE")
         gfa_tot_future_existB += area_future
-        gfa_tot_curr += BGF_intial
+        gfa_tot_curr_initial_year += BGF_intial
+        
         if export__debug == True:
             SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
                                                 , "f4", energy_tot_future_existB  , 0)
@@ -442,12 +468,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
                                                 , "f4", gfa_tot_future_existB  , 0)
             SaveLayerDict["AD"] =   (output_raster_gfa_tot_rel, geotransform_obj
-                                                , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr) , 0)
+                                                , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr_initial_year) , 0)
             SaveLayerDict = expLyr(SaveLayerDict)
 
-    header_names = NUTS_RESULTS_ENERGY_FUTURE_abs.dtype.names[0] 
-    
-    
+
     demand_new_build = (NUTS_RESULTS_ENERGY_FUTURE_abs['ene_sfh_2017__']
                            + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_mfh_2017__']
                            + NUTS_RESULTS_ENERGY_FUTURE_abs['ene_nres_2017__'] + 0.001)
@@ -457,15 +481,16 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                            + NUTS_RESULTS_GFA_FUTURE['gfa_nres_2017__'] + 0.00001)
  
     area_total_buildings_target = NUTS_RESULTS_GFA_FUTURE['gfa_total'] + 0.00001 
-    area_existing_buildings = (NUTS_RESULTS_GFA_FUTURE['gfa_total_2017'] + 0.00001)
-    
-    
+    area_existing_buildings_initial_yr = (NUTS_RESULTS_GFA_FUTURE['gfa_total_2017'] + 0.00001)
     
     """
         BGF New buildings
     """
-    AREA_NEW_BUILD_per_existing_area = np.minimum(1, (area_total_buildings_target / (0.000001+area_existing_buildings)))
-    AREA_NEW = gfa_tot_curr * (1 + AREA_NEW_BUILD_per_existing_area[NUTS_id]) - gfa_tot_future_existB
+    
+    
+    AREA_NEW_BUILD_per_existing_area = area_total_buildings_target / (0.000001+area_existing_buildings_initial_yr) # Total area in target year / total area in intial year
+    AREA_NEW = np.maximum(0, gfa_tot_curr_initial_year * (AREA_NEW_BUILD_per_existing_area[np.maximum(1,NUTS_id) - 1]) - gfa_tot_future_existB)
+    
     
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA_NEW, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(AREA_NEW, NUTS_id)
@@ -485,7 +510,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         Energy New buildings
     """
     DEMAND_NEW_BUILD_per_area = (demand_new_build / area_new_buildings)
-    DEMAND_NEW = AREA_NEW * DEMAND_NEW_BUILD_per_area[NUTS_id]
+    DEMAND_NEW = AREA_NEW * DEMAND_NEW_BUILD_per_area[np.maximum(1,NUTS_id) - 1]
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(DEMAND_NEW, LAU2_id)
     TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(DEMAND_NEW, NUTS_id)
     TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(DEMAND_NEW, COUNTRY_id)
@@ -510,43 +535,48 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         future_gfa_map = gfa_tot_future_existB
         future_ene_map = energy_tot_future_existB
         share_of_new_constructions_shown_in_map = 0
-    elif new_construction_methode.startswith("replace"):
-        future_gfa_map = np.minimum(gfa_tot_future_existB + AREA_NEW, gfa_tot_curr) 
-        share_new_build =  (future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW) # calculate for each cell: share of distributed new area vs total new AREA
+    elif new_construction_methode.startswith("replace") or new_construction_methode.startswith("add"):
+        future_gfa_map = np.minimum(gfa_tot_future_existB + AREA_NEW, gfa_tot_curr_initial_year) # future gfa if new area only replaces existing one
+        share_new_build =  np.maximum(0, future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW) # calculate for each cell: share of distributed new area vs total new AREA
         print(np.max(share_new_build))
         print(np.min(share_new_build))
         future_ene_map = energy_tot_future_existB + share_new_build * DEMAND_NEW 
-        share_of_new_constructions_shown_in_map = np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, np.sum(AREA_NEW))
-    elif new_construction_methode.startswith("add"):
-        #Not fully implemented yet
-        future_gfa_map = np.minimum(gfa_tot_future_existB + AREA_NEW, gfa_tot_curr) 
-        share_new_build =  (future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, AREA_NEW) # calculate for each cell: share of distributed new area vs total new AREA
-        print(np.max(share_new_build))
-        print(np.min(share_new_build))
-        future_ene_map = energy_tot_future_existB + share_new_build * DEMAND_NEW 
-        share_of_new_constructions_shown_in_map = np.maximum(0, np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, np.sum(AREA_NEW)))
+        share_of_new_constructions_shown_in_map = np.maximum(0, np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, np.sum(AREA_NEW))) 
+        print(np.sum(future_gfa_map))
+        if new_construction_methode.startswith("add"):
+            
         
-        max_add_floor_by_increase_floors = 0.15 * gfa_tot_curr
-        if (target_year - base_year) <= 20:
-            size_ = 3
-        else:
-            size_ = 5
-        calculated_average_of_neigbhors = ndimage.generic_filter(BUILDING_FOOTPRINT, np.nanmean, size=size_, mode='constant', cval=np.NaN)
-        max_add_floor_new_areas = (gfa_tot_curr / np.maximum(0.00001, BUILDING_FOOTPRINT) * 
-                                    np.minimum(calculated_average_of_neigbhors * ((target_year - base_year)/80), np.maximum(0.6 - BUILDING_FOOTPRINT / 10000,0)))
-        
-        upper_limit_additional_area = max_add_floor_by_increase_floors + max_add_floor_new_areas
-        
-        missing_new_build_area = share_of_new_constructions_shown_in_map * np.sum(AREA_NEW)
-        
-        exloitation_rate_of_limit = np.sum(missing_new_build_area) / np.sum(upper_limit_additional_area)
-        
-        add_new_gfa = exloitation_rate_of_limit * upper_limit_additional_area
-        future_gfa_map += add_new_gfa
-        
-        ene_new_buildings = (future_gfa_map - gfa_tot_future_existB) * DEMAND_NEW_BUILD_per_area[NUTS_id]
-        
-        future_ene_map = energy_tot_future_existB + ene_new_buildings
+            max_add_floor_by_increase_floors = 0.15 * gfa_tot_curr_initial_year
+            """if (target_year - base_year) <= 20:
+                size_ = 3
+            else:
+                size_ = 5
+            """
+            #print(1)
+            #calculated_average_of_neigbhors = ndimage.generic_filter(BUILDING_FOOTPRINT, np.nanmean, size=size_, mode='constant', cval=np.NaN)
+            calculated_average_of_neigbhors = np.zeros_like(BUILDING_FOOTPRINT)
+            calculated_average_of_neigbhors[:,:] += BUILDING_FOOTPRINT
+            for row in range(-1,2):
+                for col in range(-1,2):
+                    calculated_average_of_neigbhors[2:-2,2:-2] += BUILDING_FOOTPRINT[2+row:-2+row,2+col:-2+col]
+            calculated_average_of_neigbhors = np.maximum(calculated_average_of_neigbhors / 9, BUILDING_FOOTPRINT)
+            #print(2)
+            max_add_floor_new_areas = (gfa_tot_curr_initial_year / np.maximum(0.00001, BUILDING_FOOTPRINT) * 
+                                        np.minimum(calculated_average_of_neigbhors * ((target_year - base_year)/80), np.maximum(0.6*4 - BUILDING_FOOTPRINT / 10000,0)))
+            upper_limit_additional_area = max_add_floor_by_increase_floors + max_add_floor_new_areas
+            
+            missing_new_build_area = (1 - share_of_new_constructions_shown_in_map) * np.sum(AREA_NEW)
+            
+            exloitation_rate_of_limit = np.sum(missing_new_build_area) / np.sum(upper_limit_additional_area)
+            
+            add_new_gfa = exloitation_rate_of_limit * upper_limit_additional_area
+            future_gfa_map += add_new_gfa
+            
+            ene_new_buildings = (future_gfa_map - gfa_tot_future_existB) * DEMAND_NEW_BUILD_per_area[np.maximum(1,NUTS_id) - 1]
+            
+            future_ene_map = energy_tot_future_existB + ene_new_buildings
+            
+            share_of_new_constructions_shown_in_map = np.minimum(1.01, np.sum(future_gfa_map - gfa_tot_future_existB) / np.maximum(0.0001, np.sum(AREA_NEW)))
         
     else:
         future_gfa_map = gfa_tot_future_existB
@@ -621,11 +651,14 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     _ene_fut__ += ENERGY_PER_CP[1,3]
     
     RESULTS["gfa_cur"] = _gfa_cur__
+    
+    RESULTS["gfa_cur"] = _gfa_cur__
     RESULTS["gfa_fut"] = _gfa_fut__
     RESULTS["ene_cur"] = _ene_cur__
     RESULTS["ene_fut"] = _ene_fut__
     RESULTS["spe_ene_cur"] = _ene_cur__ / _gfa_cur__ * 1000
     RESULTS["spe_ene_fut"] = _ene_fut__ / _gfa_fut__ * 1000
+    RESULTS["share_of_new_constructions_shown_in_map"] = share_of_new_constructions_shown_in_map * 100
     
     
     RESULTS["gfa_75_fut"] = AREA_PER_CP[1,0]
@@ -659,7 +692,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
 
     
                           
-                          
+    RESULTS["Done"] = True
     return RESULTS, 2
     #return(energy_res, energy_nres)
             

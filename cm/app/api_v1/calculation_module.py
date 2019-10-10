@@ -144,7 +144,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result = dict()
     
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
-    if "ERROR" in RESULTS.keys():
+    if "Done" not in RESULTS.keys() or RESULTS['Done'] == False:
+        result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured. We sincerely apologize." ,"value": "0"}]
+    elif "ERROR" in RESULTS.keys():
         result['indicator'] = [{"unit": "%", "name": "ERROR: %s - Max. allowed area exceeded by factor of " % RESULTS["ERROR"],"value": "%4.0f" % (RESULTS["size"] * 100)}]
     else:
     
@@ -207,7 +209,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
             result['indicator'].append({"unit": "kWh/m2", "name": "     2015-%s"%target_yr,"value": "%4.0f" % RESULTS["spec_ene_new_fut"]})
         
-        num_bars = 8   
+        result['indicator'].append({"unit": "%", "name": "Share of newly constructed buildings shown in map in %i"%target_yr,"value": "%4.1f" % RESULTS["share_of_new_constructions_shown_in_map"]})
+        
         graphics  = [
                 {
                         "type": "bar",
@@ -358,7 +361,7 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_77'] = "100"
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
-        inputs_parameter_selection['new_constructions'] = "No new buildings"
+        inputs_parameter_selection['new_constructions'] = "Add all new buildings"
 
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
         fl.sort()
@@ -372,7 +375,7 @@ if __name__ == '__main__':
             yr = ele[1][:-4]
             try: 
                 yr_int = int(yr)
-                if yr_int >= 2014:
+                if yr_int > 2015:
                     print(scen)
                     if scen not in available_scenarios.keys():
                         available_scenarios[scen] = []
@@ -385,7 +388,7 @@ if __name__ == '__main__':
         year_list = sorted(list(set(available_years)))
         
         
-        inputs_parameter_selection['scenario'] = "cheetah_reference_hsagent"
+        inputs_parameter_selection['scenario'] = scenario_list[0]
         inputs_parameter_selection['target_year'] = "2030"
             
         output_directory = test_dir + "/output"
