@@ -559,7 +559,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
                                         , "f4", future_gfa_map  , 0)
     SaveLayerDict = expLyr(SaveLayerDict)
-            
+    return RESULTS
             
             
     """
