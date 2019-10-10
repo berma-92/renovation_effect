@@ -138,13 +138,13 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                   output_raster_files, 
                   output_csv_result
                   )
-        result['indicator'] = [{"unit": " ", "name": "CM main ok 14" ,"value": "0"}]
+        result['indicator'] = [{"unit": " ", "name": "CM main ok 15" ,"value": "0"}]
         return(result)
     except Exception as e:
         RESULTS = {}
         RESULTS["Done"] = False
         RESULTS["ERROR"] = str(e)
-        result['indicator'] = [{"unit": " ", "name": "CM main error 14" ,"value": "0"}]
+        result['indicator'] = [{"unit": " ", "name": "CM main error 15" ,"value": "0"}]
         return(result)
     if "target_year" not in RESULTS.keys():
         RESULTS["target_year"] = 0
