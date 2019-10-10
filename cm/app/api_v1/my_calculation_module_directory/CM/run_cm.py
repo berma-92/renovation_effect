@@ -68,10 +68,10 @@ def main(inputs_parameter_selection,
     cp_share_1990 = RA(input_raster_cp_share_1990, dType=data_type)
     cp_share_2000 = RA(input_raster_cp_share_2000, dType=data_type)
     cp_share_2014 = RA(input_raster_cp_share_2014, dType=data_type)
+    
+    BUILDING_FOOTPRINT = RA(input_raster_BUILDING_FOOTPRINT, dType=data_type)
     RESULTS["Done"] = True
     return RESULTS
-    BUILDING_FOOTPRINT = RA(input_raster_BUILDING_FOOTPRINT, dType=data_type)
-    
     NUTS_id_size = NUTS_id.shape
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
     cp_share_2000_and_2014 = np.minimum(cp_share_2000_and_2014, 1 - cp_share_1990 - cp_share_1975)
