@@ -500,7 +500,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     #
     ########################
     new_construction_methode = add_inputs_parameters["new_constructions"].lower().strip()
-    return RESULTS
+    #return RESULTS
     if new_construction_methode.startswith("no"):
         future_gfa_map = gfa_tot_future_existB
         future_ene_map = energy_tot_future_existB
@@ -553,7 +553,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         future_ene_map = energy_tot_future_existB
         share_of_new_constructions_shown_in_map = 0
     
-    #return RESULTS
+    return RESULTS
     SaveLayerDict["AA"] =   (output_raster_energy_tot, geotransform_obj
                                             , "f4", future_ene_map  , 0)
     SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
@@ -618,7 +618,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         print("Done")
     except:
         pass
-    
+    sfg
     _gfa_fut__ += AREA_PER_CP[1,3]
     _ene_fut__ += ENERGY_PER_CP[1,3]
     
