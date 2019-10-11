@@ -125,9 +125,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     try:
         if "new_constructions" not in inputs_parameter_selection.keys():
             inputs_parameter_selection["new_constructions"] = "No new buildings"
-            
             result['indicator'] = [{"unit": " ", "name": "CM main no new construction" ,"value": "0"}]
-            return(result)
+            #return(result)
         RESULTS = CM32.main(inputs_parameter_selection,
                   input_raster_COUNTRY_id,
                   input_raster_NUTS_id, 
@@ -142,13 +141,14 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                   output_raster_files, 
                   output_csv_result
                   )
-        result['indicator'] = [{"unit": " ", "name": "CM main ok 21" ,"value": "0"}]
-        return(result)
+        #result['indicator'] = [{"unit": " ", "name": "CM main ok 22" ,"value": "0"}]
+        #return(result)
     except Exception as e:
         RESULTS = {}
         RESULTS["Done"] = False
         RESULTS["ERROR"] = str(e)
-        result['indicator'] = [{"unit": " ", "name": "CM main error 21" ,"value": "0"}]
+        result['indicator'] = [{"unit": " ", "name": "CM main error 22" ,"value": "0"}]
+        result['indicator'] = [{"unit": " ", "err": "---%s --" % RESULTS["ERROR"] ,"value": "0"}]
         return(result)
     if "target_year" not in RESULTS.keys():
         RESULTS["target_year"] = 0
