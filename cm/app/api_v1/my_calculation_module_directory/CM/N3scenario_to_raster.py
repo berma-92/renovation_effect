@@ -559,63 +559,65 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     SaveLayerDict["AC"] =   (output_raster_gfa_tot, geotransform_obj
                                         , "f4", future_gfa_map  , 0)
     SaveLayerDict = expLyr(SaveLayerDict)
-    return RESULTS
+    #return RESULTS
             
-            
-    """
-    TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
-    TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)
-    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(BGF_intial, COUNTRY_id)
-    col += 1 
-    header[col+oL] = "Future Demand LAU NEW_build"
-    csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
-    #col += 1
-    header[col+oN] = "Future Demand NUTS NEW_build"
-    csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
-    header[col+oC] = "Future Demand Country NewBuild"
-    csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
-    """
-    #INITIAL DEMAND JUST TO CHECK DATA
-    
-    TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
-    TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
-    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(ENERGY, COUNTRY_id)
-    col += 1 
-    header[col+oL] = "INITIAL Demand LAU RES"
-    csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
-    #col += 1
-    header[col+oN] = "INITIAL Demand NUTS RES"
-    csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
-    header[col+oC] = "INITIAL Demand Country RES"
-    csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
-    """
-    TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
-    TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
-    TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(ENERGY, COUNTRY_id)
-    col += 1 
-    header[col+oL] = "INITIAL Demand LAU nRES"
-    csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
-    #col += 1
-    header[col+oN] = "INITIAL Demand NUTS nRES"
-    csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
-    header[col+oC] = "INITIAL Demand Country RES"
-    csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
-    #"""     
-    
-    
-    fn_out_csv = "%s" % output_csv_result
-    notempty = csv_results[:, 1] > 0.1                   
-    header_ = ""
-    for k in range(csv_results.shape[1]):
-        if k in header.keys():
-            header_ += header[k] 
-        header_ += ","
-    try:
-        np.savetxt(fn_out_csv, csv_results[notempty, :], delimiter = ",", header = header_, comments="")
+    try:        
+        """
+        TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
+        TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(BGF_intial, COUNTRY_id)
+        col += 1 
+        header[col+oL] = "Future Demand LAU NEW_build"
+        csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
+        #col += 1
+        header[col+oN] = "Future Demand NUTS NEW_build"
+        csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
+        header[col+oC] = "Future Demand Country NewBuild"
+        csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
+        """
+        #INITIAL DEMAND JUST TO CHECK DATA
+        
+        TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
+        TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(ENERGY, COUNTRY_id)
+        col += 1 
+        header[col+oL] = "INITIAL Demand LAU RES"
+        csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
+        #col += 1
+        header[col+oN] = "INITIAL Demand NUTS RES"
+        csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
+        header[col+oC] = "INITIAL Demand Country RES"
+        csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
+        """
+        TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(ENERGY, LAU2_id)
+        TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(ENERGY, NUTS_id)
+        TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(ENERGY, COUNTRY_id)
+        col += 1 
+        header[col+oL] = "INITIAL Demand LAU nRES"
+        csv_results[:,col+oL] = TABLE_RESULTS_LAU[:,1]
+        #col += 1
+        header[col+oN] = "INITIAL Demand NUTS nRES"
+        csv_results[:,col+oN] = TABLE_RESULTS_NUTS[NUTS3_ID,1]
+        header[col+oC] = "INITIAL Demand Country RES"
+        csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
+        #"""     
+        
+        
+        fn_out_csv = "%s" % output_csv_result
+        notempty = csv_results[:, 1] > 0.1                   
+        header_ = ""
+        for k in range(csv_results.shape[1]):
+            if k in header.keys():
+                header_ += header[k] 
+            header_ += ","
+        try:
+            np.savetxt(fn_out_csv, csv_results[notempty, :], delimiter = ",", header = header_, comments="")
+        except:
+            pass
+        
+        print("Done")
     except:
         pass
-    
-    print("Done")
     
     _gfa_fut__ += AREA_PER_CP[1,3]
     _ene_fut__ += ENERGY_PER_CP[1,3]
