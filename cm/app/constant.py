@@ -74,7 +74,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_area_77',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 50,
+     'input_min': 25,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -83,7 +83,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_area_80',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 50,
+     'input_min': 25,
      'input_max': 200,
      'cm_id': CM_ID
      }, 
@@ -92,7 +92,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_area_00',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 50,
+     'input_min': 25,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -101,7 +101,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_sp_ene_77',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 50,
+     'input_min': 25,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -110,7 +110,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_sp_ene_80',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 50,
+     'input_min': 25,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -119,7 +119,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_sp_ene_00',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 50,
+     'input_min': 25,
      'input_max': 200,
      'cm_id': CM_ID
      },
