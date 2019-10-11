@@ -126,7 +126,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         if "new_constructions" not in inputs_parameter_selection.keys():
             inputs_parameter_selection["new_constructions"] = "No new buildings"
             result['indicator'] = [{"unit": " ", "name": "CM main no new construction" ,"value": "0"}]
-            #return(result)
+
         RESULTS = CM32.main(inputs_parameter_selection,
                   input_raster_COUNTRY_id,
                   input_raster_NUTS_id, 

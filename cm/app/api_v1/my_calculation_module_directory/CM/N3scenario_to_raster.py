@@ -561,7 +561,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     SaveLayerDict = expLyr(SaveLayerDict)
     #return RESULTS
             
-    try:        
+    if 0==1:        
         """
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(BGF_intial, LAU2_id)
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(BGF_intial, NUTS_id)
@@ -616,8 +616,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             pass
         
         print("Done")
-    except:
-        pass
     
     _gfa_fut__ += AREA_PER_CP[1,3]
     _ene_fut__ += ENERGY_PER_CP[1,3]
