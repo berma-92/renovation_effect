@@ -661,11 +661,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     RESULTS["spec_ene_75_cur"] = RESULTS["ene_75_cur"] / RESULTS["gfa_75_cur"] * 1000
     RESULTS["spec_ene_80_cur"] = RESULTS["ene_80_cur"] / RESULTS["gfa_80_cur"] * 1000
     RESULTS["spec_ene_00_cur"] = RESULTS["ene_00_cur"] / RESULTS["gfa_00_cur"] * 1000
-
     
-                          
     RESULTS["Done"] = True
     return RESULTS
-    #return(energy_res, energy_nres)
+    
             
             

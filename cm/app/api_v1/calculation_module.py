@@ -147,8 +147,6 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         RESULTS = {}
         RESULTS["Done"] = False
         RESULTS["ERROR"] = str(e)
-        result['indicator'] = [{"unit": " ", "name": "CM main error 22" ,"value": "0"}]
-        result['indicator'] = [{"unit": " ", "err": "---%s --" % RESULTS["ERROR"] ,"value": "0"}]
         return(result)
     if "target_year" not in RESULTS.keys():
         RESULTS["target_year"] = 0
@@ -160,10 +158,10 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     if "Done" not in RESULTS.keys() or RESULTS['Done'] == False:
         result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured. We sincerely apologize." ,"value": "0"}]
-        result['indicator'].append({"unit": " ", "name": "Error message: %s" %RESULTS["ERROR"] ,"value": "0"})
+        result['indicator'].append({"unit": " ", "name": "Error message: -- %s --" %RESULTS["ERROR"] ,"value": "0"})
         
-    elif "ERROR" in RESULTS.keys():
-        result['indicator'] = [{"unit": "%", "name": "ERROR: %s - Max. allowed area exceeded by factor of " % RESULTS["ERROR"],"value": "%4.0f" % (RESULTS["size"] * 100)}]
+    elif "ERRORSIZE" in RESULTS.keys():
+        result['indicator'] = [{"unit": "%", "name": "ERROR: %s - Max. allowed area exceeded by factor of " % RESULTS["ERRORSIZE"],"value": "%4.0f" % (RESULTS["size"] * 100)}]
     else:
         try:
             target_yr = RESULTS["target_year"]

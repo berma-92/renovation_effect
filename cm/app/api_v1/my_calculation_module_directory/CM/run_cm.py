@@ -47,7 +47,7 @@ def main(inputs_parameter_selection,
     Country_id = RA(input_raster_Country_id, dType=data_type_int)
     if Country_id.size > (MAX_SIZE):
         RESULTS = {}
-        RESULTS["ERROR"] = "Selected region is to large, please reduce the select area!"
+        RESULTS["ERRORSIZE"] = "Selected region is to large, please reduce the select area!"
         RESULTS["size"] =  Country_id.size / (MAX_SIZE)
         RESULTS["target_year"] = int(target_year)
         RESULTS["Done"] = True
@@ -151,10 +151,7 @@ def main(inputs_parameter_selection,
                                     inputs_parameters)
     
     
-    RESULTS["Done"] = True
-    return RESULTS
-    print("Done")
-    
+    RESULTS["Done"] = True    
     RESULTS["target_year"] = int(target_year)
     return RESULTS
     
