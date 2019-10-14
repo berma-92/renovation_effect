@@ -10,10 +10,11 @@ if path not in sys.path:
     sys.path.append(path)
 from CM.N3scenario_to_raster import CalcEffectsAtRasterLevel
 from CM.helper_functions.readCsvData import READ_CSV_DATA
-import CM.helper_functions.Subfunctions as SF
-import CM.helper_functions.cliprasterlayer as CRL
-from CM.helper_functions.exportLayerDict import export_layer as expLyr
 from CM.helper_functions.read_raster import raster_array as RA
+#import CM.helper_functions.Subfunctions as SF
+#import CM.helper_functions.cliprasterlayer as CRL
+#from CM.helper_functions.exportLayerDict import export_layer as expLyr
+
 
 
 print(sys.version_info)
@@ -35,7 +36,8 @@ def main(inputs_parameter_selection,
          input_raster_cp_share_2014,
          input_raster_BUILDING_FOOTPRINT,
          output_raster_files,
-         output_csv_result):
+         output_csv_result, 
+         debug_output=False):
 
     data_type = "f4"
     data_type_int = "uint32"
@@ -44,41 +46,34 @@ def main(inputs_parameter_selection,
     scenario_name = inputs_parameter_selection['scenario']
     
     
-    Country_id = RA(input_raster_Country_id, dType=data_type_int)
-    if Country_id.size > (MAX_SIZE):
+    NUTS_id, gt = RA(input_raster_NUTS_id, dType="uint16", return_gt=True)
+    if NUTS_id.size > (MAX_SIZE):
         RESULTS = {}
         RESULTS["ERRORSIZE"] = "Selected region is to large, please reduce the select area!"
-        RESULTS["size"] =  Country_id.size / (MAX_SIZE)
+        RESULTS["size"] =  NUTS_id.size / (MAX_SIZE)
         RESULTS["target_year"] = int(target_year)
         RESULTS["Done"] = True
         return RESULTS
     
-    
+    if debug_output == True:
+        # Country_id only needed for tabular csv-results
+        Country_id = RA(input_raster_Country_id, dType="uint8")
+    else:
+        Country_id = 1
+
     RESULTS = {}
-    
-    
-    
-    NUTS_id, gt = RA(input_raster_NUTS_id, dType=data_type_int, return_gt=True)
-    GFA_RES = RA(input_raster_GFA_RES, dType=data_type)
-    GFA_NRES = RA(input_raster_GFA_NRES, dType=data_type)
-    ENERGY_RES = RA(input_raster_ENERGY_RES, dType=data_type)
-    ENERGY_NRES = RA(input_raster_ENERGY_NRES, dType=data_type)
+
     LAU2_id = RA(input_raster_LAU2_id, dType=data_type_int)
     cp_share_1975 = RA(input_raster_cp_share_1975, dType=data_type)
     cp_share_1990 = RA(input_raster_cp_share_1990, dType=data_type)
     cp_share_2000 = RA(input_raster_cp_share_2000, dType=data_type)
     cp_share_2014 = RA(input_raster_cp_share_2014, dType=data_type)
-    try:
-        BUILDING_FOOTPRINT = RA(input_raster_BUILDING_FOOTPRINT, dType=data_type)
-    except:
-        BUILDING_FOOTPRINT = (GFA_RES + GFA_NRES) / 4.
 
-    
 
     NUTS_id_size = NUTS_id.shape
     cp_share_2000_and_2014 = cp_share_2000 + cp_share_2014
-    cp_share_2000_and_2014 = np.minimum(cp_share_2000_and_2014, 1 - cp_share_1990 - cp_share_1975)
-
+    cp_share_2000_and_2014[:,:] = np.minimum(cp_share_2000_and_2014, 1 - cp_share_1990 - cp_share_1975)
+    del cp_share_2000, cp_share_2014
 
     #Check if target year is available for scenario
     yr_list = []
@@ -138,17 +133,18 @@ def main(inputs_parameter_selection,
                                     cp_share_1975,
                                     cp_share_1990,
                                     cp_share_2000_and_2014,
-                                    BUILDING_FOOTPRINT,
-                                    ENERGY_RES,
-                                    ENERGY_NRES, 
-                                    GFA_RES,
-                                    GFA_NRES,
+                                    input_raster_BUILDING_FOOTPRINT,
+                                    input_raster_ENERGY_RES,
+                                    input_raster_ENERGY_NRES, 
+                                    input_raster_GFA_RES,
+                                    input_raster_GFA_NRES,
                                     gt,
                                     NUTS_id_size,
                                     csv_data_table,
                                     output_raster_files,
                                     output_csv_result,
-                                    inputs_parameters)
+                                    inputs_parameters, 
+                                    debug_output=False)
     
     
     RESULTS["Done"] = True    
