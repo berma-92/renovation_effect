@@ -367,8 +367,8 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
         inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
         
-        inputs_parameter_selection['scenario'] = "Scenario 1"
-        inputs_parameter_selection['target_year'] = "2030"
+        #inputs_parameter_selection['scenario'] = "Scenario 1"
+        #inputs_parameter_selection['target_year'] = "2030"
         inputs_parameter_selection['red_area_77'] = "100"
         inputs_parameter_selection['red_area_80'] = "100"
         inputs_parameter_selection['red_area_00'] = "100"
@@ -390,7 +390,7 @@ if __name__ == '__main__':
             try: 
                 yr_int = int(yr)
                 if yr_int > 2015:
-                    print(scen)
+                    #print(scen)
                     if scen not in available_scenarios.keys():
                         available_scenarios[scen] = []
                     available_scenarios[scen].append(yr)
@@ -402,9 +402,9 @@ if __name__ == '__main__':
         year_list = sorted(list(set(available_years)))
         
         
-        inputs_parameter_selection['scenario'] = scenario_list[0]
-        inputs_parameter_selection['target_year'] = "2030"
-            
+        inputs_parameter_selection['scenario'] = scenario_list[-1]
+        inputs_parameter_selection['target_year'] = "2020"
+        print("Scenario %s" % inputs_parameter_selection['scenario'])
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
             os.mkdir(output_directory)
