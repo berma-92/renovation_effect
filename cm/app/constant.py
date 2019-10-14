@@ -135,7 +135,7 @@ INPUTS_CALCULATION_MODULE = [
 
 SIGNATURE = {
 
-    "category": "DEMAND",
+    "category": "Demand",
     "authorized_scale":["NUTS 3", "NUTS 2", "NUTS 1","NUTS 0", "LAU 2", "Hectare"],
     "cm_name": CM_NAME,
     "description_link": "https://github.com/HotMaps/hotmaps_wiki/wiki/en-CM-Demand-projection",
