@@ -402,8 +402,8 @@ if __name__ == '__main__':
         year_list = sorted(list(set(available_years)))
         
         
-        inputs_parameter_selection['scenario'] = scenario_list[-1]
-        inputs_parameter_selection['target_year'] = "2020"
+        inputs_parameter_selection['scenario'] = scenario_list[-3]
+        inputs_parameter_selection['target_year'] = "2050"
         print("Scenario %s" % inputs_parameter_selection['scenario'])
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
