@@ -5,7 +5,7 @@ node {
     
   stage('Build & Test') {
     try {
-      sh 'docker-compose -f docker-compose.tests.yml -p hotmaps up --build --exit-code-from base_calculation_module'
+      sh 'docker-compose -f docker-compose.tests.yml -p hotmaps up --build --exit-code-from renovation_effect'
     }
     finally {
       // stop services
@@ -26,7 +26,9 @@ node {
       }
     } else if (env.BRANCH_NAME == 'master') {
       echo "Deploying to PROD platform"
-      echo "Deployment to PROD is currently disabled"
+       sshagent(['sshhotmapsdev']) {
+        sh 'ssh -o StrictHostKeyChecking=no -l iig hotmaps.hevs.ch "/var/hotmaps/deploy_cm.sh \$REPO_NAME \$COMMIT_ID"'
+      }
     } else {
       echo "${env.BRANCH_NAME}: not deploying"
     }

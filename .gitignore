@@ -3,6 +3,7 @@
 # C extensions
 *.so
 
+
 # Packages
 *.egg
 *.egg-info
@@ -44,3 +45,9 @@ venv
 ../.idea/workspace.xml
 ../README.md
 .idea/encodings.xml
+cm/app/api_v1/my_calculation_module_directory/CM/helper_functions/cyf/create_density_map\.html
+
+cm/tests/data/output/
+
+.vscode
+.idea
