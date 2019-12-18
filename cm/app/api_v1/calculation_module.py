@@ -376,7 +376,7 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         inputs_parameter_selection['new_constructions'] = "No new buildings" #"Add all new buildings"
-
+        inputs_parameter_selection['new_constructions'] = "replace jjl"
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
         fl.sort()
         print(len(fl))
@@ -402,7 +402,7 @@ if __name__ == '__main__':
         year_list = sorted(list(set(available_years)))
         
         
-        inputs_parameter_selection['scenario'] = scenario_list[-3]
+        inputs_parameter_selection['scenario'] = scenario_list[0]
         inputs_parameter_selection['target_year'] = "2050"
         print("Scenario %s" % inputs_parameter_selection['scenario'])
         output_directory = test_dir + "/output"

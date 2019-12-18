@@ -150,38 +150,3 @@ def main(inputs_parameter_selection,
     RESULTS["Done"] = True    
     RESULTS["target_year"] = int(target_year)
     return RESULTS
-    
-    
-    
-
-if __name__ == "__main__":
-    print('calculation started')
-    
-    subdir = "cut/"
-    dir_ = "../../../../tests/data"
-    fn_reference_tif = "%s/%sREFERENCE.tif" % (dir_, subdir)
-    fn_NUTS3_id_number = "%s/%sNUTS3_cut_id_number.tif" % (dir_, subdir)
-    fn_gfa_res_curr = "%s/%sgfa_res_curr_density.tif" % (dir_, subdir)
-    fn_heat_res_curr = "%s/%sheat_res_curr_density.tif" % (dir_, subdir)
-    
-    fn_LAU2_id_number = "%s/%sLAU2_id_number.tif" % (dir_, subdir)
-    fn_Country_id_number = "%s/%sCountry_id_number.tif" % (dir_, subdir)
-    fn_GHS_BUILT_1975_100_share = "%s/%sGHS_BUILT_1975_100_share.tif" % (dir_, subdir)
-    fn_GHS_BUILT_1990_100_share = "%s/%sGHS_BUILT_1990_100_share.tif" % (dir_, subdir)
-    fn_GHS_BUILT_2000_100_share = "%s/%sGHS_BUILT_2000_100_share.tif" % (dir_, subdir)
-    fn_GHS_BUILT_2014_100_share = "%s/%sGHS_BUILT_2014_100_share.tif" % (dir_, subdir)
-
-
-    main(fn_reference_tif
-         , fn_Country_id_number
-         , fn_NUTS3_id_number
-         , fn_gfa_res_curr
-         , fn_heat_res_curr
-         , fn_LAU2_id_number
-         , fn_GHS_BUILT_1975_100_share
-         , fn_GHS_BUILT_1990_100_share
-         , fn_GHS_BUILT_2000_100_share
-         , fn_GHS_BUILT_2014_100_share)
-
-#import sys;sys.path.append(r'/home/simulant/.eclipse/org.eclipse.platform_3.8_155965261/plugins/org.python.pydev_4.5.5.201603221110/pysrc')
-#import pydevd;pydevd.settrace()

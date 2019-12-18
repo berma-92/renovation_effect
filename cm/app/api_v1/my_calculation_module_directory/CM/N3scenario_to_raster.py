@@ -580,7 +580,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         Energy New buildings
     """
     DEMAND_NEW_BUILD_per_area = (demand_new_build / area_new_buildings)
-    DEMAND_NEW = AREA_NEW * DEMAND_NEW_BUILD_per_area[np.maximum(1,NUTS_id) - 1]
+    DEMAND_NEW = AREA_NEW * DEMAND_NEW_BUILD_per_area[np.maximum(1,NUTS_id) - 1] / 1000
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(DEMAND_NEW, LAU2_id)
     if debug_output == True:
         pass
@@ -597,7 +597,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
         """
     
-    ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1]) / 1000
+    ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1]) 
     #return RESULTS
     ########################
     #
@@ -605,6 +605,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     #
     ########################
     new_construction_methode = add_inputs_parameters["new_constructions"].lower().strip()
+    print(np.sum(gfa_tot_future_existB)/1000)
+    print(np.sum(energy_tot_future_existB)/1000)
     #return RESULTS
     if new_construction_methode.startswith("no"):
         future_gfa_map = gfa_tot_future_existB
@@ -666,6 +668,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         future_gfa_map = gfa_tot_future_existB
         future_ene_map = energy_tot_future_existB
         share_of_new_constructions_shown_in_map = 0
+    
+    print(np.sum(future_gfa_map)/1000)
+    print(np.sum(future_ene_map)/1000)
     
     #return RESULTS
     SaveLayerDict = {}
