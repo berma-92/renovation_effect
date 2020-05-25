@@ -2,7 +2,7 @@ import os
 import sys
 
 import glob
-
+import traceback
 
 from datetime import datetime
 
@@ -122,6 +122,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     now = datetime.now() # current date and time
     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
     result = dict()
+    
+    
     try:
         if "new_constructions" not in inputs_parameter_selection.keys():
             inputs_parameter_selection["new_constructions"] = "No new buildings"
@@ -147,6 +149,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         RESULTS = {}
         RESULTS["Done"] = False
         RESULTS["ERROR"] = str(e)
+        traceback.print_exc(file=sys.stdout)
+        print(e)
         return(result)
     if "target_year" not in RESULTS.keys():
         RESULTS["target_year"] = 0
@@ -377,6 +381,7 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         inputs_parameter_selection['new_constructions'] = "No new buildings" #"Add all new buildings"
         inputs_parameter_selection['new_constructions'] = "replace jjl"
+        inputs_parameter_selection['new_constructions'] = "Add all new buildings" #"Add all new buildings"
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
         fl.sort()
         print(len(fl))
