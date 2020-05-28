@@ -47,6 +47,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , fn_ENERGY_NRES
                             , fn_GFA_RES
                             , fn_GFA_NRES
+                            , fn_POPULATION
                             , geotransform_obj, size
                             , csv_data_table
                             , output_raster_files
@@ -360,6 +361,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             # At this stage it is the current demand
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, LAU2_id) 
             energy_current += SHARE_NUTS3_energy
+            print(np.sum(energy_current))
+            print(np.sum(ENERGY))
+            
             ENERGY_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
            
             if debug_output == True:
@@ -418,7 +422,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             del SHARE_NUTS3_energy
             
             
-            
+        
+        
+        
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_future, LAU2_id)
         _ene_fut__ += np.sum(TABLE_RESULTS_LAU[:,1])
         if debug_output == True:
@@ -485,7 +491,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             #"""
         energy_tot_future_existB += energy_future
         energy_tot_curr += ENERGY
-        
+  
         if (area_future > BGF_intial).any():
             print("CHECK AREA FUTURE")
         gfa_tot_future_existB += area_future
@@ -522,6 +528,25 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                                                     , "f4", gfa_tot_future_existB / np.maximum(0.00001, gfa_tot_curr_initial_year) , 0)
                 SaveLayerDict = expLyr(SaveLayerDict)
             """
+    
+    
+    #correction_factor_to_align_with_demand_from_heat_density_map:      
+    adopt_factor_hdm_energy = np.maximum(0.00001, _ene_cur__) / np.maximum(0.00001, np.sum(energy_tot_curr))
+    adopt_factor_hdm_gfa = np.maximum(0.00001, _gfa_cur__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year))
+    print("adopt_factor_hdm_energy: %4.2f" % adopt_factor_hdm_energy)
+    print("adopt_factor_hdm_gfa: %4.2f" % adopt_factor_hdm_gfa)
+    
+    AREA_PER_CP[:, :] /= adopt_factor_hdm_gfa
+    _gfa_cur__ /= adopt_factor_hdm_gfa
+    _gfa_fut__ /= adopt_factor_hdm_gfa
+    
+    ENERGY_PER_CP[:, :] /= adopt_factor_hdm_energy
+    _ene_cur__ /= adopt_factor_hdm_energy
+    _ene_fut__ /= adopt_factor_hdm_energy
+    
+    
+         
+        
     del area_future, energy_future, energy_current, area_current, cp_share, cp_share_2014
     if debug_output == True:        
         pass
@@ -601,7 +626,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(DEMAND_NEW, LAU2_id)
     if debug_output == True:
         pass
-        
+        """
         TABLE_RESULTS_NUTS = CDM.CreateResultsTableperIndicator(DEMAND_NEW, NUTS_id)
         TABLE_RESULTS_COUNTRY = CDM.CreateResultsTableperIndicator(DEMAND_NEW, COUNTRY_id)
         col += 1 

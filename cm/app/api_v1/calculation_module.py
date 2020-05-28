@@ -59,6 +59,11 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density"]
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
+    try:
+        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
+    except:
+        # This is a temporal fix
+        input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     input_raster_cp_share_1975 =  inputs_raster_selection["ghs_built_1975_100_share"]
     input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
@@ -140,6 +145,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                   input_raster_cp_share_1975, input_raster_cp_share_1990,
                   input_raster_cp_share_2000, input_raster_cp_share_2014,
                   BUILDING_FOOTPRINT,
+                  input_raster_POPULATION, 
                   output_raster_files, 
                   output_csv_result
                   )
@@ -333,6 +339,7 @@ if __name__ == '__main__':
         raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
         raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
         raster_file_path9 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif" 
+        raster_file_path10 = raster_file_dir + "/RESULTS_Population.tif" 
 
         """
         # simulate copy from HTAPI to CM
@@ -370,6 +377,9 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
         inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
+        inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
+        
+        
         
         #inputs_parameter_selection['scenario'] = "Scenario 1"
         #inputs_parameter_selection['target_year'] = "2030"
@@ -408,7 +418,7 @@ if __name__ == '__main__':
         
         
         inputs_parameter_selection['scenario'] = scenario_list[0]
-        inputs_parameter_selection['target_year'] = "2050"
+        inputs_parameter_selection['target_year'] = "2020"
         print("Scenario %s" % inputs_parameter_selection['scenario'])
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
