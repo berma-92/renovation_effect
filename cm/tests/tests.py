@@ -47,7 +47,8 @@ class TestAPI(unittest.TestCase):
         raster_file_path2b = raster_file_dir + "/RESULTS_GFA_NRES_BUILD.tif"
         raster_file_path3b = raster_file_dir + "/RESULTS_ENERGY_HEATING_NRES_2012.tif"
         raster_file_path9 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
-
+        raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif"
+        
         # simulate copy from HTAPI to CM
         save_path0 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
         save_path1 = UPLOAD_DIRECTORY+"/Country_cut_id_number.tif"
@@ -60,6 +61,7 @@ class TestAPI(unittest.TestCase):
         save_path7 = UPLOAD_DIRECTORY+"/ghs_built_2000_100_share.tif"
         save_path8 = UPLOAD_DIRECTORY+"/ghs_built_2014_100_share.tif"
         save_path9 = UPLOAD_DIRECTORY+"/RESULTS_GFA_RES_BUILD.tif"
+        save_path10 = UPLOAD_DIRECTORY+"/pop_tot_curr_density.tif"
         
         copyfile(raster_file_path0, save_path0)
         copyfile(raster_file_path1, save_path1)
@@ -77,7 +79,7 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
         
-        inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
+        inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_1perc"
         inputs_parameter_selection['target_year'] = "2040"
         inputs_parameter_selection['red_area_77'] = "100"
         inputs_parameter_selection['red_area_80'] = "100"
@@ -101,6 +103,7 @@ class TestAPI(unittest.TestCase):
         inputs_raster_selection["ghs_built_2000_100_share"] = save_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = save_path8
         inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = save_path9
+        inputs_raster_selection["pop_tot_curr_density"] = save_path10
         
 
         # register the calculation module a
