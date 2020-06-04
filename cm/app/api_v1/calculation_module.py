@@ -405,7 +405,7 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
-        inputs_parameter_selection['add_population_growth'] = "-2.5" #"Add all new buildings"
+        inputs_parameter_selection['add_population_growth'] = "0" #"Add all new buildings"
         inputs_parameter_selection['new_constructions'] = "replace jjl"
         inputs_parameter_selection['new_constructions'] = "Add all new buildings" #"Add all new buildings"
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
