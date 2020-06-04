@@ -36,7 +36,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , NUTS_RESULTS_ENERGY_BASE
                             , NUTS_RESULTS_ENERGY_FUTURE
                             , NUTS_RESULTS_ENERGY_FUTURE_abs
-                            , NUTS_RESULTS_POPULATION
                             , COUNTRY_id
                             , NUTS_id
                             , LAU2_id
@@ -69,12 +68,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     adoption_sp_ene = add_inputs_parameters["adoption_sp_ene"]
     base_year = add_inputs_parameters["base_year"]
     target_year = add_inputs_parameters["target_year"]
-    add_pop_growth = add_inputs_parameters["add_pop_growth"]
-    
-    add_pop_growth_period = (1.0 + add_pop_growth/100.0) ** (target_year - base_year) - 1
-    
-    
-    
+
     output_raster_energy_tot = output_raster_files["output_raster_energy_tot"] 
     output_raster_gfa_tot = output_raster_files["output_raster_gfa_tot"] 
     if debug_output == True:
@@ -121,45 +115,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     AREA_PER_CP = np.zeros((2,4), dtype="f4") 
     ENERGY_PER_CP = np.zeros((2,4), dtype="f4")
-    
-    #get population data
-    # Population based on default data set (2011)    
-    initial_population = RA(fn_POPULATION, dType=data_type)
-    
-    nuts_pop_2011 = np.zeros(NUTS_RESULTS_POPULATION.shape[0]+1, dtype="f4")
-    #nuts_pop_1995 = np.zeros_like(nuts_pop_2011)
-    nuts_pop_2000 = np.zeros_like(nuts_pop_2011)
-    nuts_pop_2005 = np.zeros_like(nuts_pop_2011)
-    nuts_pop_2010 = np.zeros_like(nuts_pop_2011)
-    nuts_pop_base_year = np.zeros_like(nuts_pop_2011)
-    nuts_pop_target_year = np.zeros_like(nuts_pop_2011)
-    
-    #nuts_pop_1995[1:] = NUTS_RESULTS_POPULATION[str(1995)]
-    nuts_pop_2000[1:] = NUTS_RESULTS_POPULATION[str(2000)]
-    nuts_pop_2005[1:] = NUTS_RESULTS_POPULATION[str(2005)]
-    nuts_pop_2010[1:] = NUTS_RESULTS_POPULATION[str(2010)]
-    nuts_pop_2011[1:] = NUTS_RESULTS_POPULATION[str(2011)]
-    nuts_pop_base_year[1:] = NUTS_RESULTS_POPULATION[str(base_year)]
-    nuts_pop_target_year[1:] = NUTS_RESULTS_POPULATION[str(target_year)]
-    
-    #nuts_pop_increase_2011_1995 = (0.00001 + nuts_pop_1995) / (0.00001 + nuts_pop_2011)
-    nuts_pop_increase_2011_2000 = (0.00001 + nuts_pop_2000) / (0.00001 + nuts_pop_2011)
-    nuts_pop_increase_2011_2005 = (0.00001 + nuts_pop_2005) / (0.00001 + nuts_pop_2011)
-    nuts_pop_increase_2011_2010 = (0.00001 + nuts_pop_2010) / (0.00001 + nuts_pop_2011)
-    nuts_pop_increase_2011_base_year = (0.00001 + nuts_pop_base_year) / (0.00001 + nuts_pop_2011)
-    nuts_pop_increase_2011_target_year = (0.00001 + nuts_pop_target_year) / (0.00001 + nuts_pop_2011)
-    
-    population_base_year = np.sum(initial_population * nuts_pop_increase_2011_base_year[NUTS_id])
-    population_target_year = np.sum(initial_population * (nuts_pop_increase_2011_target_year[NUTS_id] + add_pop_growth_period))
-    #population_1995 = np.sum(initial_population * nuts_pop_increase_2011_1995[NUTS_id])
-    population_2000 = np.sum(initial_population * nuts_pop_increase_2011_2000[NUTS_id])
-    population_2005 = np.sum(initial_population * nuts_pop_increase_2011_2005[NUTS_id])
-    population_2010 = np.sum(initial_population * nuts_pop_increase_2011_2010[NUTS_id])
-
-    
-    
-    
-    
+    #return RESULTS
     for i in range(2):
         energy_current = np.zeros_like(energy_tot_future_existB)
         energy_future = np.zeros_like(energy_tot_future_existB)
@@ -633,18 +589,12 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                            + NUTS_RESULTS_GFA_FUTURE['gfa_mfh_2017__']
                            + NUTS_RESULTS_GFA_FUTURE['gfa_nres_2017__'] + 0.00001)
  
-    
+    area_total_buildings_target = NUTS_RESULTS_GFA_FUTURE['gfa_total'] + 0.00001 
     area_existing_buildings_initial_yr = (NUTS_RESULTS_GFA_FUTURE['gfa_total_2017'] + 0.00001)
-    
-
-    add_area_triggered_by_add_pop_growth = add_pop_growth_period * area_existing_buildings_initial_yr
-    
-    area_total_buildings_target = np.maximum(NUTS_RESULTS_GFA_FUTURE['gfa_total'] + add_area_triggered_by_add_pop_growth, 0.00001 )
     
     """
         BGF New buildings
     """
-    
     
     
     AREA_NEW_BUILD_per_existing_area = area_total_buildings_target / (0.000001+area_existing_buildings_initial_yr) # Total area in target year / total area in intial year
@@ -818,17 +768,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     RESULTS["spec_ene_75_cur"] = RESULTS["ene_75_cur"] / RESULTS["gfa_75_cur"] * 1000
     RESULTS["spec_ene_80_cur"] = RESULTS["ene_80_cur"] / RESULTS["gfa_80_cur"] * 1000
     RESULTS["spec_ene_00_cur"] = RESULTS["ene_00_cur"] / RESULTS["gfa_00_cur"] * 1000
-    
-    #RESULTS["pop_1995"] = population_1995 / 1000
-    RESULTS["pop_2000"] = population_2000 / 1000
-    RESULTS["pop_2005"] = population_2005 / 1000
-    RESULTS["pop_2010"] = population_2010 / 1000
-    RESULTS["pop_base"] = population_base_year / 1000   
-    RESULTS["pop_fut"] = population_target_year / 1000  
-    
-    RESULTS["gfa_per_cap_cur"] = RESULTS["gfa_cur"] / (0.00001 + RESULTS["pop_base"]) / 1000
-    RESULTS["gfa_per_cap_fut"] = RESULTS["gfa_fut"] / (0.00001 + RESULTS["pop_fut"]) / 1000
-    
     
     RESULTS["Done"] = True
     return RESULTS
