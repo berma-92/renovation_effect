@@ -199,7 +199,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
             
             result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
-                           #{"unit": "", "name": "Underlying population growth assumptions","value": "2015 - %s" % target_yr}, 
+                                  {"unit": "", "name": "Underlying population growth assumptions","value": "2015 - %i" % target_yr}, 
                                   #{"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
                                   #{"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
                                   #{"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
