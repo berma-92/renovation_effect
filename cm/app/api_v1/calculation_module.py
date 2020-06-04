@@ -63,12 +63,17 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
     except:
         # This is a temporal fix
-        input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+        input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
     input_raster_cp_share_1975 =  inputs_raster_selection["ghs_built_1975_100_share"]
     input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
-    BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+    try:
+        BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+    except:
+        # This is a temporal fix
+        BUILDING_FOOTPRINT = inputs_raster_selection["gfa_res_curr_density"]
+    
     
     if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
@@ -194,20 +199,16 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
             
             result['indicator'] = [
                 
-                {"unit": " ", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr},
-                
-                                  {"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
-                                  {"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
-                                  {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
-                                  {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]},
-                                  {"unit": "tds. people", "name": "%s" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]},                
+                                  #{"unit": " ", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr}, 
+                                  #{"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
+                                  #{"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
+                                  #{"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
+                                  #{"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]}, 
+                                  #{"unit": "tds. people", "name": "%s" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]},      
                 {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
-                                  
-                                  {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
-                                  {"unit": "m2/capita", "name": "Heated area per capita %s"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
-                                  
-                                  
+                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},             
+                           #       {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
+                           #       {"unit": "m2/capita", "name": "Heated area per capita %s"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
                                   {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
                                   {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                                   {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
@@ -392,7 +393,7 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
         inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
-        inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
+        #inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
         
         
         
