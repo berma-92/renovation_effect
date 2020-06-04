@@ -53,7 +53,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result = dict()
     result['name'] = CM_NAME + ", Target year 20xx"
     result['indicator'] = [
-                {"unit": "", "name": "Underlying population growth assumptions","value": "2015 - 20XX"}, ]
+                {"unit": "test", "name": "Underlying population growth assumptions","value": "2015 - 20XX"}, ]
     """
     # ************************ # Input raster files **************************
     input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
