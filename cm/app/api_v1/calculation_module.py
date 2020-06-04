@@ -59,16 +59,12 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density"]
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
-    try:
-        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
-    except:
-        # This is a temporal fix
-        input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+    input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
     input_raster_cp_share_1975 =  inputs_raster_selection["ghs_built_1975_100_share"]
     input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
-    BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+    BUILDING_FOOTPRINT =  inputs_raster_selection["building_footprint_tot_curr"]
     
     if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
@@ -191,10 +187,26 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
             else:
                 unit_energy = "GWh"
                 converter_ene = 1./10**3
-                
             
-            result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+            result['indicator'] = [
+                
+                {"unit": "", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr},
+                                  #{"unit": "tds. people", "name": "1995","value": "%4.2f" % RESULTS["pop_1995"]},
+                                  {"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
+                                  {"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
+                                  {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
+                                  {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]},
+                                  {"unit": "tds. people", "name": "%s"%target_yr,"value": "%4.2f" % RESULTS["pop_fut"]},
+                                  
+               
+                
+                {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
+                                  
+                                  {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
+                                  {"unit": "m2/capita", "name": "Heated area per capita %s"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
+                                  
+                                  
                                   {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
                                   {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                                   {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
@@ -326,21 +338,24 @@ if __name__ == '__main__':
         
         raster_file_dir = '%s/input/' % test_dir
         
-        raster_file_path0 = raster_file_dir + "/Country_cut_id_number.tif"
-        raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
-        raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
-        raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
-        raster_file_path2b = raster_file_dir + "/RESULTS_GFA_NRES_BUILD.tif"
-        raster_file_path3b = raster_file_dir + "/RESULTS_ENERGY_HEATING_NRES_2012.tif"
+        raster_file_path0 = raster_file_dir + "/country_id_number.tif"
+        raster_file_path1 = raster_file_dir + "/nuts3_id_number.tif"
+        raster_file_path2 = raster_file_dir + "/gfa_res_curr_density.tif"
+        raster_file_path3 = raster_file_dir + "/heat_res_curr_density.tif"
+        raster_file_path2b = raster_file_dir + "/gfa_nonres_curr_density.tif"
+        raster_file_path3b = raster_file_dir + "/heat_nonres_curr_density.tif"
         
-        raster_file_path4 = raster_file_dir + "/LAU2_id_number.tif"
-        raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
-        raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
-        raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
-        raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
-        raster_file_path9 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif" 
-        raster_file_path10 = raster_file_dir + "/RESULTS_Population.tif" 
+        raster_file_path4 = raster_file_dir + "/lau2_id_number.tif"
+        raster_file_path5 = raster_file_dir + "/ghs_built_1975_100_share.tif"
+        raster_file_path6 = raster_file_dir + "/ghs_built_1990_100_share.tif"
+        raster_file_path7 = raster_file_dir + "/ghs_built_2000_100_share.tif"
+        raster_file_path8 = raster_file_dir + "/ghs_built_2014_100_share.tif"
+        raster_file_path9 = raster_file_dir + "/building_footprint_tot_curr.tif" 
+        raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif" 
 
+
+
+        
         """
         # simulate copy from HTAPI to CM
         save_path1 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
@@ -376,7 +391,7 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
-        inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
+        inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
         inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
         
         
@@ -389,7 +404,8 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_77'] = "100"
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
-        inputs_parameter_selection['new_constructions'] = "No new buildings" #"Add all new buildings"
+        inputs_parameter_selection['red_sp_ene_00'] = "100"
+        inputs_parameter_selection['add_population_growth'] = "-2.5" #"Add all new buildings"
         inputs_parameter_selection['new_constructions'] = "replace jjl"
         inputs_parameter_selection['new_constructions'] = "Add all new buildings" #"Add all new buildings"
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
@@ -418,7 +434,7 @@ if __name__ == '__main__':
         
         
         inputs_parameter_selection['scenario'] = scenario_list[0]
-        inputs_parameter_selection['target_year'] = "2020"
+        inputs_parameter_selection['target_year'] = "2040"
         print("Scenario %s" % inputs_parameter_selection['scenario'])
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):
