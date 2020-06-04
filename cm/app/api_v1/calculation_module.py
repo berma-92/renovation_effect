@@ -191,15 +191,13 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
             result['indicator'] = [
                 
                 {"unit": "", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr},
-                                  #{"unit": "tds. people", "name": "1995","value": "%4.2f" % RESULTS["pop_1995"]},
+                
+                """
                                   {"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
                                   {"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
                                   {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
                                   {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]},
-                                  {"unit": "tds. people", "name": "%s"%target_yr,"value": "%4.2f" % RESULTS["pop_fut"]},
-                                  
-               
-                
+                                  {"unit": "tds. people", "name": "%s" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]},                
                 {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
                                   
@@ -211,8 +209,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                   {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                                   {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
                                   {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
-                                ]
-            
+                            """
+                             ]
+            """
             
             result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
                                   {"unit": unit_area, "name": "    until 1975","value": "%4.2f" % (RESULTS["gfa_75_cur"] * converter_area)},
@@ -241,6 +240,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                   {"unit": "kWh/m2", "name": "     1976-1990","value": "%4.0f" % RESULTS["spec_ene_80_fut"]},
                                   {"unit": "kWh/m2", "name": "     1990-2014","value": "%4.0f" % RESULTS["spec_ene_00_fut"]},
                                    ])
+                                   
+                    
             
             if RESULTS["spec_ene_new_fut"] > 0 and RESULTS["spec_ene_new_fut"] < 500:
                 result['indicator'].append({"unit": "kWh/m2", "name": "     2015-%s"%target_yr,"value": "%4.0f" % RESULTS["spec_ene_new_fut"]})
@@ -306,7 +307,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                             # ,   {"name": "Energy Consumption in %i compared to 2014" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Energy Consumption of (excl. buildings constructed after 2014) in %i"% target_yr}]}
                             # ,   {"name": "Heated gross floor area in %i" % target_yr,"path": output_raster_files["output_raster_gfa_tot"], "type": "custom", "symbology": [{"red":250,"green":159,"blue":181,"opacity":0.8,"value":"1","label":"Heated gross floor area (excl. buildings constructed after 2014) in %i"% target_yr}]}
                             #    ]
-
+            """
         except Exception as e:
             result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured in the results handling. We sincerely apologize." ,"value": "0"}]
             result['indicator'].append({"unit": " ", "name": "Error message: %s" %str(e) ,"value": "0"})
