@@ -197,15 +197,14 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 unit_energy = "GWh"
                 converter_ene = 1./10**3
             
-            result['indicator'] = [
-                                  {"unit": " ", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr}, 
+            result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
+                           #{"unit": "", "name": "Underlying population growth assumptions","value": "2015 - %s" % target_yr}, 
                                   #{"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
                                   #{"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
                                   #{"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
                                   #{"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]}, 
-                                  #{"unit": "tds. people", "name": "%s" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]},      
-                {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},             
+                                  #{"unit": "tds. people", "name": "%s" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}, 
                            #       {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
                            #       {"unit": "m2/capita", "name": "Heated area per capita %s"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
                                   {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
