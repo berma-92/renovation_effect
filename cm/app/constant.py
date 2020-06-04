@@ -143,6 +143,7 @@ INPUTS_CALCULATION_MODULE = [
      }
 ]
 
+
 SIGNATURE = {
 
     "category": "Demand",
