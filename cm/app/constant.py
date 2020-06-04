@@ -75,7 +75,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_area_77',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 25,
+     'input_min': 0,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -84,7 +84,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_area_80',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 25,
+     'input_min': 0,
      'input_max': 200,
      'cm_id': CM_ID
      }, 
@@ -93,7 +93,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_area_00',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 25,
+     'input_min': 0,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -102,7 +102,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_sp_ene_77',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 25,
+     'input_min': 0,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -111,7 +111,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_sp_ene_80',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 25,
+     'input_min': 0,
      'input_max': 200,
      'cm_id': CM_ID
      },
@@ -120,8 +120,17 @@ INPUTS_CALCULATION_MODULE = [
      'input_parameter_name': 'red_sp_ene_00',
      'input_value': 100,
      'input_unit': '%',
-     'input_min': 25,
+     'input_min': 0,
      'input_max': 200,
+     'cm_id': CM_ID
+     },
+    {'input_name': 'Additional annual population growth compared to reference scenario',
+     'input_type': 'input',
+     'input_parameter_name': 'add_population_growth',
+     'input_value': 0,
+     'input_unit': '%',
+     'input_min': -3,
+     'input_max': +3,
      'cm_id': CM_ID
      },
     {'input_name': 'Method to add newly constructed buildings to map',
@@ -133,6 +142,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 'none', 'cm_id': CM_ID
      }
 ]
+
 
 SIGNATURE = {
 
