@@ -95,7 +95,9 @@ def main(inputs_parameter_selection,
         if int(i) > BASE_YEAR:
             initial_yr = i
             break
+    
     if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
+        print(yr_list)
         target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
     

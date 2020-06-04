@@ -39,7 +39,7 @@ class TestAPI(unittest.TestCase):
         raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
         raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
         raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
-        raster_file_path4 = raster_file_dir + "/LAU2_id_number.tif"
+        raster_file_path4 = raster_file_dir + "/LAU2_cut_id_number.tif"
         raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
         raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
         raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
@@ -77,7 +77,7 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection = {}
         inputs_vector_selection = {}
         
-        inputs_parameter_selection['scenario'] = "cheetah_reference_hsagent_lambda_4"
+        inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
         inputs_parameter_selection['target_year'] = "2040"
         inputs_parameter_selection['red_area_77'] = "100"
         inputs_parameter_selection['red_area_80'] = "100"
