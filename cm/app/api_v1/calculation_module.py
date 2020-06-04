@@ -60,19 +60,21 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
     try:
-        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
-    except:
-        # This is a temporal fix
-        input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
-    input_raster_cp_share_1975 =  inputs_raster_selection["ghs_built_1975_100_share"]
-    input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
-    input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
-    input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
-    try:
         BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     except:
         # This is a temporal fix
         BUILDING_FOOTPRINT = inputs_raster_selection["gfa_res_curr_density"]
+    try:
+        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
+    except:
+        # This is a temporal fix
+        input_raster_POPULATION = BUILDING_FOOTPRINT
+        
+    input_raster_cp_share_1975 =  inputs_raster_selection["ghs_built_1975_100_share"]
+    input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
+    input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
+    input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
+    
     
     
     if direct_call_calc_mdoule==False:
