@@ -198,8 +198,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 converter_ene = 1./10**3
             
             result['indicator'] = [
-                
-                                  #{"unit": " ", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr}, 
+                                  {"unit": " ", "name": "Underlying population growth assumptions","value": "2015 - %s"% target_yr}, 
                                   #{"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
                                   #{"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
                                   #{"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
