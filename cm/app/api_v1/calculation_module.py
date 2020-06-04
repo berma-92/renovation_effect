@@ -73,7 +73,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     try:
         BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
-        input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+        #input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     except:
         # This is a temporal fix
         BUILDING_FOOTPRINT = inputs_raster_selection["gfa_res_curr_density"]
