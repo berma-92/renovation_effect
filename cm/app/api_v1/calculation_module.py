@@ -59,7 +59,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density"]
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
-    
+    print(type(inputs_raster_selection))
+    print(inputs_raster_selection.keys())
     try:
         input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
     except:
