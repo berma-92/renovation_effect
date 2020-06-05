@@ -27,6 +27,9 @@ import glob
 import os
 SD = "api_v1"
 path = os.path.dirname(os.path.abspath(__file__)).split(SD)[0] + "/%s" % SD
+from time import gmtime, strftime
+print("\n\n" +"*"*50 +"\n\n" + strftime("%Y-%m-%d %H:%M:%S", gmtime()))
+
 print(path)
 fl = glob.glob("%s/my_calculation_module_directory/input_data/*RESULTS_ENERGY_*.csv" % path)
 fl.sort()

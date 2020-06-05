@@ -59,10 +59,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density"]
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
-    print(type(inputs_raster_selection))
     print(inputs_raster_selection.keys())
     try:
-        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
+        input_raster_POPULATION =  inputs_raster_selection["population"]
     except:
         # This is a temporal fix
         input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
@@ -210,7 +209,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                   {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
                                   {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]}, 
                                   {"unit": "tds. people", "name": "%i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}, 
-                                  
+                                  #{"unit": unit_area, "name": "Building footprint in 2014","value": "%4.2f" % (RESULTS["footprint_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
                                   

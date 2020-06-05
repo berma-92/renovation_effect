@@ -126,6 +126,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     # Population based on default data set (2011)    
     initial_population = RA(fn_POPULATION, dType=data_type)
     
+    
     nuts_pop_2011 = np.zeros(NUTS_RESULTS_POPULATION.shape[0]+1, dtype="f4")
     #nuts_pop_1995 = np.zeros_like(nuts_pop_2011)
     nuts_pop_2000 = np.zeros_like(nuts_pop_2011)
@@ -155,7 +156,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     population_2000 = np.sum(initial_population * nuts_pop_increase_2011_2000[NUTS_id])
     population_2005 = np.sum(initial_population * nuts_pop_increase_2011_2005[NUTS_id])
     population_2010 = np.sum(initial_population * nuts_pop_increase_2011_2010[NUTS_id])
-
+    del initial_population
     
     
     
@@ -725,12 +726,15 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             #calculated_average_of_neigbhors = ndimage.generic_filter(BUILDING_FOOTPRINT, np.nanmean, size=size_, mode='constant', cval=np.NaN)
             if os.path.exists(fn_BUILDING_FOOTPRINT):
                 try:
-                    
                     BUILDING_FOOTPRINT = RA(fn_BUILDING_FOOTPRINT, dType=data_type)
+                    RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT)
                 except:
                     BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4.
+                    RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT) * 0.01 #To test if runs into exception
             else:
-                BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4.
+                BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4. * 0.01 #To test if runs into exception
+                
+            
             
             calculated_average_of_neigbhors = np.zeros_like(BUILDING_FOOTPRINT)
             calculated_average_of_neigbhors[:,:] += BUILDING_FOOTPRINT
