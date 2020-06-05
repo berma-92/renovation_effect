@@ -44,7 +44,7 @@ for ele in fl:
     try:
         yr = int(yr)
         if yr > 2015:
-            print(scen)
+            #print(scen)
             if scen not in available_scenarios.keys():
                 available_scenarios[scen] = []
             available_scenarios[scen].append(str(yr))

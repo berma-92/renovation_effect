@@ -399,7 +399,7 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
         inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
-        #inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
+        inputs_raster_selection["population"] = raster_file_path10
         
         
         
