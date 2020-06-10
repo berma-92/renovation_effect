@@ -61,7 +61,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
     print(inputs_raster_selection.keys())
     try:
-        input_raster_POPULATION =  inputs_raster_selection["population"]
+        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
     except:
         # This is a temporal fix
         input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
@@ -398,8 +398,8 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
-        inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
-        inputs_raster_selection["population"] = raster_file_path10
+        inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
+        inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
         
         
         

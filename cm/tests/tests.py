@@ -112,8 +112,8 @@ class TestAPI(unittest.TestCase):
         inputs_raster_selection["ghs_built_1990_100_share"] = save_path6
         inputs_raster_selection["ghs_built_2000_100_share"] = save_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = save_path8
-        inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = save_path9
-        inputs_raster_selection["population"] = save_path10
+        inputs_raster_selection["building_footprint_tot_curr"] = save_path9
+        inputs_raster_selection["pop_tot_curr_density"] = save_path10
         
 
         # register the calculation module a

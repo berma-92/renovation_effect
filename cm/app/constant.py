@@ -165,7 +165,7 @@ SIGNATURE = {
         "ghs_built_1990_100_share",
         "ghs_built_2000_100_share",
         "ghs_built_2014_100_share",
-        "RESULTS_BUILDING_FOOTPRINT",
+        "building_footprint_tot_curr",
         "pop_tot_curr_density"
     ],
     "type_layer_needed": [
@@ -180,7 +180,7 @@ SIGNATURE = {
         {"type" : "ghs_built_1990_100_share","description" : "Layer with share of building constructed from 1976-1989 in base year."},
         {"type" : "ghs_built_2000_100_share","description" : "Layer with share of building constructed from 1990-1999 in base year."},
         {"type" : "ghs_built_2014_100_share","description" : "Layer with share of building constructed from 2000-2014 in base year."},
-        {"type" : "RESULTS_BUILDING_FOOTPRINT","description" : "Be aware to use the building footprint layer of buildings."},
+        {"type" : "building_footprint_tot_curr","description" : "Be aware to use the building footprint layer of buildings."},
         {"type" : "population","description" : "Be aware to use the population layer of 2011."}
     ],
     "cm_url": "Do not add something",
