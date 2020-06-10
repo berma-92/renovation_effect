@@ -14,7 +14,12 @@ import os, sys
 #pyximport.install()
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
-import CM.helper_functions.cyf.create_density_map as CDM
+try:
+    import CM.helper_functions.cyf.create_density_map as CDM
+except:
+    
+    ld = os.listdir("/cm/app/api_v1/my_calculation_module_directory/CM/helper_functions/cyf/")
+    print(ld)
 from CM.helper_functions.read_raster import raster_array as RA
 """
 import CM.helper_functions.cliprasterlayer as CRL
