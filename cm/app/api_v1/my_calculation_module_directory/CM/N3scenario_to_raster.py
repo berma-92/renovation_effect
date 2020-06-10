@@ -14,12 +14,7 @@ import os, sys
 #pyximport.install()
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
-try:
-    import CM.helper_functions.cyf.create_density_map as CDM
-except:
-    
-    ld = os.listdir("/cm/app/api_v1/my_calculation_module_directory/CM/helper_functions/cyf/")
-    print(ld)
+
 from CM.helper_functions.read_raster import raster_array as RA
 """
 import CM.helper_functions.cliprasterlayer as CRL
@@ -67,6 +62,15 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         COUNTRY_id.shape
     except:
         COUNTRY_id = np.ones_like(NUTS_id) * COUNTRY_id
+    
+    try:
+        import CM.helper_functions.cyf.create_density_map as CDM
+    except:
+        import pathlib
+        p_ = pathlib.Path(__file__).parent.absolute()
+        ld = os.listdir("%s/helper_functions/cyf/" % p_)
+        print(ld)
+    
         
     data_type = "f4"
     #debug_output = True
