@@ -70,6 +70,16 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         p_ = pathlib.Path(__file__).parent.absolute()
         ld = os.listdir("%s/helper_functions/cyf/" % p_)
         print(ld)
+        
+        python_interpret = sys.executable
+        print(python_interpret)
+        
+        os.system("%s %s/setup.py build_ext --inplace" %(python_interpret, p_))
+        
+        ld = os.listdir("%s/helper_functions/cyf/" % p_)
+        print(ld)
+        
+        import CM.helper_functions.cyf.create_density_map as CDM
     
         
     data_type = "f4"
