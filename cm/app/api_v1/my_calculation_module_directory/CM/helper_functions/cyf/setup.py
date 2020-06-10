@@ -35,6 +35,6 @@ def get_extensions():
 
 setup(
     name = 'CM compiled',
-    ext_modules = cythonize(get_extensions()),
-    include_dirs=[numpy.get_include()] , compiler_directives={'language_level' : sys.version_info[0]}
+    ext_modules = cythonize(get_extensions(), compiler_directives={'language_level' : sys.version_info[0]}),
+    include_dirs=[numpy.get_include()] 
 )
