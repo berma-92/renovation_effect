@@ -700,6 +700,17 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     new_construction_methode = add_inputs_parameters["new_constructions"].lower().strip()
     print(np.sum(gfa_tot_future_existB)/1000)
     print(np.sum(energy_tot_future_existB)/1000)
+    
+    if os.path.exists(fn_BUILDING_FOOTPRINT):
+        try:
+            BUILDING_FOOTPRINT = RA(fn_BUILDING_FOOTPRINT, dType=data_type)
+            RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT)
+        except:
+            BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4.
+            RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT) * 0.01 #To test if runs into exception
+    else:
+        BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4. * 0.01 #To test if runs into exception
+                
     #return RESULTS
     if new_construction_methode.startswith("no"):
         future_gfa_map = gfa_tot_future_existB
@@ -722,19 +733,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             else:
                 size_ = 5
             """
-            #print(1)
-            #calculated_average_of_neigbhors = ndimage.generic_filter(BUILDING_FOOTPRINT, np.nanmean, size=size_, mode='constant', cval=np.NaN)
-            if os.path.exists(fn_BUILDING_FOOTPRINT):
-                try:
-                    BUILDING_FOOTPRINT = RA(fn_BUILDING_FOOTPRINT, dType=data_type)
-                    RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT)
-                except:
-                    BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4.
-                    RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT) * 0.01 #To test if runs into exception
-            else:
-                BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4. * 0.01 #To test if runs into exception
-                
-            
             
             calculated_average_of_neigbhors = np.zeros_like(BUILDING_FOOTPRINT)
             calculated_average_of_neigbhors[:,:] += BUILDING_FOOTPRINT

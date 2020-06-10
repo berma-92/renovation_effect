@@ -74,7 +74,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
     
     try:
-        BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+        BUILDING_FOOTPRINT =  inputs_raster_selection["building_footprint_tot_curr"]
         #input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     except:
         # This is a temporal fix
