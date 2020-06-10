@@ -65,7 +65,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     try:
         import CM.helper_functions.cyf.create_density_map as CDM
-        asdf
     except:
         import pathlib
         p_ = pathlib.Path(__file__).parent.absolute()
@@ -76,7 +75,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         python_interpret = sys.executable
         print(python_interpret)
         
-        os.system("%s %s/setup.py build_ext --inplace" %(python_interpret, d_))
+        #os.system("%s %s/setup.py build_ext --inplace" %(python_interpret, d_))
         
         ld = os.listdir(d_)
         print(ld)
