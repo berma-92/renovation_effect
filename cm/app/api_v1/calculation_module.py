@@ -61,10 +61,12 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
     print(inputs_raster_selection.keys())
     try:
-        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
+        input_raster_POPULATION =  inputs_raster_selection["population"]
+        print("input_raster_POPULATION 1" )
     except:
         # This is a temporal fix
         input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
+        print("input_raster_POPULATION 2" )
         
     #input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
     
@@ -75,10 +77,12 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     try:
         BUILDING_FOOTPRINT =  inputs_raster_selection["building_footprint_tot_curr"]
+        print("BUILDING_FOOTPRINT 1" )
         #input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     except:
         # This is a temporal fix
         BUILDING_FOOTPRINT = inputs_raster_selection["gfa_res_curr_density"]
+        print("BUILDING_FOOTPRINT 2" )
     
     if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
@@ -399,7 +403,7 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
         inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
-        inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
+        inputs_raster_selection["population"] = raster_file_path10
         
         
         

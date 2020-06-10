@@ -705,12 +705,14 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         try:
             BUILDING_FOOTPRINT = RA(fn_BUILDING_FOOTPRINT, dType=data_type)
             RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT)
+            print("Building footprint 1: %s " % str(RESULTS["footprint_cur"]))
         except:
             BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4.
             RESULTS["footprint_cur"] = np.sum(BUILDING_FOOTPRINT) * 0.01 #To test if runs into exception
+            print("Building footprint 2: %s " % str(RESULTS["footprint_cur"]))
     else:
         BUILDING_FOOTPRINT = (gfa_tot_curr_initial_year) / 4. * 0.01 #To test if runs into exception
-                
+        print("Building footprint 3: %s " % str(RESULTS["footprint_cur"]))
     #return RESULTS
     if new_construction_methode.startswith("no"):
         future_gfa_map = gfa_tot_future_existB
