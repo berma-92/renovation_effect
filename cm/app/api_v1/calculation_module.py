@@ -75,6 +75,10 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
     
+    for key_ in inputs_raster_selection.keys():
+        print("%s File (%s) exists: %s" %
+              (key_, inputs_raster_selection[key_], os.path.exists(inputs_raster_selection[key_])))
+        
     try:
         BUILDING_FOOTPRINT =  inputs_raster_selection["building_footprint_tot_curr"]
         print("BUILDING_FOOTPRINT 1" )

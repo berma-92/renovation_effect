@@ -10,8 +10,8 @@ This script has been created in the context of the Hotmaps EU project.
 import numpy as np
 import time
 import os, sys
-import pyximport
-pyximport.install()
+#import pyximport
+#pyximport.install()
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
 import CM.helper_functions.cyf.create_density_map as CDM
