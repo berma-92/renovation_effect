@@ -5,9 +5,13 @@ import numpy
 import os
 import re
 import sys
+import time
+print(time.ctime())
+
 
 os.chdir(os.path.join(
     os.path.dirname(os.path.abspath(__file__))))
+
 
 extra_compile_args = []
 extra_link_args = []
