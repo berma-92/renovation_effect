@@ -10,7 +10,7 @@ This script has been created in the context of the Hotmaps EU project.
 import numpy as np
 import time
 import os, sys
-#import pyximport
+import pyximport
 #pyximport.install()
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
@@ -75,6 +75,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         python_interpret = sys.executable
         print(python_interpret)
         
+        pyximport.install()
         #os.system("%s %s/setup.py build_ext --inplace" %(python_interpret, d_))
         
         ld = os.listdir(d_)

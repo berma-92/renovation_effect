@@ -52,6 +52,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     
     # ************************ # Input raster files **************************
+    print(inputs_raster_selection.keys())
+    
+    
     input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
     input_raster_NUTS_id =  inputs_raster_selection["nuts_id_number"]
     input_raster_LAU2_id =  inputs_raster_selection["lau2_id_number"]
@@ -59,10 +62,11 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density"]
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
-    print(inputs_raster_selection.keys())
+    
     try:
         input_raster_POPULATION =  inputs_raster_selection["population"]
         print("input_raster_POPULATION 1" )
+        assert (os.path.exists(inputs_raster_selection["population"]))
     except:
         # This is a temporal fix
         input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
@@ -75,10 +79,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
     
-    for key_ in inputs_raster_selection.keys():
-        print("%s File (%s) exists: %s" %
-              (key_, inputs_raster_selection[key_], os.path.exists(inputs_raster_selection[key_])))
-        
+    
     try:
         BUILDING_FOOTPRINT =  inputs_raster_selection["building_footprint_tot_curr"]
         print("BUILDING_FOOTPRINT 1" )
@@ -88,6 +89,10 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         BUILDING_FOOTPRINT = inputs_raster_selection["gfa_res_curr_density"]
         print("BUILDING_FOOTPRINT 2" )
     
+    for key_ in inputs_raster_selection.keys():
+        print("%s File (%s) exists: %s" %
+              (key_, inputs_raster_selection[key_], os.path.exists(inputs_raster_selection[key_])))
+        
     if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
         output_raster_energy_res = generate_output_file_tif(output_directory)
