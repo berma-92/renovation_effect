@@ -222,17 +222,17 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 {"unit": "", "name": "Underlying population growth assumptions 2015 - ","value": "%i" % target_yr}]
             
             if popraster_exists == True:
-                result['indicator'].extend([{"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
-                                      {"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
-                                      {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
-                                      {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]}, 
-                                      {"unit": "tds. people", "name": "%i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}])
+                result['indicator'].extend([{"unit": "tds. people", "name": "Population 2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
+                                      {"unit": "tds. people", "name": "Population 2005","value": "%4.2f" % RESULTS["pop_2005"]},  
+                                      {"unit": "tds. people", "name": "Population 2010","value": "%4.2f" % RESULTS["pop_2010"]},
+                                      {"unit": "tds. people", "name": "Population 2015","value": "%4.2f" % RESULTS["pop_base"]}, 
+                                      {"unit": "tds. people", "name": "Population %i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}])
             else:
-                result['indicator'].extend([{"unit": "-", "name": "population: 2000 / 2010","value": "%4.2f" % (RESULTS["pop_2000"] / RESULTS["pop_2010"])}, 
-                                      {"unit": "-", "name": "population: 2005 / 2010","value": "%4.2f" % (RESULTS["pop_2005"] / RESULTS["pop_2010"])},  
-                                      {"unit": "-", "name": "population: 2010 / 2010","value": "%4.2f" % (RESULTS["pop_2010"] / RESULTS["pop_2010"])},
-                                      {"unit": "-", "name": "population: 2015 / 2010","value": "%4.2f" % (RESULTS["pop_base"] / RESULTS["pop_2010"])}, 
-                                      {"unit": "-", "name": "population: %i / 2010" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"] / RESULTS["pop_2010"])}])
+                result['indicator'].extend([{"unit": "-", "name": "Population: 2000 / 2010","value": "%4.2f" % (RESULTS["pop_2000"] / RESULTS["pop_2010"])}, 
+                                      {"unit": "-", "name": "Population: 2005 / 2010","value": "%4.2f" % (RESULTS["pop_2005"] / RESULTS["pop_2010"])},  
+                                      {"unit": "-", "name": "Population: 2010 / 2010","value": "%4.2f" % (RESULTS["pop_2010"] / RESULTS["pop_2010"])},
+                                      {"unit": "-", "name": "Population: 2015 / 2010","value": "%4.2f" % (RESULTS["pop_base"] / RESULTS["pop_2010"])}, 
+                                      {"unit": "-", "name": "Population: %i / 2010" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"] / RESULTS["pop_2010"])}])
                 
             result['indicator'].extend([
                                   #{"unit": unit_area, "name": "Building footprint in 2014","value": "%4.2f" % (RESULTS["footprint_cur"] * converter_area)},
