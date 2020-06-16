@@ -610,7 +610,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     _ene_cur__ /= adopt_factor_hdm_energy
     _ene_fut__ /= adopt_factor_hdm_energy
     
-    
+    #scale Maps 
+    gfa_tot_curr_initial_year /= adopt_factor_hdm_gfa
+    gfa_tot_future_existB /= adopt_factor_hdm_gfa
+    energy_tot_future_existB/= adopt_factor_hdm_energy
          
         
     del area_future, energy_future, energy_current, area_current, cp_share, cp_share_2014
@@ -712,6 +715,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         #"""
     
     ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1]) 
+    
+    # scale maps
+    
+        
     #return RESULTS
     ########################
     #
@@ -721,6 +728,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     new_construction_methode = add_inputs_parameters["new_constructions"].lower().strip()
     print(np.sum(gfa_tot_future_existB)/1000)
     print(np.sum(energy_tot_future_existB)/1000)
+    
     
     if os.path.exists(fn_BUILDING_FOOTPRINT):
         try:
