@@ -127,11 +127,11 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Additional annual population growth compared to reference scenario',
+    {'input_name': 'Annual population growth in addition to default growth',
      'input_type': 'input',
      'input_parameter_name': 'add_population_growth',
      'input_value': 0,
-     'input_unit': '%',
+     'input_unit': '%p.a.',
      'input_min': -3,
      'input_max': +3,
      'cm_id': CM_ID
