@@ -63,10 +63,13 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
     
+    
     try:
+        popraster_exists = False
         input_raster_POPULATION =  inputs_raster_selection["population"]
         print("input_raster_POPULATION 1" )
         assert (os.path.exists(inputs_raster_selection["population"]))
+        popraster_exists = True
     except:
         # This is a temporal fix
         input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
@@ -216,12 +219,22 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 converter_ene = 1./10**3
             
             result['indicator'] = [
-                {"unit": "", "name": "Underlying population growth assumptions 2015 - ","value": "%i" % target_yr}, 
-                                  {"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
-                                  {"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
-                                  {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
-                                  {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]}, 
-                                  {"unit": "tds. people", "name": "%i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}, 
+                {"unit": "", "name": "Underlying population growth assumptions 2015 - ","value": "%i" % target_yr}]
+            
+            if popraster_exists == True:
+                result['indicator'].extend([{"unit": "tds. people", "name": "2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
+                                      {"unit": "tds. people", "name": "2005","value": "%4.2f" % RESULTS["pop_2005"]},  
+                                      {"unit": "tds. people", "name": "2010","value": "%4.2f" % RESULTS["pop_2010"]},
+                                      {"unit": "tds. people", "name": "2015","value": "%4.2f" % RESULTS["pop_base"]}, 
+                                      {"unit": "tds. people", "name": "%i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}])
+            else:
+                result['indicator'].extend([{"unit": "-", "name": "population: 2000 / 2010","value": "%4.2f" % (RESULTS["pop_2000"] / RESULTS["pop_2010"])}, 
+                                      {"unit": "-", "name": "population: 2005 / 2010","value": "%4.2f" % (RESULTS["pop_2005"] / RESULTS["pop_2010"])},  
+                                      {"unit": "-", "name": "population: 2010 / 2010","value": "%4.2f" % (RESULTS["pop_2010"] / RESULTS["pop_2010"])},
+                                      {"unit": "-", "name": "population: 2015 / 2010","value": "%4.2f" % (RESULTS["pop_base"] / RESULTS["pop_2010"])}, 
+                                      {"unit": "-", "name": "population: %i / 2010" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"] / RESULTS["pop_2010"])}])
+                
+            result['indicator'].extend([
                                   #{"unit": unit_area, "name": "Building footprint in 2014","value": "%4.2f" % (RESULTS["footprint_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
                                   {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
@@ -232,7 +245,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                   {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                                   {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
                                   {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
-                                ]
+                                ])
             
             
             result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
