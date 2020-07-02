@@ -186,5 +186,6 @@ SIGNATURE = {
     "cm_url": "Do not add something",
     "cm_description": "this computation module calcuates the impact of renovation and building demolishment on future hdm ",
     "cm_id": CM_ID,
+    "wiki_url":"https://wiki.hotmaps.eu/en/CM-Demand-projection",
     'inputs_calculation_module': INPUTS_CALCULATION_MODULE
 }
