@@ -73,7 +73,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_min': 'none',
      'input_max': 'none', 'cm_id': CM_ID
      },
-    {'input_name': 'Reduction of floor area compared to reference scenario: Constr. period before 1977',
+    {'input_name': 'Reduction of floor area compared to reference scenario: Constr. period before 1975',
      'input_type': 'input',
      'input_parameter_name': 'red_area_77',
      'input_value': 100,
@@ -82,7 +82,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Reduction of floor area compared to reference scenario: Constr. period 1977-1990',
+    {'input_name': 'Reduction of floor area compared to reference scenario: Constr. period 1975-1990',
      'input_type': 'input',
      'input_parameter_name': 'red_area_80',
      'input_value': 100,
@@ -100,7 +100,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Reduction of specific energy needs compared to reference scenario: Constr. period before 1977',
+    {'input_name': 'Reduction of specific energy needs compared to reference scenario: Constr. period before 1975',
      'input_type': 'input',
      'input_parameter_name': 'red_sp_ene_77',
      'input_value': 100,
@@ -109,7 +109,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Reduction of specific energy needs compared to reference scenario: Constr. period 1977-1990',
+    {'input_name': 'Reduction of specific energy needs compared to reference scenario: Constr. period 1975-1990',
      'input_type': 'input',
      'input_parameter_name': 'red_sp_ene_80',
      'input_value': 100,
@@ -153,21 +153,7 @@ SIGNATURE = {
     "authorized_scale":["NUTS 3", "NUTS 2", "NUTS 1","LAU 2", "Hectare"],
     "cm_name": CM_NAME,
     "description_link": "https://github.com/HotMaps/hotmaps_wiki/wiki/en-CM-Demand-projection",
-    "layers_needed": [
-        "country_id_number",
-        "nuts_id_number",
-        "lau2_id_number",
-        "gfa_res_curr_density",
-        "gfa_nonres_curr_density",
-        "heat_res_curr_density",
-        "heat_nonres_curr_density",
-        "ghs_built_1975_100_share",
-        "ghs_built_1990_100_share",
-        "ghs_built_2000_100_share",
-        "ghs_built_2014_100_share",
-        "building_footprint_tot_curr",
-        "pop_tot_curr_density"
-    ],
+    "layers_needed": [],
     "type_layer_needed": [
          {"type" : "country_id_number","description" : "Country ID according to Hotmaps dataset."},
         {"type" : "nuts_id_number","description" : "NUTS3 ID according to Hotmaps dataset."},
@@ -181,7 +167,7 @@ SIGNATURE = {
         {"type" : "ghs_built_2000_100_share","description" : "Layer with share of building constructed from 1990-1999 in base year."},
         {"type" : "ghs_built_2014_100_share","description" : "Layer with share of building constructed from 2000-2014 in base year."},
         {"type" : "building_footprint_tot_curr","description" : "Be aware to use the building footprint layer of buildings."},
-        {"type" : "population","description" : "Be aware to use the population layer of 2011."}
+        {"type" : "pop_tot_curr_density","description" : "Be aware to use the population layer of 2011."}
     ],
     "cm_url": "Do not add something",
     "cm_description": "this computation module calcuates the impact of renovation and building demolishment on future hdm ",
