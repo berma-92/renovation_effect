@@ -66,9 +66,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     try:
         popraster_exists = False
-        input_raster_POPULATION =  inputs_raster_selection["population"]
+        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
         print("input_raster_POPULATION 1" )
-        assert (os.path.exists(inputs_raster_selection["population"]))
+        assert (os.path.exists(inputs_raster_selection["pop_tot_curr_density"]))
         popraster_exists = True
     except:
         # This is a temporal fix
