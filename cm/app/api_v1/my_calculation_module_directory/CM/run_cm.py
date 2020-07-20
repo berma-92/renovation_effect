@@ -50,7 +50,7 @@ def main(inputs_parameter_selection,
     NUTS_id, gt = RA(input_raster_NUTS_id, dType="uint16", return_gt=True)
     if NUTS_id.size > (MAX_SIZE):
         RESULTS = {}
-        RESULTS["ERRORSIZE"] = "Selected region is to large, please reduce the select area!"
+        RESULTS["ERRORSIZE"] = "Selected region is too large, please reduce the select area!"
         RESULTS["size"] =  NUTS_id.size / (MAX_SIZE)
         RESULTS["target_year"] = int(target_year)
         RESULTS["Done"] = True
@@ -69,6 +69,15 @@ def main(inputs_parameter_selection,
     cp_share_1990 = RA(input_raster_cp_share_1990, dType=data_type)
     cp_share_2000 = RA(input_raster_cp_share_2000, dType=data_type)
     cp_share_2014 = RA(input_raster_cp_share_2014, dType=data_type)
+
+    if (np.sum(cp_share_1975) + np.sum(cp_share_1990) +
+        np.sum(cp_share_2000) + np.sum(cp_share_2014)) <= 0.0001:
+        RESULTS = {}
+        RESULTS["ERRORNOBUILDINGDATA"] = "No building construction data for selected region!"
+        RESULTS["target_year"] = int(target_year)
+        RESULTS["Done"] = True
+        return RESULTS
+
 
 
     NUTS_id_size = NUTS_id.shape

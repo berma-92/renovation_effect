@@ -11,7 +11,7 @@ import numpy as np
 import time
 import os, sys
 import pyximport
-#pyximport.install()
+pyximport.install()
 
 from CM.helper_functions.exportLayerDict import export_layer as expLyr
 
@@ -66,19 +66,21 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     try:
         import CM.helper_functions.cyf.create_density_map as CDM
     except:
+        # check if pyx are allready compiled
         import pathlib
         p_ = pathlib.Path(__file__).parent.absolute()
         d_ = "%s/helper_functions/cyf/" % p_
         ld = os.listdir(d_)
+        print("Directory content before pyimport.install")
         print(ld)
         
-        python_interpret = sys.executable
-        print(python_interpret)
+        #python_interpret = sys.executable
+        #print(python_interpret)
         
         pyximport.install()
-        #os.system("%s %s/setup.py build_ext --inplace" %(python_interpret, d_))
         
         ld = os.listdir(d_)
+        print("Directory content after pyimport.install")
         print(ld)
         
         import CM.helper_functions.cyf.create_density_map as CDM
