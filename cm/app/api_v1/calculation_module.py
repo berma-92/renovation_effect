@@ -55,7 +55,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     print(inputs_raster_selection.keys())
     
     
-    input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
+    #input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
+    input_raster_COUNTRY_id = 1
     input_raster_NUTS_id =  inputs_raster_selection["nuts_id_number"]
     input_raster_LAU2_id =  inputs_raster_selection["lau2_id_number"]
     input_raster_GFA_RES =  inputs_raster_selection["gfa_res_curr_density"]
