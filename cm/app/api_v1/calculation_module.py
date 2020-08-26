@@ -2,7 +2,7 @@ import os
 import sys
 
 import glob
-
+import traceback
 
 from datetime import datetime
 
@@ -52,19 +52,51 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     
     
     # ************************ # Input raster files **************************
-    input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
+    print(inputs_raster_selection.keys())
+    
+    
+    #input_raster_COUNTRY_id =  inputs_raster_selection["country_id_number"]
+    input_raster_COUNTRY_id = 1
     input_raster_NUTS_id =  inputs_raster_selection["nuts_id_number"]
     input_raster_LAU2_id =  inputs_raster_selection["lau2_id_number"]
     input_raster_GFA_RES =  inputs_raster_selection["gfa_res_curr_density"]
     input_raster_GFA_NRES =  inputs_raster_selection["gfa_nonres_curr_density"]
     input_raster_ENERGY_RES =  inputs_raster_selection["heat_res_curr_density"]
     input_raster_ENERGY_NRES =  inputs_raster_selection["heat_nonres_curr_density"]
+    
+    
+    try:
+        popraster_exists = False
+        input_raster_POPULATION =  inputs_raster_selection["pop_tot_curr_density"]
+        print("input_raster_POPULATION 1" )
+        assert (os.path.exists(inputs_raster_selection["pop_tot_curr_density"]))
+        popraster_exists = True
+    except:
+        # This is a temporal fix
+        input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
+        print("input_raster_POPULATION 2" )
+        
+    #input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
+    
     input_raster_cp_share_1975 =  inputs_raster_selection["ghs_built_1975_100_share"]
     input_raster_cp_share_1990 =  inputs_raster_selection["ghs_built_1990_100_share"]
     input_raster_cp_share_2000 =  inputs_raster_selection["ghs_built_2000_100_share"]
     input_raster_cp_share_2014 =  inputs_raster_selection["ghs_built_2014_100_share"]
-    BUILDING_FOOTPRINT =  inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
     
+    
+    try:
+        BUILDING_FOOTPRINT =  inputs_raster_selection["building_footprint_tot_curr"]
+        print("BUILDING_FOOTPRINT 1" )
+        #input_raster_POPULATION = inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"]
+    except:
+        # This is a temporal fix
+        BUILDING_FOOTPRINT = inputs_raster_selection["gfa_res_curr_density"]
+        print("BUILDING_FOOTPRINT 2" )
+    
+    for key_ in inputs_raster_selection.keys():
+        print("%s File (%s) exists: %s" %
+              (key_, inputs_raster_selection[key_], os.path.exists(inputs_raster_selection[key_])))
+        
     if direct_call_calc_mdoule==False:
         # ************************ # Output raster files **************************
         output_raster_energy_res = generate_output_file_tif(output_directory)
@@ -122,6 +154,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     now = datetime.now() # current date and time
     date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
     result = dict()
+    
+    
     try:
         if "new_constructions" not in inputs_parameter_selection.keys():
             inputs_parameter_selection["new_constructions"] = "No new buildings"
@@ -138,6 +172,7 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                   input_raster_cp_share_1975, input_raster_cp_share_1990,
                   input_raster_cp_share_2000, input_raster_cp_share_2014,
                   BUILDING_FOOTPRINT,
+                  input_raster_POPULATION, 
                   output_raster_files, 
                   output_csv_result
                   )
@@ -147,6 +182,8 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         RESULTS = {}
         RESULTS["Done"] = False
         RESULTS["ERROR"] = str(e)
+        traceback.print_exc(file=sys.stdout)
+        print(e)
         return(result)
     if "target_year" not in RESULTS.keys():
         RESULTS["target_year"] = 0
@@ -158,10 +195,12 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
     result['name'] = CM_NAME + ", Target year {}".format(RESULTS["target_year"])
     if "Done" not in RESULTS.keys() or RESULTS['Done'] == False:
         result['indicator'] = [{"unit": " ", "name": "Some unkown / unhandeld ERROR occured. We sincerely apologize." ,"value": "0"}]
-        result['indicator'].append({"unit": " ", "name": "Error message: -- %s --" %RESULTS["ERROR"] ,"value": "0"})
-        
+        result['indicator'].append({"unit": " ", "name": "Error message: -- %s --" %RESULTS["ERROR"] ,"value": "0"})   
+    elif "ERRORNOBUILDINGDATA" in RESULTS.keys():
+        result['indicator'] = [{"unit": "--", "name": "ERROR: %s" % RESULTS["ERRORNOBUILDINGDATA"],"value": "%4.0f" % 0}]
     elif "ERRORSIZE" in RESULTS.keys():
         result['indicator'] = [{"unit": "%", "name": "ERROR: %s - Max. allowed area exceeded by factor of " % RESULTS["ERRORSIZE"],"value": "%4.0f" % (RESULTS["size"] * 100)}]
+    
     else:
         try:
             target_yr = RESULTS["target_year"]
@@ -181,15 +220,35 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
             else:
                 unit_energy = "GWh"
                 converter_ene = 1./10**3
-                
             
-            result['indicator'] = [{"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
+            result['indicator'] = [
+                {"unit": "", "name": "Underlying population growth assumptions 2015 - ","value": "%i" % target_yr}]
+            
+            if popraster_exists == True:
+                result['indicator'].extend([{"unit": "tds. people", "name": "Population 2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
+                                      {"unit": "tds. people", "name": "Population 2005","value": "%4.2f" % RESULTS["pop_2005"]},  
+                                      {"unit": "tds. people", "name": "Population 2010","value": "%4.2f" % RESULTS["pop_2010"]},
+                                      {"unit": "tds. people", "name": "Population 2015","value": "%4.2f" % RESULTS["pop_base"]}, 
+                                      {"unit": "tds. people", "name": "Population %i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}])
+            else:
+                result['indicator'].extend([{"unit": "-", "name": "Population: 2000 / 2010","value": "%4.2f" % (RESULTS["pop_2000"] / RESULTS["pop_2010"])}, 
+                                      {"unit": "-", "name": "Population: 2005 / 2010","value": "%4.2f" % (RESULTS["pop_2005"] / RESULTS["pop_2010"])},  
+                                      {"unit": "-", "name": "Population: 2010 / 2010","value": "%4.2f" % (RESULTS["pop_2010"] / RESULTS["pop_2010"])},
+                                      {"unit": "-", "name": "Population: 2015 / 2010","value": "%4.2f" % (RESULTS["pop_base"] / RESULTS["pop_2010"])}, 
+                                      {"unit": "-", "name": "Population: %i / 2010" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"] / RESULTS["pop_2010"])}])
+                
+            result['indicator'].extend([
+                                  #{"unit": unit_area, "name": "Building footprint in 2014","value": "%4.2f" % (RESULTS["footprint_cur"] * converter_area)},
+                                  {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
+                                  
+                                  {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
+                                  {"unit": "m2/capita", "name": "Heated area per capita %i"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
                                   {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
                                   {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
                                   {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
                                   {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
-                                ]
+                                ])
             
             
             result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
@@ -316,19 +375,22 @@ if __name__ == '__main__':
         
         raster_file_dir = '%s/input/' % test_dir
         
-        raster_file_path0 = raster_file_dir + "/Country_cut_id_number.tif"
-        raster_file_path1 = raster_file_dir + "/NUTS3_cut_id_number.tif"
-        raster_file_path2 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif"
-        raster_file_path3 = raster_file_dir + "/RESULTS_ENERGY_HEATING_RES_2012.tif"
-        raster_file_path2b = raster_file_dir + "/RESULTS_GFA_NRES_BUILD.tif"
-        raster_file_path3b = raster_file_dir + "/RESULTS_ENERGY_HEATING_NRES_2012.tif"
+        raster_file_path0 = raster_file_dir + "/country_id_number.tif"
+        raster_file_path1 = raster_file_dir + "/nuts3_id_number.tif"
+        raster_file_path2 = raster_file_dir + "/gfa_res_curr_density.tif"
+        raster_file_path3 = raster_file_dir + "/heat_res_curr_density.tif"
+        raster_file_path2b = raster_file_dir + "/gfa_nonres_curr_density.tif"
+        raster_file_path3b = raster_file_dir + "/heat_nonres_curr_density.tif"
         
-        raster_file_path4 = raster_file_dir + "/LAU2_id_number.tif"
-        raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
-        raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
-        raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
-        raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
-        raster_file_path9 = raster_file_dir + "/RESULTS_GFA_RES_BUILD.tif" 
+        raster_file_path4 = raster_file_dir + "/lau2_id_number.tif"
+        raster_file_path5 = raster_file_dir + "/ghs_built_1975_100_share.tif"
+        raster_file_path6 = raster_file_dir + "/ghs_built_1990_100_share.tif"
+        raster_file_path7 = raster_file_dir + "/ghs_built_2000_100_share.tif"
+        raster_file_path8 = raster_file_dir + "/ghs_built_2014_100_share.tif"
+        raster_file_path9 = raster_file_dir + "/building_footprint_tot_curr.tif" 
+        raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif" 
+
+
 
         """
         # simulate copy from HTAPI to CM
@@ -365,7 +427,10 @@ if __name__ == '__main__':
         inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
         inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
         inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
-        inputs_raster_selection["RESULTS_BUILDING_FOOTPRINT"] = raster_file_path9
+        inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
+        inputs_raster_selection["population"] = raster_file_path10
+        
+        
         
         #inputs_parameter_selection['scenario'] = "Scenario 1"
         #inputs_parameter_selection['target_year'] = "2030"
@@ -375,8 +440,11 @@ if __name__ == '__main__':
         inputs_parameter_selection['red_sp_ene_77'] = "100"
         inputs_parameter_selection['red_sp_ene_80'] = "100"
         inputs_parameter_selection['red_sp_ene_00'] = "100"
+        inputs_parameter_selection['red_sp_ene_00'] = "100"
+        inputs_parameter_selection['add_population_growth'] = "0" #"Add all new buildings"
         inputs_parameter_selection['new_constructions'] = "No new buildings" #"Add all new buildings"
-
+        inputs_parameter_selection['new_constructions'] = "replace jjl"
+        inputs_parameter_selection['new_constructions'] = "Add all new buildings" #"Add all new buildings"
         fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
         fl.sort()
         print(len(fl))
@@ -402,8 +470,8 @@ if __name__ == '__main__':
         year_list = sorted(list(set(available_years)))
         
         
-        inputs_parameter_selection['scenario'] = scenario_list[-3]
-        inputs_parameter_selection['target_year'] = "2050"
+        inputs_parameter_selection['scenario'] = scenario_list[0]
+        inputs_parameter_selection['target_year'] = "2040"
         print("Scenario %s" % inputs_parameter_selection['scenario'])
         output_directory = test_dir + "/output"
         if not os.path.exists(output_directory):

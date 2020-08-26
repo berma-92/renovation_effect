@@ -35,6 +35,7 @@ def main(inputs_parameter_selection,
          input_raster_cp_share_2000,
          input_raster_cp_share_2014,
          input_raster_BUILDING_FOOTPRINT,
+         input_raster_POPULATION,
          output_raster_files,
          output_csv_result, 
          debug_output=False):
@@ -49,7 +50,7 @@ def main(inputs_parameter_selection,
     NUTS_id, gt = RA(input_raster_NUTS_id, dType="uint16", return_gt=True)
     if NUTS_id.size > (MAX_SIZE):
         RESULTS = {}
-        RESULTS["ERRORSIZE"] = "Selected region is to large, please reduce the select area!"
+        RESULTS["ERRORSIZE"] = "Selected region is too large, please reduce the select area!"
         RESULTS["size"] =  NUTS_id.size / (MAX_SIZE)
         RESULTS["target_year"] = int(target_year)
         RESULTS["Done"] = True
@@ -68,6 +69,15 @@ def main(inputs_parameter_selection,
     cp_share_1990 = RA(input_raster_cp_share_1990, dType=data_type)
     cp_share_2000 = RA(input_raster_cp_share_2000, dType=data_type)
     cp_share_2014 = RA(input_raster_cp_share_2014, dType=data_type)
+
+    if (np.sum(cp_share_1975) + np.sum(cp_share_1990) +
+        np.sum(cp_share_2000) + np.sum(cp_share_2014)) <= 0.0001:
+        RESULTS = {}
+        RESULTS["ERRORNOBUILDINGDATA"] = "No building construction data for selected region!"
+        RESULTS["target_year"] = int(target_year)
+        RESULTS["Done"] = True
+        return RESULTS
+
 
 
     NUTS_id_size = NUTS_id.shape
@@ -94,6 +104,7 @@ def main(inputs_parameter_selection,
         if int(i) > BASE_YEAR:
             initial_yr = i
             break
+    
     if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
         target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
@@ -106,6 +117,8 @@ def main(inputs_parameter_selection,
     NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
     NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     
+    NUTS_RESULTS_POPULATION = READ_CSV_DATA(local_input_dir + "/DevelopmentPopNUTS3.csv", skip_header=3)[0]
+    
 
 
     csv_data_table = READ_CSV_DATA(local_input_dir + "/Communal2_data.csv", skip_header=6)
@@ -115,11 +128,15 @@ def main(inputs_parameter_selection,
 
     adoption_bgf = [float(inputs_parameter_selection['red_area_77']), float(inputs_parameter_selection['red_area_80']), float(inputs_parameter_selection['red_area_00'])]
     adoption_sp_ene = [float(inputs_parameter_selection['red_sp_ene_77']), float(inputs_parameter_selection['red_sp_ene_80']), float(inputs_parameter_selection['red_sp_ene_00'])]
+    add_pop_growth = float(inputs_parameter_selection['add_population_growth'])
     new_buildings_distribution_method = inputs_parameter_selection['new_constructions']
-    inputs_parameters = {"scenario_name": scenario_name, "adoption_bgf": adoption_bgf,
+    inputs_parameters = {"scenario_name": scenario_name, 
+                         "adoption_bgf": adoption_bgf,
                          "adoption_sp_ene": adoption_sp_ene,
                          "new_constructions": new_buildings_distribution_method,
-                         "base_year": BASE_YEAR,"target_year": int(target_year)}
+                         "base_year": BASE_YEAR,
+                         "target_year": int(target_year),
+                         "add_pop_growth": add_pop_growth}
     #RESULTS["Done"] = True
     #return RESULTS
     RESULTS = CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE,
@@ -127,6 +144,7 @@ def main(inputs_parameter_selection,
                                     NUTS_RESULTS_SHARES_ENERGY_BASE,
                                     NUTS_RESULTS_SHARES_ENERGY_FUTURE,
                                     NUTS_RESULTS_ENERGY_FUTURE_abs,
+                                    NUTS_RESULTS_POPULATION,
                                     Country_id,
                                     NUTS_id,
                                     LAU2_id,
@@ -138,6 +156,7 @@ def main(inputs_parameter_selection,
                                     input_raster_ENERGY_NRES, 
                                     input_raster_GFA_RES,
                                     input_raster_GFA_NRES,
+                                    input_raster_POPULATION, 
                                     gt,
                                     NUTS_id_size,
                                     csv_data_table,
@@ -150,38 +169,3 @@ def main(inputs_parameter_selection,
     RESULTS["Done"] = True    
     RESULTS["target_year"] = int(target_year)
     return RESULTS
-    
-    
-    
-
-if __name__ == "__main__":
-    print('calculation started')
-    
-    subdir = "cut/"
-    dir_ = "../../../../tests/data"
-    fn_reference_tif = "%s/%sREFERENCE.tif" % (dir_, subdir)
-    fn_NUTS3_id_number = "%s/%sNUTS3_cut_id_number.tif" % (dir_, subdir)
-    fn_gfa_res_curr = "%s/%sgfa_res_curr_density.tif" % (dir_, subdir)
-    fn_heat_res_curr = "%s/%sheat_res_curr_density.tif" % (dir_, subdir)
-    
-    fn_LAU2_id_number = "%s/%sLAU2_id_number.tif" % (dir_, subdir)
-    fn_Country_id_number = "%s/%sCountry_id_number.tif" % (dir_, subdir)
-    fn_GHS_BUILT_1975_100_share = "%s/%sGHS_BUILT_1975_100_share.tif" % (dir_, subdir)
-    fn_GHS_BUILT_1990_100_share = "%s/%sGHS_BUILT_1990_100_share.tif" % (dir_, subdir)
-    fn_GHS_BUILT_2000_100_share = "%s/%sGHS_BUILT_2000_100_share.tif" % (dir_, subdir)
-    fn_GHS_BUILT_2014_100_share = "%s/%sGHS_BUILT_2014_100_share.tif" % (dir_, subdir)
-
-
-    main(fn_reference_tif
-         , fn_Country_id_number
-         , fn_NUTS3_id_number
-         , fn_gfa_res_curr
-         , fn_heat_res_curr
-         , fn_LAU2_id_number
-         , fn_GHS_BUILT_1975_100_share
-         , fn_GHS_BUILT_1990_100_share
-         , fn_GHS_BUILT_2000_100_share
-         , fn_GHS_BUILT_2014_100_share)
-
-#import sys;sys.path.append(r'/home/simulant/.eclipse/org.eclipse.platform_3.8_155965261/plugins/org.python.pydev_4.5.5.201603221110/pysrc')
-#import pydevd;pydevd.settrace()
