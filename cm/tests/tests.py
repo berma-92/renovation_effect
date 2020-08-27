@@ -52,8 +52,8 @@ class TestAPI(unittest.TestCase):
         raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif"
 
         # simulate copy from HTAPI to CM
-        save_path0 = UPLOAD_DIRECTORY+"/nuts3_cut_id_number.tif"
-        save_path1 = UPLOAD_DIRECTORY+"/country_cut_id_number.tif"
+        #save_path0 = UPLOAD_DIRECTORY+"/country_cut_id_number.tif"
+        save_path1 = UPLOAD_DIRECTORY+"/nuts3_cut_id_number.tif"
         save_path2 = UPLOAD_DIRECTORY+"/gfa_res_curr_density.tif"
         save_path3 = UPLOAD_DIRECTORY+"/heat_res_curr_density.tif"
         
