@@ -99,7 +99,6 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection['add_population_growth'] = "0"
         inputs_parameter_selection['new_constructions'] = "No new buildings"
         
-        
         #inputs_raster_selection["country_id_number"] = save_path0
         inputs_raster_selection["nuts_id_number"] = save_path1
         inputs_raster_selection["gfa_res_curr_density"] = save_path2
