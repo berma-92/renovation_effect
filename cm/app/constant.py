@@ -155,7 +155,7 @@ SIGNATURE = {
     "description_link": "https://github.com/HotMaps/hotmaps_wiki/wiki/en-CM-Demand-projection",
     "layers_needed": [],
     "type_layer_needed": [
-         {"type" : "country_id_number","description" : "Country ID according to Hotmaps dataset."},
+        #{"type" : "country_id_number","description" : "Country ID according to Hotmaps dataset."},
         {"type" : "nuts_id_number","description" : "NUTS3 ID according to Hotmaps dataset."},
         {"type" : "lau2_id_number","description" : "LAU ID according to Hotmaps dataset."},
         {"type" : "gfa_res_curr_density","description" : "Be aware to the use residential heated floor area layer."},
