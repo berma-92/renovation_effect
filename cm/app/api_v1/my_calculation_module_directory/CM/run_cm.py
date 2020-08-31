@@ -69,7 +69,11 @@ def main(inputs_parameter_selection,
     cp_share_1990 = RA(input_raster_cp_share_1990, dType=data_type)
     cp_share_2000 = RA(input_raster_cp_share_2000, dType=data_type)
     cp_share_2014 = RA(input_raster_cp_share_2014, dType=data_type)
-
+    print("cp_share_1975:{}".format(np.sum(cp_share_1975)))
+    print("cp_share_1990:{}".format(np.sum(cp_share_1990)))
+    print("cp_share_2000:{}".format(np.sum(cp_share_2000)))
+    print("cp_share_2014:{}".format(np.sum(cp_share_2014)))
+    print("Shape: cp_share_2014:{}".format(cp_share_2014.shape))
     if (np.sum(cp_share_1975) + np.sum(cp_share_1990) +
         np.sum(cp_share_2000) + np.sum(cp_share_2014)) <= 0.0001:
         RESULTS = {}
