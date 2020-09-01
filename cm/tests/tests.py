@@ -31,7 +31,7 @@ class TestAPI(unittest.TestCase):
         
         
         test_dir = 'tests/data/'
-        
+        # raster file dir
         raster_file_dir = '%s/input/' % test_dir
         #raster_file_dir = 'tests/data'
         
