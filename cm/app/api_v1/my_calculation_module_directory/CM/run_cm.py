@@ -1,4 +1,4 @@
-import time
+#import time
 
 import os, sys
 import numpy as np
@@ -14,7 +14,6 @@ from CM.helper_functions.read_raster import raster_array as RA
 #import CM.helper_functions.Subfunctions as SF
 #import CM.helper_functions.cliprasterlayer as CRL
 #from CM.helper_functions.exportLayerDict import export_layer as expLyr
-
 
 
 print(sys.version_info)
