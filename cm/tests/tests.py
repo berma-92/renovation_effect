@@ -31,7 +31,7 @@ class TestAPI(unittest.TestCase):
         
         
         test_dir = 'tests/data/'
-        
+        # raster file dir
         raster_file_dir = '%s/input/' % test_dir
         #raster_file_dir = 'tests/data'
         
@@ -52,8 +52,8 @@ class TestAPI(unittest.TestCase):
         raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif"
 
         # simulate copy from HTAPI to CM
-        save_path0 = UPLOAD_DIRECTORY+"/nuts3_cut_id_number.tif"
-        save_path1 = UPLOAD_DIRECTORY+"/country_cut_id_number.tif"
+        #save_path0 = UPLOAD_DIRECTORY+"/country_cut_id_number.tif"
+        save_path1 = UPLOAD_DIRECTORY+"/nuts3_cut_id_number.tif"
         save_path2 = UPLOAD_DIRECTORY+"/gfa_res_curr_density.tif"
         save_path3 = UPLOAD_DIRECTORY+"/heat_res_curr_density.tif"
         
@@ -98,7 +98,6 @@ class TestAPI(unittest.TestCase):
         inputs_parameter_selection['red_sp_ene_00'] = "100"
         inputs_parameter_selection['add_population_growth'] = "0"
         inputs_parameter_selection['new_constructions'] = "No new buildings"
-        
         
         #inputs_raster_selection["country_id_number"] = save_path0
         inputs_raster_selection["nuts_id_number"] = save_path1
