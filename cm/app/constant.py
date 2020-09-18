@@ -73,7 +73,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_min': 'none',
      'input_max': 'none', 'cm_id': CM_ID
      },
-    {'input_name': 'Scale up or down floor area compared to reference scenario: Constr. period before 1975',
+    {'input_name': 'Scale up or down the reduction of floor area compared to reference scenario: Constr. period before 1975',
      'input_type': 'input',
      'input_parameter_name': 'red_area_77',
      'input_value': 100,
@@ -82,7 +82,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Scale up or down floor area compared to reference scenario: Constr. period 1975-1990',
+    {'input_name': 'Scale up or down the reduction of floor area compared to reference scenario: Constr. period 1975-1990',
      'input_type': 'input',
      'input_parameter_name': 'red_area_80',
      'input_value': 100,
@@ -91,7 +91,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      }, 
-    {'input_name': 'Scale up or down floor area compared to reference scenario: Constr. period after 1990',
+    {'input_name': 'Scale up or down the reduction of floor area compared to reference scenario: Constr. period after 1990',
      'input_type': 'input',
      'input_parameter_name': 'red_area_00',
      'input_value': 100,
@@ -100,7 +100,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Scale up or down specific energy needs compared to reference scenario: Constr. period before 1975',
+    {'input_name': 'Scale up or down the reduction of specific energy needs compared to reference scenario: Constr. period before 1975',
      'input_type': 'input',
      'input_parameter_name': 'red_sp_ene_77',
      'input_value': 100,
@@ -109,7 +109,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Scale up or down of specific energy needs compared to reference scenario: Constr. period 1975-1990',
+    {'input_name': 'Scale up or down the reduction of specific energy needs compared to reference scenario: Constr. period 1975-1990',
      'input_type': 'input',
      'input_parameter_name': 'red_sp_ene_80',
      'input_value': 100,
@@ -118,7 +118,7 @@ INPUTS_CALCULATION_MODULE = [
      'input_max': 200,
      'cm_id': CM_ID
      },
-    {'input_name': 'Scale up or down of specific energy needs compared to reference scenario: Constr. period after 1990',
+    {'input_name': 'Scale up or down the reduction of specific energy needs compared to reference scenario: Constr. period after 1990',
      'input_type': 'input',
      'input_parameter_name': 'red_sp_ene_00',
      'input_value': 100,
