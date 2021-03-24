@@ -368,7 +368,7 @@ if __name__ == '__main__':
         
     proj_path = "/home/bmayr/workspace_bernhard/path2lc"
     data_warehouse = "/home/bmayr/workspace_bernhard/p2lc/data_warehouse/res_h/"
-    outpath = proj_path + "/home/bmayr/workspace_bernhard/p2lc/outputs/res_h"
+    outpath = proj_path + "/outputs/res_h"
 
     skipped_folders = []
 
