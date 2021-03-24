@@ -367,9 +367,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
 if __name__ == '__main__':
         
     proj_path = "/home/bmayr/workspace_bernhard/path2lc"
-    data_warehouse = "/home/bmayr/workspace_bernhard/p2lc/data_warehouse/res_h/"
+    data_warehouse = "/home/bmayr/workspace_bernhard/path2lc/data_warehouse/res_h/"
     outpath = proj_path + "/outputs/res_h"
-
+    
     skipped_folders = []
 
     for directory, dirnames, filenames in os.walk(outpath):
@@ -377,7 +377,7 @@ if __name__ == '__main__':
             if dirname == 'output':
                 shutil.rmtree(os.path.join(directory, dirname))
 
-    for directory, dirnames, filenames in os.walk(outpath):
+    for directory, dirnames, filenames in os.walk(data_warehouse):
         if len(dirnames) > 1:
             continue
         try:
