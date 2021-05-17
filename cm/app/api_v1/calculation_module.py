@@ -376,7 +376,7 @@ if __name__ == '__main__':
     outpath = str(config['input_paths']['outpath'])
 
     if not os.path.exists(data_warehouse):
-        raise FileNotFound(data_warehouse)
+        raise FileNotFoundError(data_warehouse)
 
     skipped_folders = []
 
@@ -386,12 +386,12 @@ if __name__ == '__main__':
                 shutil.rmtree(os.path.join(directory, dirname))
 
     for directory, dirnames, filenames in os.walk(data_warehouse):
-        if len(dirnames) > 1:
+        if len(dirnames) > 0:
             continue
         try:
             raster_file_dir = directory
 
-            output_directory = directory + "/output"
+            output_directory = (directory + "/output").replace('\\', '/')
             if not os.path.exists(output_directory):
                 os.mkdir(output_directory)
     
@@ -443,7 +443,7 @@ if __name__ == '__main__':
             inputs_parameter_selection['new_constructions'] = "No" #"Add all new buildings" #"Add all new buildings"
             fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
             fl.sort()
-            print(len(fl))
+            print("There are %i scenario .csv file(s) in directory %s." % (len(fl), path))
             available_scenarios = {}
             available_years = []
             for ele in fl:
@@ -466,9 +466,11 @@ if __name__ == '__main__':
             year_list = sorted(list(set(available_years)))
             
             
-            inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
-            inputs_parameter_selection['target_year'] = "2050"
-            print("Scenario %s" % inputs_parameter_selection['scenario'])
+            #inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
+            inputs_parameter_selection['scenario'] = str(config['calc_configuration']['scenario'])
+            inputs_parameter_selection['target_year'] = str(config['calc_configuration']['target_year'])
+            print("Start to calculate Scenario '%s' and target year '%s' " % (inputs_parameter_selection['scenario'],
+                                                                              inputs_parameter_selection['target_year']))
             calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                         direct_call_calc_mdoule=True)
         except:
