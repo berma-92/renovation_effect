@@ -373,27 +373,25 @@ if __name__ == '__main__':
                              configfile_location) 
     proj_path = str(config['input_paths']['proj_path'])
     data_warehouse = str(config['input_paths']['data_warehouse'])
-    outpath = proj_path + str(config['input_paths']['outpath'])
-    # proj_path = "/home/bmayr/workspace_bernhard/path2lc"
-    # data_warehouse = "/home/bmayr/workspace_bernhard/p2lc/data_warehouse/res_h/"
-    # outpath = proj_path + "/outputs/res_h"
-    print(proj_path)
+    outpath = str(config['input_paths']['outpath'])
+
+    if not os.path.exists(data_warehouse):
+        raise FileNotFound(data_warehouse)
+
     skipped_folders = []
 
-    for directory, dirnames, filenames in os.walk(outpath):
+    for directory, dirnames, filenames in os.walk(data_warehouse):
         for dirname in dirnames:
             if dirname == 'output':
                 shutil.rmtree(os.path.join(directory, dirname))
 
-    for directory, dirnames, filenames in os.walk(outpath):
+    for directory, dirnames, filenames in os.walk(data_warehouse):
         if len(dirnames) > 1:
             continue
         try:
-            test_dir = directory
+            raster_file_dir = directory
 
-            raster_file_dir = test_dir
-
-            output_directory = test_dir + "/output"
+            output_directory = directory + "/output"
             if not os.path.exists(output_directory):
                 os.mkdir(output_directory)
     
