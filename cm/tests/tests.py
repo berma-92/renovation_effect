@@ -4,7 +4,7 @@ from app import create_app
 import os.path
 from shutil import copyfile
 from .test_client import TestClient
-UPLOAD_DIRECTORY = '/var/hotmaps/cm_files_uploaded'
+UPLOAD_DIRECTORY = '/home/users/bmayr/workspace/projects_bernhard/datawarehouse/hotmaps/cm_files_uploaded/'
 
 
 if not os.path.exists(UPLOAD_DIRECTORY):
