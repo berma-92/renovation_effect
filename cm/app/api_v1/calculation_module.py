@@ -1,12 +1,12 @@
 import os
 import sys
+import shutil
+import configparser
 
 import glob
 import traceback
 
 from datetime import datetime
-
-
 
 
 
@@ -366,116 +366,115 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
 
 
 if __name__ == '__main__':
-        
-        
-        path_ = path.replace("\\", "/").split("/app/")[0]
-        
-        
-        test_dir = '%s/tests/data/' % path_
-        
-        raster_file_dir = '%s/input/' % test_dir
-        
-        raster_file_path0 = raster_file_dir + "/country_id_number.tif"
-        raster_file_path1 = raster_file_dir + "/nuts3_id_number.tif"
-        raster_file_path2 = raster_file_dir + "/gfa_res_curr_density.tif"
-        raster_file_path3 = raster_file_dir + "/heat_res_curr_density.tif"
-        raster_file_path2b = raster_file_dir + "/gfa_nonres_curr_density.tif"
-        raster_file_path3b = raster_file_dir + "/heat_nonres_curr_density.tif"
-        
-        raster_file_path4 = raster_file_dir + "/lau2_id_number.tif"
-        raster_file_path5 = raster_file_dir + "/ghs_built_1975_100_share.tif"
-        raster_file_path6 = raster_file_dir + "/ghs_built_1990_100_share.tif"
-        raster_file_path7 = raster_file_dir + "/ghs_built_2000_100_share.tif"
-        raster_file_path8 = raster_file_dir + "/ghs_built_2014_100_share.tif"
-        raster_file_path9 = raster_file_dir + "/building_footprint_tot_curr.tif" 
-        raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif" 
+    configfile_location = 'calculation_module_conf.ini'
+    config = configparser.ConfigParser()
+    if not config.read(configfile_location):
+        raise AttributeError("Couldn't load configuration file ",
+                             configfile_location) 
+    proj_path = str(config['input_paths']['proj_path'])
+    data_warehouse = str(config['input_paths']['data_warehouse'])
+    outpath = proj_path + str(config['input_paths']['outpath'])
+    # proj_path = "/home/bmayr/workspace_bernhard/path2lc"
+    # data_warehouse = "/home/bmayr/workspace_bernhard/p2lc/data_warehouse/res_h/"
+    # outpath = proj_path + "/outputs/res_h"
+    print(proj_path)
+    skipped_folders = []
 
+    for directory, dirnames, filenames in os.walk(outpath):
+        for dirname in dirnames:
+            if dirname == 'output':
+                shutil.rmtree(os.path.join(directory, dirname))
 
+    for directory, dirnames, filenames in os.walk(outpath):
+        if len(dirnames) > 1:
+            continue
+        try:
+            test_dir = directory
 
-        """
-        # simulate copy from HTAPI to CM
-        save_path1 = UPLOAD_DIRECTORY+"/NUTS3_cut_id_number.tif"
-        save_path2 = UPLOAD_DIRECTORY+"/RESULTS_GFA_RES_BUILD.tif"
-        save_path3 = UPLOAD_DIRECTORY+"/RESULTS_ENERGY_HEATING_RES_2012.tif"
-        save_path4 = UPLOAD_DIRECTORY+"/LAU2_id_number.tif"
-        raster_filesave_path5 = UPLOAD_DIRECTORY+"/GHS_BUILT_1975_100_share.tif"
-        save_path6 = UPLOAD_DIRECTORY+"/GHS_BUILT_1990_100_share.tif"
-        save_path7 = UPLOAD_DIRECTORY+"/GHS_BUILT_2000_100_share.tif"
-        save_path8 = UPLOAD_DIRECTORY+"/GHS_BUILT_2014_100_share.tif"
-        
-        copyfile(raster_file_path1, save_path1)
-        copyfile(raster_file_path2, save_path2)
-        copyfile(raster_file_path3, save_path3)
-        copyfile(raster_file_path4, save_path4)
-        copyfile(raster_file_path5, save_path5)
-        copyfile(raster_file_path6, save_path6)
-        copyfile(raster_file_path7, save_path7)
-        copyfile(raster_file_path8, save_path8)
-        """
-        inputs_raster_selection = {}
-        inputs_parameter_selection = {}
-        inputs_vector_selection = {}
-        inputs_raster_selection["country_id_number"] = raster_file_path0
-        inputs_raster_selection["nuts_id_number"] = raster_file_path1
-        inputs_raster_selection["gfa_res_curr_density"] = raster_file_path2
-        inputs_raster_selection["heat_res_curr_density"] = raster_file_path3
-        inputs_raster_selection["gfa_nonres_curr_density"] = raster_file_path2b
-        inputs_raster_selection["heat_nonres_curr_density"] = raster_file_path3b
-        
-        inputs_raster_selection["lau2_id_number"] = raster_file_path4
-        inputs_raster_selection["ghs_built_1975_100_share"] = raster_file_path5
-        inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
-        inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
-        inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
-        inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
-        inputs_raster_selection["population"] = raster_file_path10
-        
-        
-        
-        #inputs_parameter_selection['scenario'] = "Scenario 1"
-        #inputs_parameter_selection['target_year'] = "2030"
-        inputs_parameter_selection['red_area_77'] = "100"
-        inputs_parameter_selection['red_area_80'] = "100"
-        inputs_parameter_selection['red_area_00'] = "100"
-        inputs_parameter_selection['red_sp_ene_77'] = "100"
-        inputs_parameter_selection['red_sp_ene_80'] = "100"
-        inputs_parameter_selection['red_sp_ene_00'] = "100"
-        inputs_parameter_selection['red_sp_ene_00'] = "100"
-        inputs_parameter_selection['add_population_growth'] = "0" #"Add all new buildings"
-        inputs_parameter_selection['new_constructions'] = "No new buildings" #"Add all new buildings"
-        inputs_parameter_selection['new_constructions'] = "replace jjl"
-        inputs_parameter_selection['new_constructions'] = "Add all new buildings" #"Add all new buildings"
-        fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
-        fl.sort()
-        print(len(fl))
-        available_scenarios = {}
-        available_years = []
-        for ele in fl:
-            ele = ele.replace("\\","/").replace("//","/")
-            ele = (ele.split("/")[-1]).split("_RESULTS_ENERGY_")
-            scen = ele[0]
-            yr = ele[1][:-4]
-            try: 
-                yr_int = int(yr)
-                if yr_int > 2015:
-                    #print(scen)
-                    if scen not in available_scenarios.keys():
-                        available_scenarios[scen] = []
-                    available_scenarios[scen].append(yr)
-                    available_years.append(str(yr))
-            except:
-                pass
-            #print(ele)
-        scenario_list= list(available_scenarios.keys())
-        year_list = sorted(list(set(available_years)))
-        
-        
-        inputs_parameter_selection['scenario'] = scenario_list[0]
-        inputs_parameter_selection['target_year'] = "2040"
-        print("Scenario %s" % inputs_parameter_selection['scenario'])
-        output_directory = test_dir + "/output"
-        if not os.path.exists(output_directory):
-            os.mkdir(output_directory)
-        calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
-                    direct_call_calc_mdoule=True)
-#'''
+            raster_file_dir = test_dir
+
+            output_directory = test_dir + "/output"
+            if not os.path.exists(output_directory):
+                os.mkdir(output_directory)
+    
+            
+            #raster_file_path0 = raster_file_dir + "/country_id_number.tif"
+            raster_file_path1 = raster_file_dir + "/nuts_id_number.tif"
+            raster_file_path2 = raster_file_dir + "/gfa_res_curr_density.tif"
+            raster_file_path3 = raster_file_dir + "/heat_res_curr_density.tif"
+            raster_file_path2b = raster_file_dir + "/gfa_nonres_curr_density.tif"
+            raster_file_path3b = raster_file_dir + "/heat_nonres_curr_density.tif"
+            
+            raster_file_path4 = raster_file_dir + "/lau2_id_number.tif"
+            raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
+            raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
+            raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
+            raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
+            raster_file_path9 = raster_file_dir + "/building_footprint_tot_curr.tif" 
+            raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif" 
+
+            inputs_raster_selection = {}
+            inputs_parameter_selection = {}
+            inputs_vector_selection = {}
+            #inputs_raster_selection["country_id_number"] = raster_file_path0
+            inputs_raster_selection["nuts_id_number"] = raster_file_path1
+            inputs_raster_selection["gfa_res_curr_density"] = raster_file_path2
+            inputs_raster_selection["heat_res_curr_density"] = raster_file_path3
+            inputs_raster_selection["gfa_nonres_curr_density"] = raster_file_path2b
+            inputs_raster_selection["heat_nonres_curr_density"] = raster_file_path3b
+            
+            inputs_raster_selection["lau2_id_number"] = raster_file_path4
+            inputs_raster_selection["ghs_built_1975_100_share"] = raster_file_path5
+            inputs_raster_selection["ghs_built_1990_100_share"] = raster_file_path6
+            inputs_raster_selection["ghs_built_2000_100_share"] = raster_file_path7
+            inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
+            inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
+            inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
+            
+            
+            
+            #inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
+            #inputs_parameter_selection['target_year'] = "2030"
+            inputs_parameter_selection['red_area_77'] = "100"
+            inputs_parameter_selection['red_area_80'] = "100"
+            inputs_parameter_selection['red_area_00'] = "100"
+            inputs_parameter_selection['red_sp_ene_77'] = "100"
+            inputs_parameter_selection['red_sp_ene_80'] = "100"
+            inputs_parameter_selection['red_sp_ene_00'] = "100"
+            inputs_parameter_selection['add_population_growth'] = "0" #"Add all new buildings"
+            inputs_parameter_selection['new_constructions'] = "No" #"Add all new buildings" #"Add all new buildings"
+            fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
+            fl.sort()
+            print(len(fl))
+            available_scenarios = {}
+            available_years = []
+            for ele in fl:
+                ele = ele.replace("\\","/").replace("//","/")
+                ele = (ele.split("/")[-1]).split("_RESULTS_ENERGY_")
+                scen = ele[0]
+                yr = ele[1][:-4]
+                try: 
+                    yr_int = int(yr)
+                    if yr_int > 2015:
+                        #print(scen)
+                        if scen not in available_scenarios.keys():
+                            available_scenarios[scen] = []
+                        available_scenarios[scen].append(yr)
+                        available_years.append(str(yr))
+                except:
+                    pass
+                #print(ele)
+            scenario_list= list(available_scenarios.keys())
+            year_list = sorted(list(set(available_years)))
+            
+            
+            inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
+            inputs_parameter_selection['target_year'] = "2050"
+            print("Scenario %s" % inputs_parameter_selection['scenario'])
+            calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+                        direct_call_calc_mdoule=True)
+        except:
+            skipped_folders.append(directory)
+
+    print("#"*50)
+    print(skipped_folders)
