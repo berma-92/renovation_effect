@@ -19,7 +19,8 @@ from CM.helper_functions.read_raster import raster_array as RA
 print(sys.version_info)
 
 
-MAX_SIZE = 30 * 10**6
+#MAX_SIZE = 30 * 10**6
+MAX_SIZE = 30 * 10**8
 BASE_YEAR = 2014
 def main(inputs_parameter_selection,
          input_raster_Country_id, 
