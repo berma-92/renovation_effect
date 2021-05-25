@@ -363,18 +363,25 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
 
     return result
 
-
+def modProjectPath(path):
+    proj_path = os.getcwd().split('projects2')
+    return os.path.join(proj_path[0],path)
 
 if __name__ == '__main__':
     configfile_location = 'calculation_module_conf.ini'
     config = configparser.ConfigParser()
     if not config.read(configfile_location):
         raise AttributeError("Couldn't load configuration file ",
-                             configfile_location) 
-    proj_path = str(config['input_paths']['proj_path'])
-    data_warehouse = str(config['input_paths']['data_warehouse'])
-    outpath = str(config['input_paths']['outpath'])
-
+                             configfile_location)
+    if config['machine']['machine'] == 'server':
+        input_paths_label = 'input_paths_' +  'server'
+        proj_path = modProjectPath(config[input_paths_label]['proj_path'])
+    elif config['machine']['machine'] == 'local':
+        input_paths_label = 'input_paths_' +  'local'
+        proj_path = str(config[input_paths_label]['proj_path'])
+    else: raise AttributeError("No selected machine in configuration file")
+    data_warehouse = os.path.join(proj_path,str(config[input_paths_label]['data_warehouse']))
+    outpath = os.path.join(proj_path,str(config[input_paths_label]['outpath']))
     if not os.path.exists(data_warehouse):
         raise FileNotFoundError(data_warehouse)
 
