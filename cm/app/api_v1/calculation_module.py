@@ -390,7 +390,6 @@ if __name__ == '__main__':
 
     skipped_folders = []
 
-
     for directory, dirnames, filenames in os.walk(data_warehouse):
         for dirname in dirnames:
             if dirname == 'output':
@@ -402,25 +401,25 @@ if __name__ == '__main__':
         try:
             raster_file_dir = directory
 
-            output_directory = (directory + "/output").replace('\\', '/')
+            output_directory = os.path.join(directory,"output").replace('\\', '/')
             if not os.path.exists(output_directory):
                 os.mkdir(output_directory)
     
             
-            #raster_file_path0 = raster_file_dir + "/country_id_number.tif"
-            raster_file_path1 = raster_file_dir + "/nuts_id_number.tif"
-            raster_file_path2 = raster_file_dir + "/gfa_res_curr_density.tif"
-            raster_file_path3 = raster_file_dir + "/heat_res_curr_density.tif"
-            raster_file_path2b = raster_file_dir + "/gfa_nonres_curr_density.tif"
-            raster_file_path3b = raster_file_dir + "/heat_nonres_curr_density.tif"
+            #raster_file_path0 = os.path.join(raster_file_dir,str(config['input_filename']['country_id_number']))
+            raster_file_path1 = os.path.join(raster_file_dir,str(config['input_filename']['nuts_id_number']))
+            raster_file_path2 = os.path.join(raster_file_dir,str(config['input_filename']['gfa_res_curr_density']))
+            raster_file_path3 = os.path.join(raster_file_dir,str(config['input_filename']['heat_res_curr_density']))
+            raster_file_path2b = os.path.join(raster_file_dir,str(config['input_filename']['gfa_nonres_curr_density']))
+            raster_file_path3b = os.path.join(raster_file_dir,str(config['input_filename']['heat_nonres_curr_density']))
             
-            raster_file_path4 = raster_file_dir + "/lau2_id_number.tif"
-            raster_file_path5 = raster_file_dir + "/GHS_BUILT_1975_100_share.tif"
-            raster_file_path6 = raster_file_dir + "/GHS_BUILT_1990_100_share.tif"
-            raster_file_path7 = raster_file_dir + "/GHS_BUILT_2000_100_share.tif"
-            raster_file_path8 = raster_file_dir + "/GHS_BUILT_2014_100_share.tif"
-            raster_file_path9 = raster_file_dir + "/building_footprint_tot_curr.tif" 
-            raster_file_path10 = raster_file_dir + "/pop_tot_curr_density.tif" 
+            raster_file_path4 = os.path.join(raster_file_dir,str(config['input_filename']['lau2_id_number']))
+            raster_file_path5 = os.path.join(raster_file_dir,str(config['input_filename']['GHS_BUILT_1975_100_share']))
+            raster_file_path6 = os.path.join(raster_file_dir,str(config['input_filename']['GHS_BUILT_1990_100_share']))
+            raster_file_path7 = os.path.join(raster_file_dir,str(config['input_filename']['GHS_BUILT_2000_100_share']))
+            raster_file_path8 = os.path.join(raster_file_dir,str(config['input_filename']['GHS_BUILT_2014_100_share']))
+            raster_file_path9 = os.path.join(raster_file_dir,str(config['input_filename']['building_footprint_tot_curr'])) 
+            raster_file_path10 = os.path.join(raster_file_dir,str(config['input_filename']['pop_tot_curr_density'])) 
 
             inputs_raster_selection = {}
             inputs_parameter_selection = {}
@@ -439,22 +438,22 @@ if __name__ == '__main__':
             inputs_raster_selection["ghs_built_2014_100_share"] = raster_file_path8
             inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
             inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
-            
-            
-            
-            #inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
-            #inputs_parameter_selection['target_year'] = "2030"
-            inputs_parameter_selection['red_area_77'] = "100"
-            inputs_parameter_selection['red_area_80'] = "100"
-            inputs_parameter_selection['red_area_00'] = "100"
-            inputs_parameter_selection['red_sp_ene_77'] = "100"
-            inputs_parameter_selection['red_sp_ene_80'] = "100"
-            inputs_parameter_selection['red_sp_ene_00'] = "100"
-            inputs_parameter_selection['add_population_growth'] = "0" #"Add all new buildings"
-            inputs_parameter_selection['new_constructions'] = "No" #"Add all new buildings" #"Add all new buildings"
-            fl = glob.glob("%s/input_data/*RESULTS_ENERGY_*.csv" % path)
+
+            #inputs_parameter_selection['scenario'] = str(config['inputs_parameter_selection']['scenario'])
+            #inputs_parameter_selection['target_year'] = str(config['inputs_parameter_selection']['target_year'])
+            inputs_parameter_selection['red_area_77'] = str(config['inputs_parameter_selection']['red_area_77'])
+            inputs_parameter_selection['red_area_80'] = str(config['inputs_parameter_selection']['red_area_80'])
+            inputs_parameter_selection['red_area_00'] = str(config['inputs_parameter_selection']['red_area_00'])
+            inputs_parameter_selection['red_sp_ene_77'] = str(config['inputs_parameter_selection']['red_sp_ene_77'])
+            inputs_parameter_selection['red_sp_ene_80'] = str(config['inputs_parameter_selection']['red_sp_ene_80'])
+            inputs_parameter_selection['red_sp_ene_00'] = str(config['inputs_parameter_selection']['red_sp_ene_00'])
+            inputs_parameter_selection['add_population_growth'] = str(config['inputs_parameter_selection']['add_population_growth'])
+            inputs_parameter_selection['new_constructions'] = str(config['inputs_parameter_selection']['new_constructions'])
+
+            fl = os.path.join(proj_path, config[input_paths_label]['scenarios'], "*RESULTS_ENERGY_*.csv")
+            fl = glob.glob(fl)
             fl.sort()
-            print("There are %i scenario .csv file(s) in directory %s." % (len(fl), path))
+            print("There are %i scenario .csv file(s) in scenario directory." % len(fl))
             available_scenarios = {}
             available_years = []
             for ele in fl:
