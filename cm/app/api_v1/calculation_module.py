@@ -374,18 +374,22 @@ if __name__ == '__main__':
         raise AttributeError("Couldn't load configuration file ",
                              configfile_location)
     if config['machine']['machine'] == 'server':
-        input_paths_label = 'input_paths_' +  'server'
+        input_paths_label = 'proj_path_' + 'server'
         proj_path = modProjectPath(config[input_paths_label]['proj_path'])
     elif config['machine']['machine'] == 'local':
-        input_paths_label = 'input_paths_' +  'local'
+        input_paths_label = 'proj_path_' + 'local'
         proj_path = str(config[input_paths_label]['proj_path'])
-    else: raise AttributeError("No selected machine in configuration file")
-    data_warehouse = os.path.join(proj_path,str(config[input_paths_label]['data_warehouse']))
-    outpath = os.path.join(proj_path,str(config[input_paths_label]['outpath']))
+    else:
+        raise AttributeError("No selected machine in configuration file")
+
+    data_warehouse = os.path.join(proj_path, config['input_paths']['data_warehouse'])
+    outpath = os.path.join(proj_path, config['input_paths']['outpath'])
+
     if not os.path.exists(data_warehouse):
         raise FileNotFoundError(data_warehouse)
 
     skipped_folders = []
+
 
     for directory, dirnames, filenames in os.walk(data_warehouse):
         for dirname in dirnames:
