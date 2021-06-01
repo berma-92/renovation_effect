@@ -383,29 +383,23 @@ if __name__ == '__main__':
         raise AttributeError("No selected machine in configuration file")
 
     data_warehouse = os.path.join(proj_path, config['input_paths']['data_warehouse'])
-    outpath = os.path.join(proj_path, config['input_paths']['outpath'])
+    outdir_name = config['input_paths']['outdir_name']
 
     if not os.path.exists(data_warehouse):
         raise FileNotFoundError(data_warehouse)
 
     skipped_folders = []
 
-    for directory, dirnames, filenames in os.walk(data_warehouse):
-        for dirname in dirnames:
-            if dirname == 'output':
-                shutil.rmtree(os.path.join(directory, dirname))
+    #for directory, dirnames, filenames in os.walk(data_warehouse):
+    #    for dirname in dirnames:
+    #        if dirname == outdir_name:
+    #            shutil.rmtree(os.path.join(directory, dirname))
 
-    for directory, dirnames, filenames in os.walk(data_warehouse):
-        if len(dirnames) > 0:
-            continue
+    for region in os.listdir(data_warehouse):
+        directory = os.path.join(data_warehouse, region)
         try:
             raster_file_dir = directory
 
-            output_directory = os.path.join(directory,"output").replace('\\', '/')
-            if not os.path.exists(output_directory):
-                os.mkdir(output_directory)
-    
-            
             #raster_file_path0 = os.path.join(raster_file_dir,str(config['input_filename']['country_id_number']))
             raster_file_path1 = os.path.join(raster_file_dir,str(config['input_filename']['nuts_id_number']))
             raster_file_path2 = os.path.join(raster_file_dir,str(config['input_filename']['gfa_res_curr_density']))
@@ -439,8 +433,6 @@ if __name__ == '__main__':
             inputs_raster_selection["building_footprint_tot_curr"] = raster_file_path9
             inputs_raster_selection["pop_tot_curr_density"] = raster_file_path10
 
-            #inputs_parameter_selection['scenario'] = str(config['inputs_parameter_selection']['scenario'])
-            #inputs_parameter_selection['target_year'] = str(config['inputs_parameter_selection']['target_year'])
             inputs_parameter_selection['red_area_77'] = str(config['inputs_parameter_selection']['red_area_77'])
             inputs_parameter_selection['red_area_80'] = str(config['inputs_parameter_selection']['red_area_80'])
             inputs_parameter_selection['red_area_00'] = str(config['inputs_parameter_selection']['red_area_00'])
@@ -449,40 +441,62 @@ if __name__ == '__main__':
             inputs_parameter_selection['red_sp_ene_00'] = str(config['inputs_parameter_selection']['red_sp_ene_00'])
             inputs_parameter_selection['add_population_growth'] = str(config['inputs_parameter_selection']['add_population_growth'])
             inputs_parameter_selection['new_constructions'] = str(config['inputs_parameter_selection']['new_constructions'])
+            inputs_parameter_selection['scenarios_path'] = os.path.join(proj_path,
+                                                                        config['input_paths']['scenarios'])
 
-            fl = os.path.join(proj_path, config[input_paths_label]['scenarios'], "*RESULTS_ENERGY_*.csv")
+            fl = os.path.join(proj_path, config['input_paths']['scenarios'], "*RESULTS_ENERGY_*.csv")
             fl = glob.glob(fl)
             fl.sort()
-            print("There are %i scenario .csv file(s) in scenario directory." % len(fl))
+            #print("There are %i scenario .csv file(s) in scenario directory." % len(fl))
             available_scenarios = {}
             available_years = []
             for ele in fl:
-                ele = ele.replace("\\","/").replace("//","/")
-                ele = (ele.split("/")[-1]).split("_RESULTS_ENERGY_")
+                ele = os.path.split(ele)[1].split('_RESULTS_ENERGY_')
                 scen = ele[0]
-                yr = ele[1][:-4]
+                yr = ele[1].replace('.csv','')
                 try: 
                     yr_int = int(yr)
                     if yr_int > 2015:
-                        #print(scen)
                         if scen not in available_scenarios.keys():
                             available_scenarios[scen] = []
                         available_scenarios[scen].append(yr)
                         available_years.append(str(yr))
                 except:
                     pass
-                #print(ele)
             scenario_list= list(available_scenarios.keys())
             year_list = sorted(list(set(available_years)))
-            
-            
+            if config['inputs_parameter_selection']['specific'] == 'True':
+                inputs_parameter_selection['scenario'] = str(config['inputs_parameter_selection']['scenario'])
+                inputs_parameter_selection['target_year'] = str(config['inputs_parameter_selection']['target_year'])
+                output_directory = os.path.join(directory, outdir_name)
+                if not os.path.exists(output_directory):
+                    os.mkdir(output_directory)
+                else:
+                    shutil.rmtree(output_directory)
+                    os.mkdir(output_directory)
+                calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+                            direct_call_calc_mdoule=True)
+            if config['inputs_parameter_selection']['specific'] == 'False':
+                for scenario in scenario_list:
+                    for year in year_list:
+                        outdir_name = scenario + '_' + year
+                        output_directory = os.path.join(directory,outdir_name)
+                        inputs_parameter_selection['scenario'] = scenario
+                        inputs_parameter_selection['target_year'] = year
+                        if not os.path.exists(output_directory):
+                            os.mkdir(output_directory)
+                        else:
+                            shutil.rmtree(output_directory)
+                            os.mkdir(output_directory)
+                        calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+                                    direct_call_calc_mdoule=True)
             #inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
-            inputs_parameter_selection['scenario'] = str(config['calc_configuration']['scenario'])
-            inputs_parameter_selection['target_year'] = str(config['calc_configuration']['target_year'])
-            print("Start to calculate Scenario '%s' and target year '%s' " % (inputs_parameter_selection['scenario'],
-                                                                              inputs_parameter_selection['target_year']))
-            calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
-                        direct_call_calc_mdoule=True)
+            #inputs_parameter_selection['scenario'] = str(config['inputs_parameter_selection']['scenario'])
+            #inputs_parameter_selection['target_year'] = str(config['inputs_parameter_selection']['target_year'])
+            #print("Start to calculate Scenario '%s' and target year '%s' " % (inputs_parameter_selection['scenario'],
+            #                                                                  inputs_parameter_selection['target_year']))
+            #calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+            #            direct_call_calc_mdoule=True)
         except:
             skipped_folders.append(directory)
 

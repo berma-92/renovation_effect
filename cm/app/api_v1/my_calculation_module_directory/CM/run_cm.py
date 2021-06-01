@@ -42,7 +42,8 @@ def main(inputs_parameter_selection,
 
     data_type = "f4"
     data_type_int = "uint32"
-    local_input_dir = path + "/input_data"
+    #local_input_dir = path + "/input_data"
+    local_input_dir = str(inputs_parameter_selection['scenarios_path'])
     target_year = int(inputs_parameter_selection["target_year"])
     scenario_name = inputs_parameter_selection['scenario']
     
@@ -89,6 +90,7 @@ def main(inputs_parameter_selection,
     cp_share_2000_and_2014[:,:] = np.minimum(cp_share_2000_and_2014, 1 - cp_share_1990 - cp_share_1975)
     del cp_share_2000, cp_share_2014
 
+
     #Check if target year is available for scenario
     yr_list = []
     
@@ -112,7 +114,7 @@ def main(inputs_parameter_selection,
     if not os.path.exists(local_input_dir + "/%s_RESULTS_SHARES_ENE_%i.csv" % (scenario_name, target_year)):
         target_year = yr_list[min(3, len(yr_list)-1)]
         print("Choosen Target year:{}".format(target_year))
-    
+
     #RESULTS["Done"] = True
     #return RESULTS
     NUTS_RESULTS_SHARES_ENERGY_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_SHARES_ENE_%s.csv"%(scenario_name, initial_yr), skip_header=3)[0]
