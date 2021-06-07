@@ -474,12 +474,12 @@ if __name__ == '__main__':
                 else:
                     shutil.rmtree(output_directory)
                     os.mkdir(output_directory)
-                calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+                result = calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                             direct_call_calc_mdoule=True)
             if config['inputs_parameter_selection']['specific'] == 'False':
                 for scenario in scenario_list:
                     for year in year_list:
-                        outdir_name = scenario + '_' + year
+                        outdir_name = str(scenario) + '_' + str(year)
                         output_directory = os.path.join(directory,outdir_name)
                         inputs_parameter_selection['scenario'] = scenario
                         inputs_parameter_selection['target_year'] = year
@@ -488,15 +488,13 @@ if __name__ == '__main__':
                         else:
                             shutil.rmtree(output_directory)
                             os.mkdir(output_directory)
-                        calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
+                        result = calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                                     direct_call_calc_mdoule=True)
-            #inputs_parameter_selection['scenario'] = "hotmaps_renovation_rate_3perc"
-            #inputs_parameter_selection['scenario'] = str(config['inputs_parameter_selection']['scenario'])
-            #inputs_parameter_selection['target_year'] = str(config['inputs_parameter_selection']['target_year'])
-            #print("Start to calculate Scenario '%s' and target year '%s' " % (inputs_parameter_selection['scenario'],
-            #                                                                  inputs_parameter_selection['target_year']))
-            #calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
-            #            direct_call_calc_mdoule=True)
+
+            else:
+                raise IOError('Change in config file section "inputs_parameter_selection" variable "section" to "True"'
+                              'or "False"')
+
         except:
             skipped_folders.append(directory)
 
