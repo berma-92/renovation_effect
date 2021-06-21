@@ -238,17 +238,21 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                       {"unit": "-", "name": "Population: %i / 2010" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"] / RESULTS["pop_2010"])}])
                 
             result['indicator'].extend([
-                                  #{"unit": unit_area, "name": "Building footprint in 2014","value": "%4.2f" % (RESULTS["footprint_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
-                                  
-                                  {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
-                                  {"unit": "m2/capita", "name": "Heated area per capita %i"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
-                                  {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
-                                  {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
-                                  {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
-                                  {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
-                                ])
+                {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+                {"unit": unit_area, "name": "Heated residential Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur_res"] * converter_area)},
+                {"unit": unit_area, "name": "Heated non-residential Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur_nres"] * converter_area)},
+
+                {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
+                {"unit": unit_area, "name": "Heated residential Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut_res"] * converter_area)},
+                {"unit": unit_area, "name": "Heated non-residential Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut_nres"] * converter_area)},
+
+                {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
+                {"unit": "m2/capita", "name": "Heated area per capita %i"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
+                {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
+                {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
+                {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
+                {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
+                ])
             
             
             result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
@@ -497,6 +501,8 @@ if __name__ == '__main__':
 
         except:
             skipped_folders.append(directory)
+        #Debug: stop with first region
+        break
 
     print("#"*50)
     print(skipped_folders)
