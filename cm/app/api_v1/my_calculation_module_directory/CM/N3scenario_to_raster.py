@@ -60,7 +60,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     RESULTS["Done"] = False
     try:
         COUNTRY_id.shape
-    except:
+    except AttributeError:
         COUNTRY_id = np.ones_like(NUTS_id) * COUNTRY_id
     
     try:
