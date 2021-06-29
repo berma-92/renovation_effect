@@ -71,7 +71,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         p_ = pathlib.Path(__file__).parent.absolute()
         d_ = "%s/helper_functions/cyf/" % p_
         ld = os.listdir(d_)
-        print("Directory content before pyimport.install")
+        print("Directory content before pyximport.install")
         print(ld)
         
         #python_interpret = sys.executable
@@ -80,7 +80,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         pyximport.install()
         
         ld = os.listdir(d_)
-        print("Directory content after pyimport.install")
+        print("Directory content after pyximport.install")
         print(ld)
         
         import CM.helper_functions.cyf.create_density_map as CDM
