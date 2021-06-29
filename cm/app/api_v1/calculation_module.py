@@ -503,6 +503,5 @@ if __name__ == '__main__':
             skipped_folders.append(directory)
         #Debug: stop with first region
         break
-
     print("#"*50)
     print(skipped_folders)
