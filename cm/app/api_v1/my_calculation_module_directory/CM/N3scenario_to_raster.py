@@ -55,7 +55,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , output_csv_result
                             , add_inputs_parameters
                             , debug_output=False):
-
     RESULTS = {}
     RESULTS["Done"] = False
     try:
@@ -205,6 +204,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         area_future = np.zeros_like(energy_tot_future_existB)
         area_current = np.zeros_like(energy_tot_future_existB)
+        area_current_res = np.zeros_like(energy_tot_future_existB)
+        area_current_nres = np.zeros_like(energy_tot_future_existB)
     
         CP_area_initial_nuts = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
         CP_area_future_nuts = np.zeros((NUTS_RESULTS_GFA_FUTURE.shape[0]+1, 4), dtype="f4")
@@ -386,8 +387,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             area_current += AREA
             AREA_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
 
-            if i == 0: AREA_PER_CP_RES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
-            if i == 1: AREA_PER_CP_NRES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 0:
+                AREA_PER_CP_RES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 1:
+                AREA_PER_CP_NRES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
 
             if debug_output == True:
                 pass
@@ -423,8 +426,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             area_future += AREA
             AREA_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
 
-            if i == 0: AREA_PER_CP_RES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
-            if i == 1: AREA_PER_CP_NRES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 0: AREA_PER_CP_RES[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 1: AREA_PER_CP_NRES[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
 
             if debug_output == True:
                 pass
@@ -581,8 +584,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             #"""
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_current, LAU2_id)
         _gfa_cur__ += np.sum(TABLE_RESULTS_LAU[:,1])
-        if i == 0: _gfa_cur_res__+= np.sum(TABLE_RESULTS_LAU[:,1])
-        if i == 1: _gfa_cur_nres__+= np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 0:
+            _gfa_cur_res__+= np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 1:
+            _gfa_cur_nres__+= np.sum(TABLE_RESULTS_LAU[:,1])
 
         if debug_output == True:
             pass
@@ -605,6 +610,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             print("CHECK AREA FUTURE")
         gfa_tot_future_existB += area_future
         gfa_tot_curr_initial_year += BGF_intial
+        if i==0:
+            gfa_tot_curr_initial_year_res = BGF_intial
+        if i==1:
+            gfa_tot_curr_initial_year_nres = BGF_intial
             
         if debug_output == True:
             pass
@@ -641,22 +650,24 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     #correction_factor_to_align_with_demand_from_heat_density_map:      
     adopt_factor_hdm_energy = np.maximum(0.00001, _ene_cur__) / np.maximum(0.00001, np.sum(energy_tot_curr))
-    adopt_factor_hdm_energy_res = np.maximum(0.00001, _ene_cur_res__) / np.maximum(0.00001, np.sum(energy_tot_curr))
-    adopt_factor_hdm_energy_nres = np.maximum(0.00001, _ene_cur_nres__) / np.maximum(0.00001, np.sum(energy_tot_curr))
+    #adopt_factor_hdm_energy_res = np.maximum(0.00001, _ene_cur_res__) / np.maximum(0.00001, np.sum(energy_tot_curr))
+    #adopt_factor_hdm_energy_nres = np.maximum(0.00001, _ene_cur_nres__) / np.maximum(0.00001, np.sum(energy_tot_curr))
     adopt_factor_hdm_gfa = np.maximum(0.00001, _gfa_cur__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year))
-    adopt_factor_hdm_gfa_res = np.maximum(0.00001, _gfa_cur_res__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year))
-    adopt_factor_hdm_gfa_nres = np.maximum(0.00001, _gfa_cur_nres__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year))
+    #adopt_factor_hdm_gfa_res = np.maximum(0.00001, _gfa_cur_res__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year_res))
+    #adopt_factor_hdm_gfa_nres = np.maximum(0.00001, _gfa_cur_nres__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year_nres))
 
     print("adopt_factor_hdm_energy: %4.2f" % adopt_factor_hdm_energy)
     print("adopt_factor_hdm_gfa: %4.2f" % adopt_factor_hdm_gfa)
+    #print("adopt_factor_hdm_gfa_res: %4.2f" % adopt_factor_hdm_gfa_res)
+    #print("adopt_factor_hdm_gfa_nres: %4.2f" % adopt_factor_hdm_gfa_nres)
     
     AREA_PER_CP[:, :] /= adopt_factor_hdm_gfa
-    AREA_PER_CP_RES[:, :] /= adopt_factor_hdm_gfa_res
-    AREA_PER_CP_NRES[:, :] /= adopt_factor_hdm_gfa_nres
+    AREA_PER_CP_RES[:, :] /= adopt_factor_hdm_gfa
+    AREA_PER_CP_NRES[:, :] /= adopt_factor_hdm_gfa
 
     _gfa_cur__ /= adopt_factor_hdm_gfa
-    _gfa_cur_res__ /= adopt_factor_hdm_gfa_res
-    _gfa_cur_nres__ /= adopt_factor_hdm_gfa_nres
+    _gfa_cur_res__ /= adopt_factor_hdm_gfa
+    _gfa_cur_nres__ /= adopt_factor_hdm_gfa
     _gfa_fut__ /= adopt_factor_hdm_gfa
     _gfa_fut_res__ /= adopt_factor_hdm_gfa
     _gfa_fut_nres__ /= adopt_factor_hdm_gfa
@@ -666,11 +677,11 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     ENERGY_PER_CP_NRES[:, :] /= adopt_factor_hdm_energy
 
     _ene_cur__ /= adopt_factor_hdm_energy
-    _ene_cur_res__ /= adopt_factor_hdm_energy_res
-    _ene_cur_nres__ /= adopt_factor_hdm_energy_nres
+    _ene_cur_res__ /= adopt_factor_hdm_energy
+    _ene_cur_nres__ /= adopt_factor_hdm_energy
     _ene_fut__ /= adopt_factor_hdm_energy
-    _ene_fut_res__ /= adopt_factor_hdm_energy_res
-    _ene_fut_nres__ /= adopt_factor_hdm_energy_nres
+    _ene_fut_res__ /= adopt_factor_hdm_energy
+    _ene_fut_nres__ /= adopt_factor_hdm_energy
 
     
     #scale Maps 
@@ -754,9 +765,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         header[col+oC] = "BGF Country NewBuild"
         csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
         #"""
+    SHARE_NEW_BUILD_RES = 0.5
     AREA_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])
-    AREA_PER_CP_RES[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])
-    AREA_PER_CP_NRES[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])
+    AREA_PER_CP_RES[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])*SHARE_NEW_BUILD_RES
+    AREA_PER_CP_NRES[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])*(1-SHARE_NEW_BUILD_RES)
     
     """
         Energy New buildings
@@ -780,8 +792,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         #"""
     
     ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])
-    ENERGY_PER_CP_RES[1, 3] = np.sum(TABLE_RESULTS_LAU[:, 1])
-    ENERGY_PER_CP_NRES[1, 3] = np.sum(TABLE_RESULTS_LAU[:, 1])
+    ENERGY_PER_CP_RES[1, 3] = np.sum(TABLE_RESULTS_LAU[:, 1])*SHARE_NEW_BUILD_RES
+    ENERGY_PER_CP_NRES[1, 3] = np.sum(TABLE_RESULTS_LAU[:, 1])*(1-SHARE_NEW_BUILD_RES)
 
     # scale maps
     
@@ -886,7 +898,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     RESULTS["gfa_cur"] = _gfa_cur__
     RESULTS["gfa_cur_res"] = _gfa_cur_res__
-    RESULTS["gfa_cur_nres"] = _gfa_cur_res__
+    RESULTS["gfa_cur_nres"] = _gfa_cur_nres__
 
     RESULTS["gfa_fut"] = _gfa_fut__
     RESULTS["gfa_fut_res"] = _gfa_fut_res__
@@ -908,8 +920,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     RESULTS["spe_ene_fut_res"] = _ene_fut_res__ / _gfa_fut_res__ * 1000
     RESULTS["spe_ene_fut_nres"] = _ene_fut_nres__ / _gfa_fut_nres__ * 1000
     RESULTS["share_of_new_constructions_shown_in_map"] = share_of_new_constructions_shown_in_map * 100
-    
-    
+
     RESULTS["gfa_75_fut"] = AREA_PER_CP[1,0]
     RESULTS["gfa_80_fut"] = AREA_PER_CP[1,1]
     RESULTS["gfa_00_fut"] = AREA_PER_CP[1,2]
