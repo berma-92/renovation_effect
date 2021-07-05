@@ -122,7 +122,9 @@ def main(inputs_parameter_selection,
     NUTS_RESULTS_GFA_BASE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, initial_yr), skip_header=3)[0]
     NUTS_RESULTS_GFA_FUTURE = READ_CSV_DATA(local_input_dir + "/%s_RESULTS_GFA_%s.csv" % (scenario_name, target_year), skip_header=3)[0]
     
-    NUTS_RESULTS_POPULATION = READ_CSV_DATA(local_input_dir + "/DevelopmentPopNUTS3.csv", skip_header=3)[0]
+    #NUTS_RESULTS_POPULATION = READ_CSV_DATA(local_input_dir + "/DevelopmentPopNUTS3.csv", skip_header=3)[0]
+    NUTS_RESULTS_POPULATION = READ_CSV_DATA(local_input_dir + "/DevelopmentPopNUTS3_updated_final.csv", skip_header=3)[0]
+
     
 
 
