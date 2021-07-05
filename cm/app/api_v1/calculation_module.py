@@ -365,6 +365,18 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 fn.write("%s\n"%string_)
                 print(string_)
 
+    if True:
+        with open("%s/indicators_exact.csv" % (output_directory), "w") as fn:
+            string_ = "%s\n" % (result['name'])
+            fn.write(string_)
+            print(string_)
+
+            for ele in RESULTS.keys():
+                r = RESULTS[ele]
+                string_ = "%s,%s" % (ele, r)
+                fn.write("%s\n" % string_)
+                print(string_)
+
     return result
 
 def modProjectPath(path):
@@ -494,14 +506,15 @@ if __name__ == '__main__':
                             os.mkdir(output_directory)
                         result = calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                                     direct_call_calc_mdoule=True)
+                    #DEBUG BREAK
+                    #break
 
             else:
                 raise IOError('Change in config file section "inputs_parameter_selection" variable "section" to "True"'
                               'or "False"')
-
         except:
             skipped_folders.append(directory)
-        #Debug: stop with first region
-        break
+        # DEBUG BREAK
+        #break
     print("#"*50)
     print(skipped_folders)
