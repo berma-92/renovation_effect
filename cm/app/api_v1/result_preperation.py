@@ -6,7 +6,7 @@ import matplotlib
 import shutil
 import configparser
 import openpyxl
-from openpyxl.chart import (ScatterChart, Reference, Series)
+from openpyxl.chart import ScatterChart, Reference, Series, BarChart
 
 #path = os.path.dirname(os.path.abspath(__file__))
 SD = "my_calculation_module_directory"
@@ -133,7 +133,7 @@ def printPlots(results, output_directory):
     #plt.show()
     print("Exported plots to '%s'" % output_directory)
 
-def createCHART(sheet, sheetname, title, style, x_axis_title, y_axis_title, labels, xvalues, yvalues):
+def createLINECHART(sheet, sheetname, title, style, x_axis_title, y_axis_title, labels, xvalues, yvalues):
     chart = ScatterChart()
     chart.title = title
     chart.style = style
@@ -160,6 +160,34 @@ def createCHART(sheet, sheetname, title, style, x_axis_title, y_axis_title, labe
     # if labels[0] is None: chart.legend = None
     return chart
 
+def createBARCHART(sheet, sheetname, title, style, x_axis_title, y_axis_title, labels, xvalues, yvalues): 
+    chart = BarChart()
+    chart.type = 'col'
+    chart.title = title
+    chart.style = style
+    if 'GFA' in title or 'Pop' in title: 
+        chart.legend = None
+    chart.x_axis.title = x_axis_title
+    chart.y_axis.title = y_axis_title
+    xvalues = Reference(sheet, 
+                        min_col=xvalues['min_col'],
+                        min_row=xvalues['min_row'], 
+                        max_col=xvalues['max_col'], 
+                        max_row=xvalues['max_row'])
+    for col, label in zip(yvalues['min_col'], labels): 
+        values = Reference(sheet, 
+                           min_col = col,
+                           min_row = yvalues['min_row'], 
+                           max_col = col,
+                           max_row = yvalues['max_row'])
+        series = Series(values, title = label)
+        chart.append(series)
+    chart.set_categories(xvalues)
+    chart.x_axis.tickLblPos ='high' #'nextTO', 'high', 'low'
+    chart.shape = 4 
+    return chart
+    
+
 def createASSESCHART(sheet, sheetname, title, style, x_axis_title, y_axis_title, labels, xvalues, yvalues):
     chart = ScatterChart()
     chart.title = title
@@ -184,7 +212,6 @@ def createASSESCHART(sheet, sheetname, title, style, x_axis_title, y_axis_title,
                         title = label)
         series.graphicalProperties.line.width = 40000
         chart.series.append(series)
-    # if labels[0] is None: chart.legend = None
     return chart
     
 def create_CHARTS(file,sheet_name, results):
@@ -196,28 +223,28 @@ def create_CHARTS(file,sheet_name, results):
         xvalues = {'min_col': 2, 'min_row':49, 'max_col':3}
         yvalues = {'min_col': 2, 'min_row':range(2,5), 'max_col':3}
         labels = results.index[0:3]
-        chart = createCHART(wb[sheet_name], sheet_name, '', 13, 'year', 
+        chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area [m2]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, "N1")
+        wb[sheet_name].add_chart(chart, "AC1")
         
         yvalues = {'min_col': 2, 'min_row':range(11,23), 'max_col':3}
         labels = results.index[9:21]
-        chart = createCHART(wb[sheet_name], sheet_name, '', 13, 'year', 
+        chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area [m2]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, "W1")   
+        wb[sheet_name].add_chart(chart, "AK1")   
         
         yvalues = {'min_col': 2, 'min_row':[48], 'max_col':3}
         labels = None
-        chart = createCHART(wb[sheet_name], sheet_name, '', 13, 'year', 
+        chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area/capita', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, "AF1")
+        wb[sheet_name].add_chart(chart, "AT1")
         
         # EnergyDemand in total, res and nres
-        chart_positions = ['N16','W16','AF16','AO16','AX16']
+        chart_positions = ['AC16','AK16','AT16','BD16','BN16']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(5,8), 'max_col':(col_i+1)}
             labels = results.index[3:6]
-            chart = createCHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
+            chart = createLINECHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
                                 'energy demand [kWh]', labels, xvalues, yvalues)
             wb[sheet_name].add_chart(chart, chart_pos) 
         
@@ -225,24 +252,24 @@ def create_CHARTS(file,sheet_name, results):
         yvalues = {'min_col': range(2,14,2), 'min_row':5, 'max_col':None}
         labels = scen_list
         chart = createASSESCHART(wb[sheet_name], sheet_name, 'energy demand_total', 13, 'year', 
-                                 'energy demand [kWh]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, 'BG16') 
+                                  'energy demand [kWh]', labels, xvalues, yvalues)
+        wb[sheet_name].add_chart(chart, 'BW16') 
             
         # EnergyDemand per cp in total, res and nres 
-        chart_positions = ['N30','W30','AF30','AO30','AX30']
+        chart_positions = ['AC30','AK30','AT30','BD30','BN30']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(23,35), 'max_col':(col_i+1)}
             labels = results.index[21:33]
-            chart = createCHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
+            chart = createLINECHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
                                 'energy demand [kWh]', labels, xvalues, yvalues)
             wb[sheet_name].add_chart(chart, chart_pos) 
             
         # Specific EnergyDemand in total, res and nres
-        chart_positions = ['N45','W45','AF45','AO45','AX45']
+        chart_positions = ['AC45','AK45','AT45','BD45','BN45']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(8,11), 'max_col':(col_i+1)}
             labels = results.index[6:9]
-            chart = createCHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
+            chart = createLINECHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
                                 'energy demand/m2 [kWh/m2]', labels, xvalues, yvalues)
             wb[sheet_name].add_chart(chart, chart_pos) 
             
@@ -250,24 +277,50 @@ def create_CHARTS(file,sheet_name, results):
         yvalues = {'min_col': range(2,14,2), 'min_row':8, 'max_col':None}
         labels = scen_list
         chart = createASSESCHART(wb[sheet_name], sheet_name, 'specific energy demand_total', 13, 'year', 
-                                 'specific energy demand [kWh/m2]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, 'BG45') 
+                                  'specific energy demand [kWh/m2]', labels, xvalues, yvalues)
+        wb[sheet_name].add_chart(chart, 'BW45') 
         
         # Specific EnergyDemand per cp in total, res and nres
-        chart_positions = ['N60','W60','AF60','AO60','AX60']
+        chart_positions =  ['AC60','AK60','AT60','BD60','BN60']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(35,47), 'max_col':(col_i+1)}
             labels = results.index[33:45]
-            chart = createCHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
+            chart = createLINECHART(wb[sheet_name], sheet_name, scen, 13, 'year', 
                                 'energy demand/m2 [kWh/m2]', labels, xvalues, yvalues)
-            wb[sheet_name].add_chart(chart, chart_pos) 
+            wb[sheet_name].add_chart(chart, chart_pos)
         
-    except Exception as e: 
+        # GFA in total,res and nres, relativ 
+        chart_pos = ['T1']
+        xvalues = {'min_col': 1, 'min_row':2, 'max_col':1, 'max_row':4}
+        yvalues = {'min_col': [14], 'min_row':2, 'max_col':14, 'max_row':4}
+        chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ GFA', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
+        wb[sheet_name].add_chart(chart, chart_pos[0])
+        
+        # ENE in total,res and nres, relativ 
+        chart_pos = ['T15']
+        xvalues = {'min_col': 1, 'min_row':5, 'max_col':1, 'max_row':7}
+        yvalues = {'min_col': range(14,19), 'min_row':5, 'max_col':14, 'max_row':7}
+        chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ ENE', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
+        wb[sheet_name].add_chart(chart, chart_pos[0])
+        
+        # SPE_ENE in total,res and nres, relativ 
+        chart_pos = ['T30']
+        xvalues = {'min_col': 1, 'min_row':8, 'max_col':1, 'max_row':10}
+        yvalues = {'min_col': range(14,19), 'min_row':8, 'max_col':14, 'max_row':10}
+        chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ SPE_ENE', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
+        wb[sheet_name].add_chart(chart, chart_pos[0])
+        
+        # POP, relativ 
+        chart_pos = ['T45']
+        xvalues = {'min_col': 1, 'min_row':47, 'max_col':1, 'max_row':47}
+        yvalues = {'min_col': [14], 'min_row':47, 'max_col':14, 'max_row':47}
+        chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ Population Growth', 10, '', 'Rel. Change [%]', scen_list, xvalues, yvalues)
+        wb[sheet_name].add_chart(chart, chart_pos[0])
+        
         wb.save(file)
+    except Exception as e: 
         wb.close()
-        raise e 
-    # for i in range()
-    wb.save(file)
+        raise e
     wb.close()
 
 def dataToEXCEL(scen_list, output_dir, network, input_dir):
@@ -276,7 +329,7 @@ def dataToEXCEL(scen_list, output_dir, network, input_dir):
     #     xlsxfile = openpyxl.Workbook()
     results = pd.DataFrame(data = {})
     for scen in scen_list.keys():
-        scen_list[scen].sort()
+        # scen_list[scen].sort()
         if len(scen_list[scen]) != 2: continue
         input_scen_path_1 = os.path.join(input_dir,
                                          scen +'_'+ scen_list[scen][0],
@@ -316,11 +369,19 @@ def dataToEXCEL(scen_list, output_dir, network, input_dir):
     results.drop(index = dropindex_lst, inplace = True)
     results.index.name = ''
     #results.reset_index(inplace = True, drop = False)
+    for key in scen_list.keys():
+        try: 
+            results[key[39:]+'_rel'] = results['2050_'+key[39:]]/results['2017_'+key[39:]]-1
+            results[key[39:]+'_rel'] = round(results[key[39:]+'_rel']*100,2)
+        except KeyError: 
+            del scen_list[key]
+            
     
     filename = network + '_results.xlsx'
     file = os.path.join(output_dir, filename)
     sheet_name = os.path.split(input_dir)[1][5:] + '_regional_data'
-    if not os.path.exists(os.path.join(output_dir,filename)):
+    file_path = os.path.join(output_dir,filename)
+    if not os.path.exists(file_path):
         mode = "w"
         with pd.ExcelWriter(file, 
                     engine = 'openpyxl', 
@@ -328,16 +389,25 @@ def dataToEXCEL(scen_list, output_dir, network, input_dir):
             results.to_excel(writer, 
                              sheet_name= sheet_name,
                              index = True)
-    else: 
-        mode = "a"
+    else:
         workbook= openpyxl.load_workbook(file)
-        with pd.ExcelWriter(file, 
+        if sheet_name in workbook.sheetnames and len(workbook.sheetnames)>1: 
+            del workbook[sheet_name]
+            with pd.ExcelWriter(file, 
                             engine = 'openpyxl', 
-                            mode = mode, 
-                            if_sheet_exists = 'replace') as writer: 
-            results.to_excel(writer, 
-                             sheet_name= sheet_name,
-                             index = True)
+                            mode = 'a', 
+                            if_sheet_exists = 'replace') as writer:
+                results.to_excel(writer,
+                                 sheet_name= sheet_name,
+                                 index = True)
+        elif sheet_name in workbook.sheetnames and len(workbook.sheetnames)==1:
+            os.remove(file_path)
+            with pd.ExcelWriter(file,
+                                engine = 'openpyxl',
+                                mode = 'w') as writer:
+                results.to_excel(writer,
+                                 sheet_name= sheet_name,
+                                 index = True)
     create_CHARTS(file,sheet_name, results)
     return results
 
@@ -361,7 +431,7 @@ def main(network, input_directory, output_dir, interpol):
                     output_dir, 
                     network,
                     input_directory_)
-        # break #DEBUG break
+        break #DEBUG break
             # if interpol == 'linear':
             #     for year in range(2020, 2050,5):
             #         results[year] = linear_interpol(results_baseyear[baseyear],baseyear,
