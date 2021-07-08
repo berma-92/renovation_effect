@@ -240,7 +240,7 @@ def create_CHARTS(file,sheet_name, results):
         wb[sheet_name].add_chart(chart, "AT1")
         
         # EnergyDemand in total, res and nres
-        chart_positions = ['AC16','AK16','AT16','BD16','BN16']
+        chart_positions = ['AC16','AK16','AT16','BC16','BL16', 'BU16']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(5,8), 'max_col':(col_i+1)}
             labels = results.index[3:6]
@@ -253,10 +253,10 @@ def create_CHARTS(file,sheet_name, results):
         labels = scen_list
         chart = createASSESCHART(wb[sheet_name], sheet_name, 'energy demand_total', 13, 'year', 
                                   'energy demand [kWh]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, 'BW16') 
+        wb[sheet_name].add_chart(chart, 'CD16') 
             
         # EnergyDemand per cp in total, res and nres 
-        chart_positions = ['AC30','AK30','AT30','BD30','BN30']
+        chart_positions = ['AC30','AK30','AT30','BC30','BL30', 'BU30']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(23,35), 'max_col':(col_i+1)}
             labels = results.index[21:33]
@@ -265,7 +265,7 @@ def create_CHARTS(file,sheet_name, results):
             wb[sheet_name].add_chart(chart, chart_pos) 
             
         # Specific EnergyDemand in total, res and nres
-        chart_positions = ['AC45','AK45','AT45','BD45','BN45']
+        chart_positions = ['AC45','AK45','AT45','BC45','BL45', 'BU45']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(8,11), 'max_col':(col_i+1)}
             labels = results.index[6:9]
@@ -278,7 +278,7 @@ def create_CHARTS(file,sheet_name, results):
         labels = scen_list
         chart = createASSESCHART(wb[sheet_name], sheet_name, 'specific energy demand_total', 13, 'year', 
                                   'specific energy demand [kWh/m2]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, 'BW45') 
+        wb[sheet_name].add_chart(chart, 'CD45') 
         
         # Specific EnergyDemand per cp in total, res and nres
         chart_positions =  ['AC60','AK60','AT60','BD60','BN60']
@@ -299,14 +299,14 @@ def create_CHARTS(file,sheet_name, results):
         # ENE in total,res and nres, relativ 
         chart_pos = ['T15']
         xvalues = {'min_col': 1, 'min_row':5, 'max_col':1, 'max_row':7}
-        yvalues = {'min_col': range(14,19), 'min_row':5, 'max_col':14, 'max_row':7}
+        yvalues = {'min_col': range(14,20), 'min_row':5, 'max_col':14, 'max_row':7}
         chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ ENE', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
         wb[sheet_name].add_chart(chart, chart_pos[0])
         
         # SPE_ENE in total,res and nres, relativ 
         chart_pos = ['T30']
         xvalues = {'min_col': 1, 'min_row':8, 'max_col':1, 'max_row':10}
-        yvalues = {'min_col': range(14,19), 'min_row':8, 'max_col':14, 'max_row':10}
+        yvalues = {'min_col': range(14,20), 'min_row':8, 'max_col':14, 'max_row':10}
         chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ SPE_ENE', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
         wb[sheet_name].add_chart(chart, chart_pos[0])
         
@@ -408,6 +408,18 @@ def dataToEXCEL(scen_list, output_dir, network, input_dir):
                 results.to_excel(writer,
                                  sheet_name= sheet_name,
                                  index = True)
+        elif not sheet_name in workbook.sheetnames: 
+             with pd.ExcelWriter(file,
+                                engine = 'openpyxl',
+                                mode = 'a',
+                                if_sheet_exists = 'error') as writer:
+                results.to_excel(writer,
+                                 sheet_name= sheet_name,
+                                 index = True)
+        else:
+            print("Error: Not able to create sheet %s, continue with next"
+                  % sheet_name)
+            return None
     create_CHARTS(file,sheet_name, results)
     return results
 
@@ -431,7 +443,7 @@ def main(network, input_directory, output_dir, interpol):
                     output_dir, 
                     network,
                     input_directory_)
-        break #DEBUG break
+        # break #DEBUG break
             # if interpol == 'linear':
             #     for year in range(2020, 2050,5):
             #         results[year] = linear_interpol(results_baseyear[baseyear],baseyear,
