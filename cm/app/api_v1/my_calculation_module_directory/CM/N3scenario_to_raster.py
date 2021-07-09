@@ -1009,14 +1009,14 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     RESULTS["spec_ene_00_cur_nres"] = RESULTS["ene_00_cur_nres"] / RESULTS["gfa_00_cur_nres"] * 1000
     
     #RESULTS["pop_1995"] = population_1995 / 1000
-    RESULTS["pop_2000"] = population_2000 / 1000
-    RESULTS["pop_2005"] = population_2005 / 1000
-    RESULTS["pop_2010"] = population_2010 / 1000
-    RESULTS["pop_base"] = population_base_year / 1000   
-    RESULTS["pop_fut"] = population_target_year / 1000  
+    RESULTS["pop_2000"] = round(population_2000)
+    RESULTS["pop_2005"] = round(population_2005)
+    RESULTS["pop_2010"] = round(population_2010)
+    RESULTS["pop_base"] = round(population_base_year)
+    RESULTS["pop_fut"] = round(population_target_year)
     
-    RESULTS["gfa_per_cap_cur"] = RESULTS["gfa_cur"] / (0.00001 + RESULTS["pop_base"]) / 1000
-    RESULTS["gfa_per_cap_fut"] = RESULTS["gfa_fut"] / (0.00001 + RESULTS["pop_fut"]) / 1000
+    RESULTS["gfa_per_cap_cur"] = RESULTS["gfa_cur"] / (0.00001 + RESULTS["pop_base"])# / 1000
+    RESULTS["gfa_per_cap_fut"] = RESULTS["gfa_fut"] / (0.00001 + RESULTS["pop_fut"])# / 1000
     
     
     RESULTS["Done"] = True
