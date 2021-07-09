@@ -234,17 +234,17 @@ def create_CHARTS(file,sheet_name, results):
         labels = results.index[9:21]
         chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area [m2]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, "AK1")   
+        wb[sheet_name].add_chart(chart, "AL1")
         
         # GFA per capita total
         yvalues = {'min_col': 2, 'min_row':[48], 'max_col':3}
         labels = None
         chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area/capita', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, "AT1")
+        wb[sheet_name].add_chart(chart, "AU1")
         
         # EnergyDemand in total, res and nres
-        chart_positions = ['AC16','AK16','AT16','BC16','BL16', 'BU16']
+        chart_positions = ['AC16','AL16','AU16','BD16','BM16', 'BV16']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(5,8), 'max_col':(col_i+1)}
             labels = results.index[3:6]
@@ -257,10 +257,10 @@ def create_CHARTS(file,sheet_name, results):
         labels = scen_list
         chart = createASSESCHART(wb[sheet_name], sheet_name, 'energy demand_total', 13, 'year', 
                                   'energy demand [kWh]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, 'CD16') 
+        wb[sheet_name].add_chart(chart, 'CE16')
             
         # EnergyDemand per cp in total, res and nres 
-        chart_positions = ['AC30','AK30','AT30','BC30','BL30', 'BU30']
+        chart_positions = ['AC31','AL31','AU31','BD31','BM31', 'BV31']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(23,35), 'max_col':(col_i+1)}
             labels = results.index[21:33]
@@ -269,7 +269,7 @@ def create_CHARTS(file,sheet_name, results):
             wb[sheet_name].add_chart(chart, chart_pos) 
             
         # Specific EnergyDemand in total, res and nres
-        chart_positions = ['AC45','AK45','AT45','BC45','BL45', 'BU45']
+        chart_positions = ['AC46','AL46','AU46','BD46','BM46', 'BV46']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(8,11), 'max_col':(col_i+1)}
             labels = results.index[6:9]
@@ -282,10 +282,10 @@ def create_CHARTS(file,sheet_name, results):
         labels = scen_list
         chart = createASSESCHART(wb[sheet_name], sheet_name, 'specific energy demand_total', 13, 'year', 
                                   'specific energy demand [kWh/m2]', labels, xvalues, yvalues)
-        wb[sheet_name].add_chart(chart, 'CD45') 
+        wb[sheet_name].add_chart(chart, 'CE46')
         
         # Specific EnergyDemand per cp in total, res and nres
-        chart_positions =  ['AC60','AK60','AT60','BD60','BN60']
+        chart_positions =  ['AC61','AL61','AU61','BD61','BM61', 'BV61']
         for chart_pos, col_i, scen in zip(chart_positions, range(2,14,2), scen_list):
             yvalues = {'min_col': col_i, 'min_row':range(35,47), 'max_col':(col_i+1)}
             labels = results.index[33:45]
@@ -301,21 +301,21 @@ def create_CHARTS(file,sheet_name, results):
         wb[sheet_name].add_chart(chart, chart_pos[0])
         
         # ENE in total,res and nres, relativ 
-        chart_pos = ['T15']
+        chart_pos = ['T16']
         xvalues = {'min_col': 1, 'min_row':5, 'max_col':1, 'max_row':7}
         yvalues = {'min_col': range(14,20), 'min_row':5, 'max_col':14, 'max_row':7}
         chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ ENE', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
         wb[sheet_name].add_chart(chart, chart_pos[0])
         
         # SPE_ENE in total,res and nres, relativ 
-        chart_pos = ['T30']
+        chart_pos = ['T31']
         xvalues = {'min_col': 1, 'min_row':8, 'max_col':1, 'max_row':10}
         yvalues = {'min_col': range(14,20), 'min_row':8, 'max_col':14, 'max_row':10}
         chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ SPE_ENE', 10, 'Categories', 'Rel. Change [%]', scen_list, xvalues, yvalues)
         wb[sheet_name].add_chart(chart, chart_pos[0])
         
         # POP, relativ 
-        chart_pos = ['T45']
+        chart_pos = ['T46']
         xvalues = {'min_col': 1, 'min_row':47, 'max_col':1, 'max_row':47}
         yvalues = {'min_col': [14], 'min_row':47, 'max_col':14, 'max_row':47}
         chart = createBARCHART(wb[sheet_name], sheet_name, 'Relativ Population Growth', 10, '', 'Rel. Change [%]', scen_list, xvalues, yvalues)
@@ -383,7 +383,9 @@ def dataToEXCEL(scen_list, output_dir, network, input_dir):
     
     filename = network + '_results.xlsx'
     file = os.path.join(output_dir, filename)
-    sheet_name = os.path.split(input_dir)[1][5:] + '_regional_data'
+    sheet_name = os.path.split(input_dir)[1][5:] + '_reg_data'
+    if len(sheet_name)>= 31:
+        sheet_name = os.path.split(input_dir)[1][5:26] + '_reg_data'
     file_path = os.path.join(output_dir,filename)
     if not os.path.exists(file_path):
         mode = "w"
@@ -435,6 +437,7 @@ def main(network, input_directory, output_dir, interpol):
             continue
         input_directory_ = os.path.join(input_directory, region)
         dir_list = os.listdir(input_directory_)
+        dir_list.sort()
         scen_list = {}
         year_list = []
         for item in dir_list:
@@ -482,7 +485,10 @@ if __name__ == '__main__':
         raise FileNotFoundError(data_warehouse)
     regions = os.listdir(data_warehouse)
     networks = list(set([network[:2] for network in regions]))
+    networks_to_prep = config['input_var']['networks_to_prep'].split('\n')[1:]
     for network in networks:
+        if not network in networks_to_prep: continue
+        print("Start to prepare Results for network in %s" % network)
         # directory = os.path.join(data_warehouse, region)
         #input_dir_ = "E:/projects2/bmayr_workspace/projects_bernhard/outputs/res_h_regions_test/FR - CCSB"
         output_dir_ = os.path.join(output_dir,network)
@@ -492,6 +498,8 @@ if __name__ == '__main__':
             except FileNotFoundError:
                 os.makedirs(output_dir_)
         interpol_ = 'linear'
-        main(network, data_warehouse, output_dir_, interpol_)     
+        main(network, data_warehouse, output_dir_, interpol_)
+        print("Finished with result-preparation for network in %s" % network)
+        print('-'*10)
     print("DONE")
     print("#"*10)
