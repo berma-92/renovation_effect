@@ -221,18 +221,22 @@ def create_CHARTS(file,sheet_name, results):
         if not col[5:] in scen_list: scen_list.append(col[5:])
     try: 
         xvalues = {'min_col': 2, 'min_row':49, 'max_col':3}
+        
+        # GFA in total, res, nres
         yvalues = {'min_col': 2, 'min_row':range(2,5), 'max_col':3}
         labels = results.index[0:3]
         chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area [m2]', labels, xvalues, yvalues)
         wb[sheet_name].add_chart(chart, "AC1")
         
+        # GFA per cp in total, res, nres
         yvalues = {'min_col': 2, 'min_row':range(11,23), 'max_col':3}
         labels = results.index[9:21]
         chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
                             'gross floor area [m2]', labels, xvalues, yvalues)
         wb[sheet_name].add_chart(chart, "AK1")   
         
+        # GFA per capita total
         yvalues = {'min_col': 2, 'min_row':[48], 'max_col':3}
         labels = None
         chart = createLINECHART(wb[sheet_name], sheet_name, '', 13, 'year', 
@@ -443,7 +447,7 @@ def main(network, input_directory, output_dir, interpol):
                     output_dir, 
                     network,
                     input_directory_)
-        # break #DEBUG break
+        #break #DEBUG break
             # if interpol == 'linear':
             #     for year in range(2020, 2050,5):
             #         results[year] = linear_interpol(results_baseyear[baseyear],baseyear,
