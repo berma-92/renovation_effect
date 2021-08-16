@@ -73,8 +73,9 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
         popraster_exists = True
     except:
         # This is a temporal fix
-        input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
-        print("input_raster_POPULATION 2" )
+        raise Exception("Error while handling the population file")
+        #input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
+        #print("input_raster_POPULATION 2" )
         
     #input_raster_POPULATION = inputs_raster_selection["gfa_res_curr_density"]
     
@@ -225,11 +226,11 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 {"unit": "", "name": "Underlying population growth assumptions 2015 - ","value": "%i" % target_yr}]
             
             if popraster_exists == True:
-                result['indicator'].extend([{"unit": "tds. people", "name": "Population 2000","value": "%4.2f" % RESULTS["pop_2000"]}, 
-                                      {"unit": "tds. people", "name": "Population 2005","value": "%4.2f" % RESULTS["pop_2005"]},  
-                                      {"unit": "tds. people", "name": "Population 2010","value": "%4.2f" % RESULTS["pop_2010"]},
-                                      {"unit": "tds. people", "name": "Population 2015","value": "%4.2f" % RESULTS["pop_base"]}, 
-                                      {"unit": "tds. people", "name": "Population %i" %target_yr,"value": "%4.2f" % RESULTS["pop_fut"]}])
+                result['indicator'].extend([{"unit": "tds. people", "name": "Population 2000","value": "%4.2f" % (RESULTS["pop_2000"]/1000)},
+                                      {"unit": "tds. people", "name": "Population 2005","value": "%4.2f" % (RESULTS["pop_2005"]/1000)},
+                                      {"unit": "tds. people", "name": "Population 2010","value": "%4.2f" % (RESULTS["pop_2010"]/1000)},
+                                      {"unit": "tds. people", "name": "Population 2015","value": "%4.2f" % (RESULTS["pop_base"]/1000)},
+                                      {"unit": "tds. people", "name": "Population %i" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"]/1000)}])
             else:
                 result['indicator'].extend([{"unit": "-", "name": "Population: 2000 / 2010","value": "%4.2f" % (RESULTS["pop_2000"] / RESULTS["pop_2010"])}, 
                                       {"unit": "-", "name": "Population: 2005 / 2010","value": "%4.2f" % (RESULTS["pop_2005"] / RESULTS["pop_2010"])},  
@@ -238,17 +239,21 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                                       {"unit": "-", "name": "Population: %i / 2010" %target_yr,"value": "%4.2f" % (RESULTS["pop_fut"] / RESULTS["pop_2010"])}])
                 
             result['indicator'].extend([
-                                  #{"unit": unit_area, "name": "Building footprint in 2014","value": "%4.2f" % (RESULTS["footprint_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
-                                  {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},            
-                                  
-                                  {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
-                                  {"unit": "m2/capita", "name": "Heated area per capita %i"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
-                                  {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
-                                  {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
-                                  {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
-                                  {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
-                                ])
+                {"unit": unit_area, "name": "Heated Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur"] * converter_area)},
+                {"unit": unit_area, "name": "Heated residential Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur_res"] * converter_area)},
+                {"unit": unit_area, "name": "Heated non-residential Area in 2014","value": "%4.2f" % (RESULTS["gfa_cur_nres"] * converter_area)},
+
+                {"unit": unit_area, "name": "Heated Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut"] * converter_area)},
+                {"unit": unit_area, "name": "Heated residential Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut_res"] * converter_area)},
+                {"unit": unit_area, "name": "Heated non-residential Area in %i" % target_yr,"value": "%4.2f" % (RESULTS["gfa_fut_nres"] * converter_area)},
+
+                {"unit": "m2/capita", "name": "Heated area per capita 2015","value": "%4.2f" % RESULTS["gfa_per_cap_cur"]},
+                {"unit": "m2/capita", "name": "Heated area per capita %i"%target_yr,"value": "%4.2f" % RESULTS["gfa_per_cap_fut"]},
+                {"unit": unit_energy, "name": "Energy Consumption in 2014","value": "%4.2f" % (RESULTS["ene_cur"] * converter_ene)},
+                {"unit": unit_energy, "name": "Energy Consumption in %i" % target_yr,"value": "%4.2f" % (RESULTS["ene_fut"] * converter_ene)},
+                {"unit": "kWh/m2", "name": "Current specific Energy Consumption","value": "%4.1f" % RESULTS["spe_ene_cur"]},
+                {"unit": "kWh/m2", "name": "SpecificEnergy Consumption in %i" % target_yr,"value": "%4.1f" % RESULTS["spe_ene_fut"]},
+                ])
             
             
             result['indicator'].extend([{"unit": "", "name": "Estimated Area per Constr. Period in","value": "2014"},
@@ -359,6 +364,18 @@ def calculation(output_directory, inputs_raster_selection, inputs_parameter_sele
                 r = result['indicator'][ele]
                 string_ = "%s : %s %s" %(r['name'], str(r['value']), r["unit"])
                 fn.write("%s\n"%string_)
+                print(string_)
+
+    if True:
+        with open("%s/indicators_exact.csv" % (output_directory), "w") as fn:
+            string_ = "%s\n" % (result['name'])
+            fn.write(string_)
+            print(string_)
+
+            for ele in RESULTS.keys():
+                r = RESULTS[ele]
+                string_ = "%s,%s" % (ele, r)
+                fn.write("%s\n" % string_)
                 print(string_)
 
     return result
@@ -490,13 +507,15 @@ if __name__ == '__main__':
                             os.mkdir(output_directory)
                         result = calculation(output_directory, inputs_raster_selection, inputs_parameter_selection,
                                     direct_call_calc_mdoule=True)
+                    #DEBUG BREAK
+                    #break
 
             else:
                 raise IOError('Change in config file section "inputs_parameter_selection" variable "section" to "True"'
                               'or "False"')
-
         except:
             skipped_folders.append(directory)
-
+        # DEBUG BREAK
+        #break
     print("#"*50)
     print(skipped_folders)

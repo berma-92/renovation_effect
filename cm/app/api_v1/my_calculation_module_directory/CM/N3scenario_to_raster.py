@@ -55,7 +55,6 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
                             , output_csv_result
                             , add_inputs_parameters
                             , debug_output=False):
-
     RESULTS = {}
     RESULTS["Done"] = False
     try:
@@ -71,7 +70,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         p_ = pathlib.Path(__file__).parent.absolute()
         d_ = "%s/helper_functions/cyf/" % p_
         ld = os.listdir(d_)
-        print("Directory content before pyimport.install")
+        print("Directory content before pyximport.install")
         print(ld)
         
         #python_interpret = sys.executable
@@ -80,7 +79,7 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         pyximport.install()
         
         ld = os.listdir(d_)
-        print("Directory content after pyimport.install")
+        print("Directory content after pyximport.install")
         print(ld)
         
         import CM.helper_functions.cyf.create_density_map as CDM
@@ -141,10 +140,25 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     _gfa_fut__ = 0
     _ene_cur__ = 0
     _ene_fut__ = 0
+
+    _gfa_cur_res__ = 0
+    _gfa_fut_res__ = 0
+    _ene_cur_res__ = 0
+    _ene_fut_res__ = 0
+
+    _gfa_cur_nres__ = 0
+    _gfa_fut_nres__ = 0
+    _ene_cur_nres__ = 0
+    _ene_fut_nres__ = 0
     
-    AREA_PER_CP = np.zeros((2,4), dtype="f4") 
+    AREA_PER_CP = np.zeros((2,4), dtype="f4")
     ENERGY_PER_CP = np.zeros((2,4), dtype="f4")
-    
+
+    AREA_PER_CP_RES = np.zeros((2,4), dtype="f4")
+    AREA_PER_CP_NRES = np.zeros((2, 4), dtype="f4")
+    ENERGY_PER_CP_RES = np.zeros((2, 4), dtype="f4")
+    ENERGY_PER_CP_NRES = np.zeros((2, 4), dtype="f4")
+
     #get population data
     # Population based on default data set (2011)    
     initial_population = RA(fn_POPULATION, dType=data_type)
@@ -190,6 +204,8 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         area_future = np.zeros_like(energy_tot_future_existB)
         area_current = np.zeros_like(energy_tot_future_existB)
+        area_current_res = np.zeros_like(energy_tot_future_existB)
+        area_current_nres = np.zeros_like(energy_tot_future_existB)
     
         CP_area_initial_nuts = np.zeros((NUTS_RESULTS_GFA_BASE.shape[0]+1, 4), dtype="f4")
         CP_area_future_nuts = np.zeros((NUTS_RESULTS_GFA_FUTURE.shape[0]+1, 4), dtype="f4")
@@ -370,6 +386,12 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA, LAU2_id) 
             area_current += AREA
             AREA_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
+            if i == 0:
+                AREA_PER_CP_RES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 1:
+                AREA_PER_CP_NRES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
             if debug_output == True:
                 pass
                 """
@@ -403,6 +425,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(AREA, LAU2_id) 
             area_future += AREA
             AREA_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
+            if i == 0: AREA_PER_CP_RES[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 1: AREA_PER_CP_NRES[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
             if debug_output == True:
                 pass
                 """
@@ -433,6 +459,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             print(np.sum(ENERGY))
             
             ENERGY_PER_CP[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
+            if i == 0: ENERGY_PER_CP_RES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 1: ENERGY_PER_CP_NRES[0, i_cp_] += np.sum(TABLE_RESULTS_LAU[:, 1])
            
             if debug_output == True:
                 pass
@@ -474,6 +503,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(SHARE_NUTS3_energy, LAU2_id) 
             energy_future += SHARE_NUTS3_energy
             ENERGY_PER_CP[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
+            if i == 0: ENERGY_PER_CP_RES[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+            if i == 1: ENERGY_PER_CP_NRES[1, i_cp_] += np.sum(TABLE_RESULTS_LAU[:,1])
+
             if debug_output == True:
                 pass
                 """
@@ -495,6 +528,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_future, LAU2_id)
         _ene_fut__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 0: _ene_fut_res__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 1: _ene_fut_nres__ += np.sum(TABLE_RESULTS_LAU[:, 1])
+
         if debug_output == True:
             pass
             """
@@ -511,6 +547,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             #"""
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(energy_current, LAU2_id)
         _ene_cur__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 0: _ene_cur_res__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 1: _ene_cur_nres__ += np.sum(TABLE_RESULTS_LAU[:,1])
+
         if debug_output == True:
             pass
             """
@@ -526,6 +565,9 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             #"""
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_future, LAU2_id)
         _gfa_fut__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 0: _gfa_fut_res__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 1: _gfa_fut_nres__ += np.sum(TABLE_RESULTS_LAU[:, 1])
+
         if debug_output == True:
             pass
             """
@@ -540,9 +582,13 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID, 1]
             
             #"""
-        
         TABLE_RESULTS_LAU = CDM.CreateResultsTableperIndicator(area_current, LAU2_id)
         _gfa_cur__ += np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 0:
+            _gfa_cur_res__+= np.sum(TABLE_RESULTS_LAU[:,1])
+        if i == 1:
+            _gfa_cur_nres__+= np.sum(TABLE_RESULTS_LAU[:,1])
+
         if debug_output == True:
             pass
             """
@@ -564,6 +610,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             print("CHECK AREA FUTURE")
         gfa_tot_future_existB += area_future
         gfa_tot_curr_initial_year += BGF_intial
+        if i==0:
+            gfa_tot_curr_initial_year_res = BGF_intial
+        if i==1:
+            gfa_tot_curr_initial_year_nres = BGF_intial
             
         if debug_output == True:
             pass
@@ -600,17 +650,39 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
     
     #correction_factor_to_align_with_demand_from_heat_density_map:      
     adopt_factor_hdm_energy = np.maximum(0.00001, _ene_cur__) / np.maximum(0.00001, np.sum(energy_tot_curr))
+    #adopt_factor_hdm_energy_res = np.maximum(0.00001, _ene_cur_res__) / np.maximum(0.00001, np.sum(energy_tot_curr))
+    #adopt_factor_hdm_energy_nres = np.maximum(0.00001, _ene_cur_nres__) / np.maximum(0.00001, np.sum(energy_tot_curr))
     adopt_factor_hdm_gfa = np.maximum(0.00001, _gfa_cur__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year))
+    #adopt_factor_hdm_gfa_res = np.maximum(0.00001, _gfa_cur_res__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year_res))
+    #adopt_factor_hdm_gfa_nres = np.maximum(0.00001, _gfa_cur_nres__) / np.maximum(0.00001, np.sum(gfa_tot_curr_initial_year_nres))
+
     print("adopt_factor_hdm_energy: %4.2f" % adopt_factor_hdm_energy)
     print("adopt_factor_hdm_gfa: %4.2f" % adopt_factor_hdm_gfa)
+    #print("adopt_factor_hdm_gfa_res: %4.2f" % adopt_factor_hdm_gfa_res)
+    #print("adopt_factor_hdm_gfa_nres: %4.2f" % adopt_factor_hdm_gfa_nres)
     
     AREA_PER_CP[:, :] /= adopt_factor_hdm_gfa
+    AREA_PER_CP_RES[:, :] /= adopt_factor_hdm_gfa
+    AREA_PER_CP_NRES[:, :] /= adopt_factor_hdm_gfa
+
     _gfa_cur__ /= adopt_factor_hdm_gfa
+    _gfa_cur_res__ /= adopt_factor_hdm_gfa
+    _gfa_cur_nres__ /= adopt_factor_hdm_gfa
     _gfa_fut__ /= adopt_factor_hdm_gfa
+    _gfa_fut_res__ /= adopt_factor_hdm_gfa
+    _gfa_fut_nres__ /= adopt_factor_hdm_gfa
     
     ENERGY_PER_CP[:, :] /= adopt_factor_hdm_energy
+    ENERGY_PER_CP_RES[:, :] /= adopt_factor_hdm_energy
+    ENERGY_PER_CP_NRES[:, :] /= adopt_factor_hdm_energy
+
     _ene_cur__ /= adopt_factor_hdm_energy
+    _ene_cur_res__ /= adopt_factor_hdm_energy
+    _ene_cur_nres__ /= adopt_factor_hdm_energy
     _ene_fut__ /= adopt_factor_hdm_energy
+    _ene_fut_res__ /= adopt_factor_hdm_energy
+    _ene_fut_nres__ /= adopt_factor_hdm_energy
+
     
     #scale Maps 
     gfa_tot_curr_initial_year /= adopt_factor_hdm_gfa
@@ -693,7 +765,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         header[col+oC] = "BGF Country NewBuild"
         csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
         #"""
+    SHARE_NEW_BUILD_RES = 0.5
     AREA_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])
+    AREA_PER_CP_RES[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])*SHARE_NEW_BUILD_RES
+    AREA_PER_CP_NRES[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])*(1-SHARE_NEW_BUILD_RES)
     
     """
         Energy New buildings
@@ -716,8 +791,10 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
         csv_results[:,col+oC] = TABLE_RESULTS_COUNTRY[COUNTRY_ID,1]
         #"""
     
-    ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1]) 
-    
+    ENERGY_PER_CP[1,3] = np.sum(TABLE_RESULTS_LAU[:,1])
+    ENERGY_PER_CP_RES[1, 3] = np.sum(TABLE_RESULTS_LAU[:, 1])*SHARE_NEW_BUILD_RES
+    ENERGY_PER_CP_NRES[1, 3] = np.sum(TABLE_RESULTS_LAU[:, 1])*(1-SHARE_NEW_BUILD_RES)
+
     # scale maps
     
         
@@ -812,57 +889,134 @@ def CalcEffectsAtRasterLevel(NUTS_RESULTS_GFA_BASE
             
 
     _gfa_fut__ += AREA_PER_CP[1,3]
+    _gfa_fut_res__ += AREA_PER_CP_RES[1,3]
+    _gfa_fut_nres__ += AREA_PER_CP_NRES[1, 3]
+
     _ene_fut__ += ENERGY_PER_CP[1,3]
+    _ene_fut_res__ += ENERGY_PER_CP_RES[1, 3]
+    _ene_fut_nres__ += ENERGY_PER_CP_NRES[1, 3]
     
     RESULTS["gfa_cur"] = _gfa_cur__
-    
-    RESULTS["gfa_cur"] = _gfa_cur__
+    RESULTS["gfa_cur_res"] = _gfa_cur_res__
+    RESULTS["gfa_cur_nres"] = _gfa_cur_nres__
+
     RESULTS["gfa_fut"] = _gfa_fut__
+    RESULTS["gfa_fut_res"] = _gfa_fut_res__
+    RESULTS["gfa_fut_nres"] = _gfa_fut_nres__
+
     RESULTS["ene_cur"] = _ene_cur__
+    RESULTS["ene_cur_res"] = _ene_cur_res__
+    RESULTS["ene_cur_nres"] = _ene_cur_nres__
+
     RESULTS["ene_fut"] = _ene_fut__
+    RESULTS["ene_fut_res"] = _ene_fut_res__
+    RESULTS["ene_fut_nres"] = _ene_fut_nres__
+
     RESULTS["spe_ene_cur"] = _ene_cur__ / _gfa_cur__ * 1000
+    RESULTS["spe_ene_cur_res"] = _ene_cur_res__ / _gfa_cur_res__ * 1000
+    RESULTS["spe_ene_cur_nres"] = _ene_cur_nres__ / _gfa_cur_nres__ * 1000
+
     RESULTS["spe_ene_fut"] = _ene_fut__ / _gfa_fut__ * 1000
+    RESULTS["spe_ene_fut_res"] = _ene_fut_res__ / _gfa_fut_res__ * 1000
+    RESULTS["spe_ene_fut_nres"] = _ene_fut_nres__ / _gfa_fut_nres__ * 1000
     RESULTS["share_of_new_constructions_shown_in_map"] = share_of_new_constructions_shown_in_map * 100
-    
-    
+
     RESULTS["gfa_75_fut"] = AREA_PER_CP[1,0]
     RESULTS["gfa_80_fut"] = AREA_PER_CP[1,1]
     RESULTS["gfa_00_fut"] = AREA_PER_CP[1,2]
     RESULTS["gfa_new_fut"] = AREA_PER_CP[1,3]
+
+    RESULTS["gfa_75_fut_res"] = AREA_PER_CP_RES[1,0]
+    RESULTS["gfa_80_fut_res"] = AREA_PER_CP_RES[1,1]
+    RESULTS["gfa_00_fut_res"] = AREA_PER_CP_RES[1,2]
+    RESULTS["gfa_new_fut_res"] = AREA_PER_CP_RES[1,3]
+
+    RESULTS["gfa_75_fut_nres"] = AREA_PER_CP_NRES[1,0]
+    RESULTS["gfa_80_fut_nres"] = AREA_PER_CP_NRES[1,1]
+    RESULTS["gfa_00_fut_nres"] = AREA_PER_CP_NRES[1,2]
+    RESULTS["gfa_new_fut_nres"] = AREA_PER_CP_NRES[1,3]
     
     RESULTS["ene_75_fut"] = ENERGY_PER_CP[1,0]
     RESULTS["ene_80_fut"] = ENERGY_PER_CP[1,1]
     RESULTS["ene_00_fut"] = ENERGY_PER_CP[1,2]
     RESULTS["ene_new_fut"] = ENERGY_PER_CP[1,3]
+
+    RESULTS["ene_75_fut_res"] = ENERGY_PER_CP_RES[1,0]
+    RESULTS["ene_80_fut_res"] = ENERGY_PER_CP_RES[1,1]
+    RESULTS["ene_00_fut_res"] = ENERGY_PER_CP_RES[1,2]
+    RESULTS["ene_new_fut_res"] = ENERGY_PER_CP_RES[1,3]
+
+    RESULTS["ene_75_fut_nres"] = ENERGY_PER_CP_NRES[1,0]
+    RESULTS["ene_80_fut_nres"] = ENERGY_PER_CP_NRES[1,1]
+    RESULTS["ene_00_fut_nres"] = ENERGY_PER_CP_NRES[1,2]
+    RESULTS["ene_new_fut_nres"] = ENERGY_PER_CP_NRES[1,3]
     
     RESULTS["gfa_75_cur"] = AREA_PER_CP[0,0]
     RESULTS["gfa_80_cur"] = AREA_PER_CP[0,1]
     RESULTS["gfa_00_cur"] = AREA_PER_CP[0,2]
     RESULTS["gfa_new_cur"] = AREA_PER_CP[0,3]
+
+    RESULTS["gfa_75_cur_res"] = AREA_PER_CP_RES[0,0]
+    RESULTS["gfa_80_cur_res"] = AREA_PER_CP_RES[0,1]
+    RESULTS["gfa_00_cur_res"] = AREA_PER_CP_RES[0,2]
+    RESULTS["gfa_new_cur_res"] = AREA_PER_CP_RES[0,3]
+
+    RESULTS["gfa_75_cur_nres"] = AREA_PER_CP_NRES[0,0]
+    RESULTS["gfa_80_cur_nres"] = AREA_PER_CP_NRES[0,1]
+    RESULTS["gfa_00_cur_nres"] = AREA_PER_CP_NRES[0,2]
+    RESULTS["gfa_new_cur_nres"] = AREA_PER_CP_NRES[0,3]
     
     RESULTS["ene_75_cur"] = ENERGY_PER_CP[0,0]
     RESULTS["ene_80_cur"] = ENERGY_PER_CP[0,1]
     RESULTS["ene_00_cur"] = ENERGY_PER_CP[0,2]
     RESULTS["ene_new_cur"] = ENERGY_PER_CP[0,3]
+
+    RESULTS["ene_75_cur_res"] = ENERGY_PER_CP_RES[0,0]
+    RESULTS["ene_80_cur_res"] = ENERGY_PER_CP_RES[0,1]
+    RESULTS["ene_00_cur_res"] = ENERGY_PER_CP_RES[0,2]
+    RESULTS["ene_new_cur_res"] = ENERGY_PER_CP_RES[0,3]
+
+    RESULTS["ene_75_cur_nres"] = ENERGY_PER_CP_NRES[0,0]
+    RESULTS["ene_80_cur_nres"] = ENERGY_PER_CP_NRES[0,1]
+    RESULTS["ene_00_cur_nres"] = ENERGY_PER_CP_NRES[0,2]
+    RESULTS["ene_new_cur_nres"] = ENERGY_PER_CP_NRES[0,3]
     
     RESULTS["spec_ene_75_fut"] = RESULTS["ene_75_fut"] / RESULTS["gfa_75_fut"] * 1000
     RESULTS["spec_ene_80_fut"] = RESULTS["ene_80_fut"] / RESULTS["gfa_80_fut"] * 1000
     RESULTS["spec_ene_00_fut"] = RESULTS["ene_00_fut"] / RESULTS["gfa_00_fut"] * 1000
     RESULTS["spec_ene_new_fut"] = RESULTS["ene_new_fut"] / np.maximum(0.00001, RESULTS["gfa_new_fut"])  * 1000
+
+    RESULTS["spec_ene_75_fut_res"] = RESULTS["ene_75_fut_res"] / RESULTS["gfa_75_fut_res"] * 1000
+    RESULTS["spec_ene_80_fut_res"] = RESULTS["ene_80_fut_res"] / RESULTS["gfa_80_fut_res"] * 1000
+    RESULTS["spec_ene_00_fut_res"] = RESULTS["ene_00_fut_res"] / RESULTS["gfa_00_fut_res"] * 1000
+    RESULTS["spec_ene_new_fut_res"] = RESULTS["ene_new_fut_res"] / np.maximum(0.00001, RESULTS["gfa_new_fut_res"]) * 1000
+
+    RESULTS["spec_ene_75_fut_nres"] = RESULTS["ene_75_fut_nres"] / RESULTS["gfa_75_fut_nres"] * 1000
+    RESULTS["spec_ene_80_fut_nres"] = RESULTS["ene_80_fut_nres"] / RESULTS["gfa_80_fut_nres"] * 1000
+    RESULTS["spec_ene_00_fut_nres"] = RESULTS["ene_00_fut_nres"] / RESULTS["gfa_00_fut_nres"] * 1000
+    RESULTS["spec_ene_new_fut_nres"] = RESULTS["ene_new_fut_nres"] / np.maximum(0.00001, RESULTS["gfa_new_fut_nres"]) * 1000
     
     RESULTS["spec_ene_75_cur"] = RESULTS["ene_75_cur"] / RESULTS["gfa_75_cur"] * 1000
     RESULTS["spec_ene_80_cur"] = RESULTS["ene_80_cur"] / RESULTS["gfa_80_cur"] * 1000
     RESULTS["spec_ene_00_cur"] = RESULTS["ene_00_cur"] / RESULTS["gfa_00_cur"] * 1000
+
+    RESULTS["spec_ene_75_cur_res"] = RESULTS["ene_75_cur_res"] / RESULTS["gfa_75_cur_res"] * 1000
+    RESULTS["spec_ene_80_cur_res"] = RESULTS["ene_80_cur_res"] / RESULTS["gfa_80_cur_res"] * 1000
+    RESULTS["spec_ene_00_cur_res"] = RESULTS["ene_00_cur_res"] / RESULTS["gfa_00_cur_res"] * 1000
+
+    RESULTS["spec_ene_75_cur_nres"] = RESULTS["ene_75_cur_nres"] / RESULTS["gfa_75_cur_nres"] * 1000
+    RESULTS["spec_ene_80_cur_nres"] = RESULTS["ene_80_cur_nres"] / RESULTS["gfa_80_cur_nres"] * 1000
+    RESULTS["spec_ene_00_cur_nres"] = RESULTS["ene_00_cur_nres"] / RESULTS["gfa_00_cur_nres"] * 1000
     
     #RESULTS["pop_1995"] = population_1995 / 1000
-    RESULTS["pop_2000"] = population_2000 / 1000
-    RESULTS["pop_2005"] = population_2005 / 1000
-    RESULTS["pop_2010"] = population_2010 / 1000
-    RESULTS["pop_base"] = population_base_year / 1000   
-    RESULTS["pop_fut"] = population_target_year / 1000  
+    RESULTS["pop_2000"] = round(population_2000)
+    RESULTS["pop_2005"] = round(population_2005)
+    RESULTS["pop_2010"] = round(population_2010)
+    RESULTS["pop_base"] = round(population_base_year)
+    RESULTS["pop_fut"] = round(population_target_year)
     
-    RESULTS["gfa_per_cap_cur"] = RESULTS["gfa_cur"] / (0.00001 + RESULTS["pop_base"]) / 1000
-    RESULTS["gfa_per_cap_fut"] = RESULTS["gfa_fut"] / (0.00001 + RESULTS["pop_fut"]) / 1000
+    RESULTS["gfa_per_cap_cur"] = RESULTS["gfa_cur"] / (0.00001 + RESULTS["pop_base"])# / 1000
+    RESULTS["gfa_per_cap_fut"] = RESULTS["gfa_fut"] / (0.00001 + RESULTS["pop_fut"])# / 1000
     
     
     RESULTS["Done"] = True
